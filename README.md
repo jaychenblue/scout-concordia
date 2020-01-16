@@ -1,16 +1,16 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <!--<a href="https://github.com/jaychenblue/scout-concordia">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>-->
-
-  <h3 align="center">ScoutConcordia</h3>
+  <a href="https://github.com/jaychenblue/scout-concordia">
+    <img src="logo.png" alt="Logo" width="50%" height="auto">
+  </a>
 
   <p align="center">
     The only app you need to navigate Concordia, both indoors and outdoors!
   </p>
 </p>
+
+<br />
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
