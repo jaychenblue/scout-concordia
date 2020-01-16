@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "219414920184",
+    "firebase_url": "https://scoutconcordia.firebaseio.com",
+    "project_id": "scoutconcordia",
+    "storage_bucket": "scoutconcordia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219414920184:android:ee5ec83265d14cb923b40d",
+        "android_client_info": {
+          "package_name": "com.example.scoutconcordia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219414920184-ge3esn7qq5e1gb6jehjorj9cmmmj1m4r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "a28cb6ab1230495ee6d6a644909d8eb6c45048c5"
+          }
+        },
+        {
+          "client_id": "219414920184-pehbk3ko4uo1nq7l7dtf1j7in5caue8a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "06ff70de5ffbc0acff5f4bffb8214a16d6f5544d"
+          }
+        },
+        {
+          "client_id": "219414920184-vo13n4ghkndsilo4t3b8dc88oqj5i1n7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAapApnZugfUEFDmnqjVeiWIzre3wvGHNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219414920184-vo13n4ghkndsilo4t3b8dc88oqj5i1n7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

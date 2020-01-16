@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ScoutConcordia</string>
+    <string name="default_web_client_id">219414920184-vo13n4ghkndsilo4t3b8dc88oqj5i1n7.apps.googleusercontent.com</string>
+    <string name="project_id">219414920184</string>
 </resources>
