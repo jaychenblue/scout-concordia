@@ -1,6 +1,7 @@
 package com.example.scoutconcordia;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -18,7 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener{
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
@@ -39,6 +40,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
             getCurrentLocation();
         }
         else{
@@ -46,6 +48,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
             requestPermissions();
         }
+
+        mMap.setOnMyLocationChangeListener(this);
+    }
+
+    // moves the camera to keep on user's location on any change in it's location
+    @Override
+    public void onMyLocationChange(Location location){
+        LatLng loc = new LatLng (location.getLatitude(), location.getLongitude());
+        animateCamera(loc, zoomLevel);
     }
 
     private void animateCamera(LatLng latLng, float zoomLevel){
@@ -53,7 +64,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getCurrentLocation(){
-        mMap.setMyLocationEnabled(true);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try{
             Task location = fusedLocationProviderClient.getLastLocation();
@@ -89,6 +99,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission granted, move the camera to current location
+                    mMap.setMyLocationEnabled(true);
                     getCurrentLocation();
                 }
             }
