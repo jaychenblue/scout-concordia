@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener{
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
@@ -50,6 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         mMap.setOnMyLocationChangeListener(this);
+        mMap.setOnCameraMoveStartedListener(this);
     }
 
     // moves the camera to keep on user's location on any change in it's location
@@ -58,6 +59,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng loc = new LatLng (location.getLatitude(), location.getLongitude());
         animateCamera(loc, zoomLevel);
     }
+
+    //detects camera movement and the cause for the movement
+    @Override
+    public void onCameraMoveStarted(int reason) {
+        if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {   //user gestured on the map
+            // remove the onMyLocationChangeListener when user is moving the map otherwise the map is automatically centered
+            mMap.setOnMyLocationChangeListener(null);
+        }
+        else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION) { // user tapped somethig on the map
+            // logic here
+        } else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) { // app moved the camera
+            // logic here
+        }
+    }
+
 
     private void animateCamera(LatLng latLng, float zoomLevel){
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
