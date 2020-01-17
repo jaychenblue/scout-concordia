@@ -28,6 +28,7 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.2"
     testImplementation "org.junit.jupiter:junit-jupiter-params:5.3.2"
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
     testImplementation 'junit:junit:4.12'
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.3.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
