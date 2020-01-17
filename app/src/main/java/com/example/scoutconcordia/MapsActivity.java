@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
@@ -51,6 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
+        mMap.setOnMyLocationButtonClickListener(this);
     }
 
     // moves the camera to keep on user's location on any change in it's location
@@ -72,6 +73,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) { // app moved the camera
             // logic here
         }
+    }
+
+    // listener method for when my location button is clicke, resets setMyLocationEnable to true
+    // so the camera can stay on the user's location ( camera is disabled to stay on user's location
+    // when user gesture moves the camera). Check onCameraMoveStarted listener method
+    @Override
+    public boolean onMyLocationButtonClick () {
+        mMap.setMyLocationEnabled(true);
+        return false; // returning false calls the super method, returning true does not
     }
 
 
