@@ -14,8 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-import java.security.acl.LastOwnerException;
-import java.util.concurrent.LinkedTransferQueue;
+
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -74,13 +73,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         int strokeColor = Color.parseColor("#000000");
-        int fillColor = Color.parseColor("#74091F");
+        int fillColor = Color.parseColor("#FF74091F"); //color format is #AARRGGBB where AA is for the opacity. 00 is fully transparent. FF is opaque
 
         switch (type) {
             // If no type is given, allow the API to use the default.
             case "alpha":
-                strokeColor = Color.parseColor("#000000");
-                fillColor = Color.parseColor("#74091F");
+                strokeColor = Color.parseColor("#BB000000");
+                fillColor = Color.parseColor("#BB74091F");
                 break;
         }
         polygon.setStrokeColor(strokeColor);
@@ -252,6 +251,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stylePolygon(FG_building);
 
         // (GA) Grey Nuns Annex 1211-1215, St-Mathieu
+        Polygon GA_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                   new LatLng(45.493850, -73.578355),
+                        new LatLng(45.494134, -73.578011),
+                        new LatLng(45.494119, -73.577984),
+                        new LatLng(45.494345, -73.577736),
+                        new LatLng(45.494284, -73.577622),
+                        new LatLng(45.494054, -73.577870),
+                        new LatLng(45.494075, -73.577908),
+                        new LatLng(45.493790, -73.578254)
+                ));
+        GA_building.setTag("alpha");
+        stylePolygon(GA_building);
 
         // (GM) Guy-De Maisonneuve Building
         Polygon GM_building = mMap.addPolygon(new PolygonOptions()
@@ -269,6 +281,75 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stylePolygon(GM_building);
 
         // (GN) Grey Nuns Building 1190, Guy. 1175, St-Mathieu
+        Polygon GN_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.492593, -73.576534),
+                        new LatLng(45.492614, -73.576577),
+                        new LatLng(45.492607, -73.576584),
+                        new LatLng(45.492746, -73.576869),
+                        new LatLng(45.492727, -73.576873),
+                        new LatLng(45.492676, -73.576923),
+                        new LatLng(45.492677, -73.576965),
+                        new LatLng(45.492710, -73.577033),
+                        new LatLng(45.492773, -73.576973),
+                        new LatLng(45.492794, -73.576977),
+                        new LatLng(45.492810, -73.576962),
+                        new LatLng(45.492896, -73.577141),
+                        new LatLng(45.492838, -73.577198),
+                        new LatLng(45.492925, -73.577379),
+                        new LatLng(45.492993, -73.577314),
+                        new LatLng(45.493088, -73.577511),
+                        new LatLng(45.493198, -73.577401),
+                        new LatLng(45.493108, -73.577213),
+                        new LatLng(45.493363, -73.576961),
+                        new LatLng(45.493353, -73.576936),
+                        new LatLng(45.493438, -73.576853),
+                        new LatLng(45.493478, -73.576935),
+                        new LatLng(45.493450, -73.576963),
+                        new LatLng(45.493529, -73.577128),
+                        new LatLng(45.493576, -73.577081),
+                        new LatLng(45.493601, -73.577131),
+                        new LatLng(45.493579, -73.577153),
+                        new LatLng(45.493634, -73.577267),
+                        new LatLng(45.493746, -73.577157),
+                        new LatLng(45.493671, -73.576999),
+                        new LatLng(45.493727, -73.576944),
+                        new LatLng(45.493667, -73.576822),
+                        new LatLng(45.493613, -73.576873),
+                        new LatLng(45.493551, -73.576747),
+                        new LatLng(45.493838, -73.576465),
+                        new LatLng(45.493837, -73.576669),
+                        new LatLng(45.493717, -73.576784),
+                        new LatLng(45.493902, -73.577173),
+                        new LatLng(45.494065, -73.577015),
+                        new LatLng(45.493897, -73.576660),
+                        new LatLng(45.493929, -73.576472),
+                        new LatLng(45.494193, -73.577020),
+                        new LatLng(45.493868, -73.577339),
+                        new LatLng(45.493975, -73.577559),
+                        new LatLng(45.494124, -73.577413),
+                        new LatLng(45.494094, -73.577348),
+                        new LatLng(45.494391, -73.577055),
+                        new LatLng(45.494018, -73.576282),
+                        new LatLng(45.494131, -73.576168),
+                        new LatLng(45.494043, -73.575991),
+                        new LatLng(45.493933, -73.576093),
+                        new LatLng(45.493713, -73.575638),
+                        new LatLng(45.493570, -73.575782),
+                        new LatLng(45.493792, -73.576245),
+                        new LatLng(45.493492, -73.576540),
+                        new LatLng(45.493472, -73.576497),
+                        new LatLng(45.493340, -73.576624),
+                        new LatLng(45.493364, -73.576673),
+                        new LatLng(45.493024, -73.577006),
+                        new LatLng(45.492941, -73.576833),
+                        new LatLng(45.492948, -73.576794),
+                        new LatLng(45.492926, -73.576747),
+                        new LatLng(45.492899, -73.576743),
+                        new LatLng(45.492733, -73.576396)
+                ));
+        GN_building.setTag("alpha");
+        stylePolygon(GN_building);
 
         // (GS) 1538, Sherbrooke
         Polygon GS_building = mMap.addPolygon(new PolygonOptions()
@@ -491,6 +572,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stylePolygon(S_building);
 
         // (SB) Samuel Bronfman Building. 1590, Docteur-Penfield
+        Polygon SB_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.496435, -73.586209),
+                        new LatLng(45.496501, -73.586208),
+                        new LatLng(45.496506, -73.586135),
+                        new LatLng(45.496521, -73.586136),
+                        new LatLng(45.496519, -73.586168),
+                        new LatLng(45.496538, -73.586212),
+                        new LatLng(45.496683, -73.586087),
+                        new LatLng(45.496652, -73.586014),
+                        new LatLng(45.496658, -73.586008),
+                        new LatLng(45.496582, -73.585830),
+                        new LatLng(45.496572, -73.585835),
+                        new LatLng(45.496553, -73.585792),
+                        new LatLng(45.496509, -73.585792),
+                        new LatLng(45.496511, -73.585779),
+                        new LatLng(45.496491, -73.585739),
+                        new LatLng(45.496467, -73.585737)
+                ));
+        SB_building.setTag("alpha");
+        stylePolygon(SB_building);
 
         // (T) 2030, Mackay
         Polygon T_building = mMap.addPolygon(new PolygonOptions()
@@ -530,6 +632,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stylePolygon(V_building);
 
         // (VA) Visual Arts Building. 1395, Rene-Levesque O.
+        Polygon VA_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                    new LatLng(45.495401, -73.573767),
+                        new LatLng(45.495669, -73.574309),
+                        new LatLng(45.496186, -73.573795),
+                        new LatLng(45.496069, -73.573560),
+                        new LatLng(45.495817, -73.573810),
+                        new LatLng(45.495675, -73.573490)
+                ));
+        VA_building.setTag("alpha");
+        stylePolygon(VA_building);
 
         // (X) 2080, Mackay
         Polygon X_building = mMap.addPolygon(new PolygonOptions()
@@ -554,8 +667,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ));
         Z_building.setTag("alpha");
         stylePolygon(Z_building);
-
-
-    }
+    } //end of addSGWPolygons
 
 } //end of Maps Activity Class
