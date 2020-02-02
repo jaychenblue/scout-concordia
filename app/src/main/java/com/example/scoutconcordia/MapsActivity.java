@@ -14,7 +14,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-
+import java.security.KeyStore;
+import java.security.acl.LastOwnerException;
+import java.util.concurrent.LinkedTransferQueue;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -56,6 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //adds the polygons for the SGW campus
         addSGWPolygons();
+        addLoyolaPolygons();
 
     }//end of onMapReady
 
@@ -668,5 +671,632 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Z_building.setTag("alpha");
         stylePolygon(Z_building);
     } //end of addSGWPolygons
+
+    public void addLoyolaPolygons() {
+        // (AD) 7141, Sherbrooke O. (Administration Building)
+        Polygon AD_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.457911, -73.640124),
+                        new LatLng(45.457985, -73.640067),
+                        new LatLng(45.457962, -73.640006),
+                        new LatLng(45.458086, -73.639912),
+                        new LatLng(45.458089, -73.639920),
+                        new LatLng(45.458154, -73.639869),
+                        new LatLng(45.458151, -73.639862),
+                        new LatLng(45.458277, -73.639767),
+                        new LatLng(45.458298, -73.639821),
+                        new LatLng(45.458371, -73.639765),
+                        new LatLng(45.458327, -73.639649),
+                        new LatLng(45.458331, -73.639644),
+                        new LatLng(45.458313, -73.639595),
+                        new LatLng(45.458307, -73.639598),
+                        new LatLng(45.458259, -73.639469),
+                        new LatLng(45.458242, -73.639483),
+                        new LatLng(45.458230, -73.639476),
+                        new LatLng(45.458210, -73.639494),
+                        new LatLng(45.458207, -73.639510),
+                        new LatLng(45.458183, -73.639527),
+                        new LatLng(45.458200, -73.639574),
+                        new LatLng(45.458191, -73.639582),
+                        new LatLng(45.458203, -73.639617),
+                        new LatLng(45.458097, -73.639697),
+                        new LatLng(45.458086, -73.639691),
+                        new LatLng(45.458065, -73.639634),
+                        new LatLng(45.458060, -73.639638),
+                        new LatLng(45.458040, -73.639581),
+                        new LatLng(45.457983, -73.639626),
+                        new LatLng(45.458004, -73.639679),
+                        new LatLng(45.458000, -73.639682),
+                        new LatLng(45.458022, -73.639743),
+                        new LatLng(45.458023, -73.639755),
+                        new LatLng(45.457915, -73.639837),
+                        new LatLng(45.457903, -73.639808),
+                        new LatLng(45.457893, -73.639817),
+                        new LatLng(45.457875, -73.639771),
+                        new LatLng(45.457846, -73.639791),
+                        new LatLng(45.457841, -73.639788),
+                        new LatLng(45.457822, -73.639795),
+                        new LatLng(45.457819, -73.639812),
+                        new LatLng(45.457799, -73.639827)
+                ));
+        AD_building.setTag("alpha");
+        stylePolygon(AD_building);
+
+        // (BB) 3502, Belmore
+        Polygon BB_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459731, -73.639267),
+                        new LatLng(45.459828, -73.639192),
+                        new LatLng(45.459797, -73.639118),
+                        new LatLng(45.459702, -73.639192)
+                ));
+        BB_building.setTag("alpha");
+        stylePolygon(BB_building);
+
+        // (BH) 3500, Belmore
+        Polygon BH_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459702, -73.639192),
+                        new LatLng(45.459797, -73.639118),
+                        new LatLng(45.459770, -73.639044),
+                        new LatLng(45.459676, -73.639116)
+                ));
+        BH_building.setTag("alpha");
+        stylePolygon(BH_building);
+
+        // (CC) 7141, Sherbrooke O. (Central Building)
+        Polygon CC_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.458379, -73.640794),
+                        new LatLng(45.458518, -73.640684),
+                        new LatLng(45.458429, -73.640450),
+                        new LatLng(45.458436, -73.640444),
+                        new LatLng(45.458321, -73.640142),
+                        new LatLng(45.458313, -73.640146),
+                        new LatLng(45.458221, -73.639906),
+                        new LatLng(45.458166, -73.639948),
+                        new LatLng(45.458140, -73.639881),
+                        new LatLng(45.458108, -73.639906),
+                        new LatLng(45.458122, -73.639944),
+                        new LatLng(45.458095, -73.63996),
+                        new LatLng(45.458104, -73.639995),
+                        new LatLng(45.458081, -73.640015),
+                        new LatLng(45.458173, -73.640255),
+                        new LatLng(45.458167, -73.640262),
+                        new LatLng(45.458280, -73.640563),
+                        new LatLng(45.458289, -73.640557)
+                ));
+        CC_building.setTag("alpha");
+        stylePolygon(CC_building);
+
+        // (CJ) 7141, Sherbrooke O. (Communication Studies and Journalism Building)
+        Polygon CJ_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.457333, -73.640717),
+                        new LatLng(45.457597, -73.640503),
+                        new LatLng(45.457649, -73.640631),
+                        new LatLng(45.457831, -73.640486),
+                        new LatLng(45.457755, -73.640291),
+                        new LatLng(45.457726, -73.640315),
+                        new LatLng(45.457622, -73.640045),
+                        new LatLng(45.457484, -73.640149),
+                        new LatLng(45.457435, -73.64003),
+                        new LatLng(45.457446, -73.639945),
+                        new LatLng(45.457464, -73.639954),
+                        new LatLng(45.457479, -73.639819),
+                        new LatLng(45.457431, -73.639772),
+                        new LatLng(45.457387, -73.639760),
+                        new LatLng(45.457359, -73.639761),
+                        new LatLng(45.457333, -73.639769),
+                        new LatLng(45.457305, -73.639784),
+                        new LatLng(45.457279, -73.639802),
+                        new LatLng(45.457259, -73.639828),
+                        new LatLng(45.457229, -73.639883),
+                        new LatLng(45.457211, -73.639984),
+                        new LatLng(45.457213, -73.640018),
+                        new LatLng(45.457305, -73.640073),
+                        new LatLng(45.457311, -73.640049),
+                        new LatLng(45.457361, -73.640076),
+                        new LatLng(45.457411, -73.640206),
+                        new LatLng(45.457175, -73.640393),
+                        new LatLng(45.457280, -73.640658),
+                        new LatLng(45.457304, -73.640639)
+                ));
+        CJ_building.setTag("alpha");
+        stylePolygon(CJ_building);
+
+        // (DO) 7200, Sherbrooke O. (Stinger Dome)
+        Polygon DO_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.457389, -73.637103),
+                        new LatLng(45.458364, -73.635969),
+                        new LatLng(45.457932, -73.635218),
+                        new LatLng(45.456959, -73.636361)
+                ));
+        DO_building.setTag("alpha");
+        stylePolygon(DO_building);
+
+        // (FC) 7141, Sherbrooke O. ( F.C. Smith Building)
+        Polygon FC_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.458599, -73.639588),
+                        new LatLng(45.458627, -73.639665),
+                        new LatLng(45.458665, -73.639683),
+                        new LatLng(45.458741, -73.639624),
+                        new LatLng(45.458750, -73.639571),
+                        new LatLng(45.458721, -73.639493),
+                        new LatLng(45.458734, -73.639485),
+                        new LatLng(45.458709, -73.639417),
+                        new LatLng(45.458717, -73.639412),
+                        new LatLng(45.458702, -73.639372),
+                        new LatLng(45.458720, -73.639360),
+                        new LatLng(45.458717, -73.639352),
+                        new LatLng(45.458743, -73.639333),
+                        new LatLng(45.458727, -73.639295),
+                        new LatLng(45.458702, -73.639315),
+                        new LatLng(45.458697, -73.639303),
+                        new LatLng(45.458680, -73.639316),
+                        new LatLng(45.458670, -73.639290),
+                        new LatLng(45.458661, -73.639295),
+                        new LatLng(45.458601, -73.639136),
+                        new LatLng(45.458610, -73.639128),
+                        new LatLng(45.458615, -73.639095),
+                        new LatLng(45.458603, -73.639066),
+                        new LatLng(45.458582, -73.639058),
+                        new LatLng(45.458575, -73.639065),
+                        new LatLng(45.458569, -73.639051),
+                        new LatLng(45.458558, -73.639058),
+                        new LatLng(45.458537, -73.639003),
+                        new LatLng(45.458520, -73.639016),
+                        new LatLng(45.458507, -73.638982),
+                        new LatLng(45.458528, -73.638965),
+                        new LatLng(45.458518, -73.638935),
+                        new LatLng(45.458382, -73.639040),
+                        new LatLng(45.458392, -73.639070),
+                        new LatLng(45.458415, -73.639052),
+                        new LatLng(45.458427, -73.639086),
+                        new LatLng(45.458410, -73.639102),
+                        new LatLng(45.458430, -73.639154),
+                        new LatLng(45.458424, -73.639161),
+                        new LatLng(45.458432, -73.639181),
+                        new LatLng(45.458419, -73.639192),
+                        new LatLng(45.458442, -73.639255),
+                        new LatLng(45.458457, -73.639244),
+                        new LatLng(45.458517, -73.639408),
+                        new LatLng(45.458511, -73.639411),
+                        new LatLng(45.458514, -73.639423),
+                        new LatLng(45.458487, -73.639442),
+                        new LatLng(45.458512, -73.639520),
+                        new LatLng(45.458525, -73.639509),
+                        new LatLng(45.458535, -73.639540),
+                        new LatLng(45.458531, -73.639561),
+                        new LatLng(45.458539, -73.639585),
+                        new LatLng(45.458556, -73.639594),
+                        new LatLng(45.458580, -73.639574),
+                        new LatLng(45.458590, -73.639597)
+                ));
+        FC_building.setTag("alpha");
+        stylePolygon(FC_building);
+
+        // (GE) 7141, Sherbrooke O. (Centre for Structural and Functional Genomics)
+        Polygon GE_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.456945, -73.640742),
+                        new LatLng(45.457174, -73.640570),
+                        new LatLng(45.457130, -73.640452),
+                        new LatLng(45.457142, -73.640443),
+                        new LatLng(45.457040, -73.640164),
+                        new LatLng(45.456798, -73.640346),
+                        new LatLng(45.456896, -73.640612),
+                        new LatLng(45.456872, -73.640630),
+                        new LatLng(45.456894, -73.640689),
+                        new LatLng(45.456918, -73.640671)
+                ));
+        GE_building.setTag("alpha");
+        stylePolygon(GE_building);
+
+
+        // (HA) 7141, Sherbrooke O. (Hingston Hall, wing HA)
+        Polygon HA_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459410, -73.641485),
+                        new LatLng(45.459432, -73.641543),
+                        new LatLng(45.459676, -73.641352),
+                        new LatLng(45.459652, -73.641290),
+                        new LatLng(45.459663, -73.641281),
+                        new LatLng(45.459529, -73.640931),
+                        new LatLng(45.459515, -73.640941),
+                        new LatLng(45.459492, -73.640882),
+                        new LatLng(45.459252, -73.641070),
+                        new LatLng(45.459276, -73.641133),
+                        new LatLng(45.459260, -73.641146),
+                        new LatLng(45.459395, -73.641495)
+                ));
+        HA_building.setTag("alpha");
+        stylePolygon(HA_building);
+
+        // (HB) 7141, Sherbrooke O. (Hingston Hall, wing HB)
+        Polygon HB_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459140, -73.642244),
+                        new LatLng(45.459161, -73.642303),
+                        new LatLng(45.459360, -73.642145),
+                        new LatLng(45.459339, -73.642089),
+                        new LatLng(45.459362, -73.642070),
+                        new LatLng(45.459358, -73.642057),
+                        new LatLng(45.459502, -73.641943),
+                        new LatLng(45.459527, -73.642003),
+                        new LatLng(45.459556, -73.641978),
+                        new LatLng(45.459368, -73.641496),
+                        new LatLng(45.458972, -73.641806),
+                        new LatLng(45.458997, -73.641878),
+                        new LatLng(45.458963, -73.641906),
+                        new LatLng(45.459105, -73.642271)
+                ));
+        HB_building.setTag("alpha");
+        stylePolygon(HB_building);
+
+        // (HC) 7141, Sherbrooke O. (Hingston Hall, wing HC)
+        Polygon HC_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                       new LatLng(45.459623, -73.642271),
+                        new LatLng(45.459794, -73.642134),
+                        new LatLng(45.459781, -73.642100),
+                        new LatLng(45.459893, -73.642010),
+                        new LatLng(45.459825, -73.641833),
+                        new LatLng(45.459713, -73.641920),
+                        new LatLng(45.459698, -73.641885),
+                        new LatLng(45.459525, -73.642023)
+                ));
+        HC_building.setTag("alpha");
+        stylePolygon(HC_building);
+
+        // (HU) 7141, Sherbrooke O. (Applied Science hub)
+        Polygon HU_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.458290, -73.641709),
+                        new LatLng(45.458530, -73.642346),
+                        new LatLng(45.458847, -73.642096),
+                        new LatLng(45.458625, -73.641470)
+                ));
+        HU_building.setTag("alpha");
+        stylePolygon(HU_building);
+
+        // (JR) 7141, Sherbrooke O. (Jesuit Residence)
+        Polygon JR_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.458495, -73.643402),
+                        new LatLng(45.458559, -73.643348),
+                        new LatLng(45.458566, -73.643364),
+                        new LatLng(45.458634, -73.643308),
+                        new LatLng(45.458606, -73.643236),
+                        new LatLng(45.458624, -73.643221),
+                        new LatLng(45.458583, -73.643119),
+                        new LatLng(45.458570, -73.643130),
+                        new LatLng(45.458539, -73.643055),
+                        new LatLng(45.458484, -73.643099),
+                        new LatLng(45.458489, -73.643112),
+                        new LatLng(45.458478, -73.643121),
+                        new LatLng(45.458469, -73.643096),
+                        new LatLng(45.458397, -73.643153),
+                        new LatLng(45.458427, -73.643227),
+                        new LatLng(45.458410, -73.643242),
+                        new LatLng(45.458448, -73.643343),
+                        new LatLng(45.458466, -73.643329)
+                ));
+        JR_building.setTag("alpha");
+        stylePolygon(JR_building);
+
+        // (PC) 7200, Sherbrooke O. (PERFORM Centre)
+        Polygon PC_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.457013, -73.637885),
+                        new LatLng(45.457279, -73.637674),
+                        new LatLng(45.456942, -73.636805),
+                        new LatLng(45.456675, -73.637024)
+                ));
+        PC_building.setTag("alpha");
+        stylePolygon(PC_building);
+
+        // (PS) 7141, Sherbrooke O. (Physical Services Building)
+        Polygon PS_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459706, -73.640312),
+                        new LatLng(45.459851, -73.640198),
+                        new LatLng(45.459864, -73.640228),
+                        new LatLng(45.459981, -73.640134),
+                        new LatLng(45.459664, -73.639317),
+                        new LatLng(45.459624, -73.639349),
+                        new LatLng(45.459576, -73.639229),
+                        new LatLng(45.459287, -73.639457),
+                        new LatLng(45.459333, -73.639579),
+                        new LatLng(45.459403, -73.639525),
+                        new LatLng(45.459444, -73.639631),
+                        new LatLng(45.459414, -73.639655),
+                        new LatLng(45.459607, -73.640158),
+                        new LatLng(45.459638, -73.640135)
+                ));
+        PS_building.setTag("alpha");
+        stylePolygon(PS_building);
+
+        // (PT) 7141, Sherbrooke O. (Oscar Peterson Concert Hall)
+        Polygon PT_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459372, -73.639253),
+                        new LatLng(45.459505, -73.639149),
+                        new LatLng(45.459470, -73.639054),
+                        new LatLng(45.459458, -73.639071),
+                        new LatLng(45.459312, -73.638696),
+                        new LatLng(45.459170, -73.638811),
+                        new LatLng(45.459314, -73.639189),
+                        new LatLng(45.459322, -73.639183),
+                        new LatLng(45.459340, -73.639234),
+                        new LatLng(45.459361, -73.639220)
+                ));
+        PT_building.setTag("alpha");
+        stylePolygon(PT_building);
+
+        // (PY) 7141, Sherbrooke O. (Psychology Building)
+        Polygon PY_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                      new LatLng(45.458848, -73.640835),
+                        new LatLng(45.459180, -73.640573),
+                        new LatLng(45.459200, -73.640623),
+                        new LatLng(45.459283, -73.640560),
+                        new LatLng(45.459233, -73.640432),
+                        new LatLng(45.459238, -73.640428),
+                        new LatLng(45.459216, -73.640372),
+                        new LatLng(45.459212, -73.640375),
+                        new LatLng(45.459120, -73.640134),
+                        new LatLng(45.459087, -73.640159),
+                        new LatLng(45.459084, -73.640152),
+                        new LatLng(45.459053, -73.640179),
+                        new LatLng(45.459057, -73.640183),
+                        new LatLng(45.459024, -73.640209),
+                        new LatLng(45.459029, -73.640222),
+                        new LatLng(45.458996, -73.640248),
+                        new LatLng(45.458985, -73.640220),
+                        new LatLng(45.458758, -73.640398),
+                        new LatLng(45.458764, -73.640418),
+                        new LatLng(45.458731, -73.640446),
+                        new LatLng(45.458823, -73.640695),
+                        new LatLng(45.458801, -73.640713)
+                ));
+        PY_building.setTag("alpha");
+        stylePolygon(PY_building);
+
+        // (RA) 7200, Sherbrooke O. (Recreation and Athletics Complex)
+        Polygon RA_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.456887, -73.638561),
+                        new LatLng(45.457018, -73.638455),
+                        new LatLng(45.457031, -73.638486),
+                        new LatLng(45.457055, -73.638466),
+                        new LatLng(45.457042, -73.638432),
+                        new LatLng(45.457158, -73.638339),
+                        new LatLng(45.457036, -73.638033),
+                        new LatLng(45.457008, -73.638055),
+                        new LatLng(45.456957, -73.637927),
+                        new LatLng(45.457027, -73.637872),
+                        new LatLng(45.456726, -73.637102),
+                        new LatLng(45.456682, -73.636989),
+                        new LatLng(45.456415, -73.637368),
+                        new LatLng(45.456397, -73.637385),
+                        new LatLng(45.456692, -73.638140),
+                        new LatLng(45.456794, -73.638060),
+                        new LatLng(45.456844, -73.638188),
+                        new LatLng(45.456774, -73.638244),
+                        new LatLng(45.456802, -73.638316),
+                        new LatLng(45.456767, -73.638345),
+                        new LatLng(45.456782, -73.638386),
+                        new LatLng(45.456794, -73.638378),
+                        new LatLng(45.456797, -73.638387),
+                        new LatLng(45.456786, -73.638398),
+                        new LatLng(45.456803, -73.638441),
+                        new LatLng(45.456833, -73.638417)
+                ));
+        RA_building.setTag("alpha");
+        stylePolygon(RA_building);
+
+        // (RF) 7141, Sherbrooke O. (Loyola Jesuit Hall and Conference Centre)
+        Polygon RF_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                      new LatLng(45.458508, -73.641375),
+                        new LatLng(45.458641, -73.641270),
+                        new LatLng(45.458647, -73.641284),
+                        new LatLng(45.458806, -73.641160),
+                        new LatLng(45.458801, -73.641145),
+                        new LatLng(45.458821, -73.641129),
+                        new LatLng(45.458785, -73.641036),
+                        new LatLng(45.458763, -73.641050),
+                        new LatLng(45.458692, -73.640854),
+                        new LatLng(45.458699, -73.640851),
+                        new LatLng(45.458683, -73.640807),
+                        new LatLng(45.458587, -73.640880),
+                        new LatLng(45.458539, -73.640756),
+                        new LatLng(45.458513, -73.640776),
+                        new LatLng(45.458487, -73.640709),
+                        new LatLng(45.458439, -73.640749),
+                        new LatLng(45.458464, -73.640814),
+                        new LatLng(45.458414, -73.640854),
+                        new LatLng(45.458473, -73.641007),
+                        new LatLng(45.458383, -73.641077),
+                        new LatLng(45.458428, -73.641199),
+                        new LatLng(45.458511, -73.641137),
+                        new LatLng(45.458548, -73.641232),
+                        new LatLng(45.458526, -73.641245),
+                        new LatLng(45.458537, -73.641278),
+                        new LatLng(45.458486, -73.641317)
+                ));
+        RF_building.setTag("alpha");
+        stylePolygon(RF_building);
+
+        // (SC) 7141, Sherbrooke O. (Student Center)
+        Polygon SC_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459109, -73.639425),
+                        new LatLng(45.459226, -73.639336),
+                        new LatLng(45.459244, -73.639385),
+                        new LatLng(45.459310, -73.639330),
+                        new LatLng(45.459271, -73.639230),
+                        new LatLng(45.459293, -73.639210),
+                        new LatLng(45.459205, -73.638977),
+                        new LatLng(45.459157, -73.639001),
+                        new LatLng(45.459141, -73.638962),
+                        new LatLng(45.459076, -73.639010),
+                        new LatLng(45.459089, -73.639055),
+                        new LatLng(45.458997, -73.639130)
+                ));
+        SC_building.setTag("alpha");
+        stylePolygon(SC_building);
+
+        // (SH) 7141, Sherbrooke O. (Solar House)
+        Polygon SH_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                       new LatLng(45.459257, -73.642559),
+                        new LatLng(45.459327, -73.642556),
+                        new LatLng(45.459323, -73.642372),
+                        new LatLng(45.459252, -73.642374)
+                ));
+        SH_building.setTag("alpha");
+        stylePolygon(SH_building);
+
+        // (SI) 4455, West Broadway (St. Ignatius of Loyola Church)
+        Polygon SI_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                       new LatLng(45.457965, -73.642684),
+                        new LatLng(45.458167, -73.642525),
+                        new LatLng(45.458116, -73.642399),
+                        new LatLng(45.458097, -73.642414),
+                        new LatLng(45.458040, -73.642266),
+                        new LatLng(45.458052, -73.642234),
+                        new LatLng(45.457995, -73.642082),
+                        new LatLng(45.457969, -73.642082),
+                        new LatLng(45.457940, -73.642008),
+                        new LatLng(45.457878, -73.642053),
+                        new LatLng(45.457856, -73.641996),
+                        new LatLng(45.457823, -73.642024),
+                        new LatLng(45.457833, -73.642049),
+                        new LatLng(45.457765, -73.642104),
+                        new LatLng(45.457777, -73.642135),
+                        new LatLng(45.457721, -73.642180),
+                        new LatLng(45.457729, -73.642200),
+                        new LatLng(45.457679, -73.642241),
+                        new LatLng(45.457689, -73.642270),
+                        new LatLng(45.457648, -73.642302),
+                        new LatLng(45.457643, -73.642291),
+                        new LatLng(45.457633, -73.642299),
+                        new LatLng(45.457640, -73.642319),
+                        new LatLng(45.457622, -73.642333),
+                        new LatLng(45.457630, -73.642353),
+                        new LatLng(45.457569, -73.642399),
+                        new LatLng(45.457631, -73.642574),
+                        new LatLng(45.457655, -73.642557),
+                        new LatLng(45.457658, -73.642564),
+                        new LatLng(45.457729, -73.642507),
+                        new LatLng(45.457739, -73.642533),
+                        new LatLng(45.457781, -73.642501),
+                        new LatLng(45.457794, -73.642533),
+                        new LatLng(45.457844, -73.642492),
+                        new LatLng(45.457856, -73.642521),
+                        new LatLng(45.457911, -73.642476),
+                        new LatLng(45.457926, -73.642515),
+                        new LatLng(45.457931, -73.642511),
+                        new LatLng(45.457941, -73.642537),
+                        new LatLng(45.457916, -73.642558)
+                ));
+        SI_building.setTag("alpha");
+        stylePolygon(SI_building);
+
+        // (SP) 7141, Sherbrooke O. (Richard J. Renaud Science Complex)
+        Polygon SP_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                       new LatLng(45.457438, -73.642003),
+                        new LatLng(45.457642, -73.641846),
+                        new LatLng(45.457672, -73.641928),
+                        new LatLng(45.458327, -73.641412),
+                        new LatLng(45.458276, -73.641283),
+                        new LatLng(45.458208, -73.641337),
+                        new LatLng(45.458180, -73.641262),
+                        new LatLng(45.458256, -73.641201),
+                        new LatLng(45.458194, -73.641037),
+                        new LatLng(45.458339, -73.640922),
+                        new LatLng(45.458316, -73.640862),
+                        new LatLng(45.457998, -73.641114),
+                        new LatLng(45.457979, -73.641066),
+                        new LatLng(45.457893, -73.641132),
+                        new LatLng(45.457908, -73.641170),
+                        new LatLng(45.457524, -73.641472),
+                        new LatLng(45.457202, -73.640657),
+                        new LatLng(45.456983, -73.640829),
+                        new LatLng(45.457024, -73.640935),
+                        new LatLng(45.456996, -73.640960),
+                        new LatLng(45.457017, -73.641015),
+                        new LatLng(45.457041, -73.640992),
+                        new LatLng(45.457158, -73.641295),
+                        new LatLng(45.457148, -73.641303),
+                        new LatLng(45.457179, -73.641382),
+                        new LatLng(45.457169, -73.641392),
+                        new LatLng(45.457185, -73.641432),
+                        new LatLng(45.457210, -73.641414)
+                ));
+        SP_building.setTag("alpha");
+        stylePolygon(SP_building);
+
+        // (TA) 7079, de Terrebonne
+        Polygon TA_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.459982, -73.640990),
+                        new LatLng(45.460031, -73.640950),
+                        new LatLng(45.459998, -73.640851),
+                        new LatLng(45.459943, -73.640890)
+                ));
+        TA_building.setTag("alpha");
+        stylePolygon(TA_building);
+
+        // (TB) 7075, de Terrebonne
+        Polygon TB_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.460031, -73.640950),
+                        new LatLng(45.460087, -73.640906),
+                        new LatLng(45.460049, -73.640809),
+                        new LatLng(45.459998, -73.640851)
+                ));
+        TB_building.setTag("alpha");
+        stylePolygon(TB_building);
+
+        // (VE) 7141, Sherbrooke O. (Vanier extension)
+        Polygon VE_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                        new LatLng(45.458836, -73.639003),
+                        new LatLng(45.459086, -73.638803),
+                        new LatLng(45.458887, -73.638292),
+                        new LatLng(45.458629, -73.638469)
+                ));
+        VE_building.setTag("alpha");
+        stylePolygon(VE_building);
+
+        // (VL) 7141, Sherbrooke O. (Vanier Library Building)
+        Polygon VL_building = mMap.addPolygon(new PolygonOptions()
+                .add(
+                    new LatLng(45.459168, -73.638807),
+                        new LatLng(45.459323, -73.638688),
+                        new LatLng(45.459146, -73.638226),
+                        new LatLng(45.459221, -73.638167),
+                        new LatLng(45.459107, -73.637872),
+                        new LatLng(45.458907, -73.638026),
+                        new LatLng(45.458914, -73.638051),
+                        new LatLng(45.458883, -73.638079),
+                        new LatLng(45.458899, -73.638121),
+                        new LatLng(45.458869, -73.638146),
+                        new LatLng(45.458889, -73.638195),
+                        new LatLng(45.458856, -73.638221),
+                        new LatLng(45.458886, -73.638297),
+                        new LatLng(45.459087, -73.638800),
+                        new LatLng(45.459151, -73.638767)
+                ));
+        VL_building.setTag("alpha");
+        stylePolygon(VL_building);
+    } //end of addLoyolaPolygons
 
 } //end of Maps Activity Class
