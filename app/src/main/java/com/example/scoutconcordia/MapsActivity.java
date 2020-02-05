@@ -75,7 +75,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-    }
+
+        // Add a marker in Concordia and move the camera
+        LatLng coco = new LatLng(45.494619, -73.577376); // Concordia's coordinates
+        mMap.addMarker(new MarkerOptions().position(coco).title("Marker in Concordia"));
+        float zoomLevel = 16.0f; // max 21
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coco, zoomLevel));
+
+
+        addSGWPolygons();  //adds the polygons for the SGW campus
+        addLoyolaPolygons(); //adds the polygons for the Loyola campus
+    }//end of onMapReady
+
 
     // moves the camera to keep on user's location on any change in it's location
     @Override
@@ -98,20 +109,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
-        // Add a marker in Concordia and move the camera
-        LatLng coco = new LatLng(45.494619, -73.577376); // Concordia's coordinates
-        mMap.addMarker(new MarkerOptions().position(coco).title("Marker in Concordia"));
-        float zoomLevel = 16.0f; // max 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coco, zoomLevel));
-
-
-
-        //adds the polygons for the SGW campus
-        addSGWPolygons();
-        addLoyolaPolygons();
-
-    }//end of onMapReady
 
     /**
      *
@@ -1350,7 +1347,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         stylePolygon(VL_building);
     } //end of addLoyolaPolygons
 
-} //end of Maps Activity Class
+
 
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
@@ -1409,5 +1406,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-}
-
+} //end of Maps Activity Class
