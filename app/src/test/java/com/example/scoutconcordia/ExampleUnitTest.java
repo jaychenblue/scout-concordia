@@ -4,12 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
-public class ExampleUnitTest
-{
+public class ExampleUnitTest {
 
     @Test
-    public void testThis()
-    {
+    public void testThis() {
         assertEquals(4, 2 + 2);
     }
+
 }
