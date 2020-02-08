@@ -76,17 +76,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
 
+        addSGWPolygons();  //adds the polygons for the SGW campus
+        addLoyolaPolygons(); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
         LatLng coco = new LatLng(45.494619, -73.577376); // Concordia's coordinates
         mMap.addMarker(new MarkerOptions().position(coco).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coco, zoomLevel));
 
-
-
-        //adds the polygons for the SGW campus
-        addSGWPolygons();
-        addLoyolaPolygons();
 
     }//end of onMapReady
 
@@ -110,8 +107,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // logic here
         }
     }
-
-
 
 
     /**
@@ -1352,6 +1347,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     } //end of addLoyolaPolygons
 
 
+
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
     // when user gesture moves the camera). Check onCameraMoveStarted listener method
@@ -1409,6 +1405,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-
 } //end of Maps Activity Class
-
