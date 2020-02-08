@@ -15,6 +15,54 @@
       },
       "oauth_client": [
         {
+          "client_id": "219414920184-5aad0jispjb4o7nika8oeapd54pvdih7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "c62d2a43df6f5ff7bddef97ae6d7c5f2b1905da3"
+          }
+        },
+        {
+          "client_id": "219414920184-d12qhapom0re8d8c9daij33u3q4dgbdm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "dc5cb0802e9a28ebd41eed23ec1562eed39539df"
+          }
+        },
+        {
+          "client_id": "219414920184-to0dfihdc3m1cf13jhisgdou20s0s4ij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "43cc741631f4d01179422f38fe79e3896b964f23"
+          }
+        },
+        {
+          "client_id": "219414920184-td572pgbprt8s8mkj9ovuhll8a33chir.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "6815c39f47b9940defb253d5c853621716a785ea"
+          }
+        },
+        {
+          "client_id": "219414920184-u1urdetc9rnbs2qngbobuhqg0url2kq6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "0dbe2c9eb8bedad83fe2db30d10154dc382ffb55"
+          }
+        },
+        {
+          "client_id": "219414920184-v34fojp2n4698e6oqpskssfebq69tppd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "9b973778609b3d0e26b4603a298ffeb7a1e12878"
+          }
+        },
+        {
           "client_id": "219414920184-ge3esn7qq5e1gb6jehjorj9cmmmj1m4r.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
