@@ -12,7 +12,7 @@
 
         <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="219414920184"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".CalendarActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
