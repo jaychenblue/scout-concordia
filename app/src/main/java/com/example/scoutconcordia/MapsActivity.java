@@ -14,6 +14,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -46,6 +49,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     final private LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
 
     private ToggleButton toggleButton;
+    private Button mapHomeButton;
+    private Button shuttleButton;
+    private Button scheduleButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +63,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mapHomeButton = this.findViewById(R.id.mapButton);
+        scheduleButton = this.findViewById(R.id.scheduleButton);
+        shuttleButton = this.findViewById(R.id.shuttleButton);
+
         addListenerOnToggle();
+
+        mapHomeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // implement for when map button clicked
+            }
+        });
+
+        scheduleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // implement for when schedule button clicked
+            }
+        });
+
+        shuttleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // implement for when shuttle button clicked
+            }
+        });
     }
 
     public void addListenerOnToggle() {

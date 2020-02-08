@@ -23,4 +23,25 @@ tools:context=".MapsActivity" >
         android:textOff="@string/toggle_off"
         android:textOn="@string/toggle_on" />
 
+    <Button
+        android:id="@+id/scheduleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Schedule"
+        android:layout_gravity="bottom|left"/>
+
+    <Button
+        android:id="@+id/mapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Map"
+        android:layout_gravity="bottom|center"/>
+
+    <Button
+        android:id="@+id/shuttleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shuttle"
+        android:layout_gravity="bottom|right"/>
+
 </FrameLayout>
