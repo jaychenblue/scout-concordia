@@ -76,6 +76,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
 
+        addSGWPolygons();  //adds the polygons for the SGW campus
+        addLoyolaPolygons(); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
         LatLng coco = new LatLng(45.494619, -73.577376); // Concordia's coordinates
         mMap.addMarker(new MarkerOptions().position(coco).title("Marker in Concordia"));
@@ -83,10 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coco, zoomLevel));
 
 
-        addSGWPolygons();  //adds the polygons for the SGW campus
-        addLoyolaPolygons(); //adds the polygons for the Loyola campus
     }//end of onMapReady
-
 
     // moves the camera to keep on user's location on any change in it's location
     @Override
