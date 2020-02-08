@@ -1410,6 +1410,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //    }
 
     private void toggleCampus() {
+        mMap.setOnMyLocationChangeListener(null);
         if (toggleButton.isChecked()) {
             animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
         } else {
