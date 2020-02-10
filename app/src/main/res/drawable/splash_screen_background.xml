@@ -7,6 +7,6 @@
     <item android:gravity="center" android:width="500dp" android:height="700dp">
         <!--            android:gravity="fill_horizontal|fill_vertical"-->
         <bitmap
-            android:src="@drawable/spidey"/>
+            android:src="@drawable/splash"/>
     </item>
 </layer-list>
