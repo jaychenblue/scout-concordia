@@ -42,25 +42,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private float zoomLevel = 16.0f;
     private final int ACCESS_FINE_LOCATION = 9001;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    final private LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
-    final private LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
+    private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
+    private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
 
     private ToggleButton toggleButton;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    // Displays the Map
+    @Override protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         addListenerOnToggle();
     }
 
-    public void addListenerOnToggle() {
+    // If button pushed change Campus
+    public void addListenerOnToggle()
+    {
         toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
-
         toggleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 toggleCampus();
@@ -78,14 +79,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
+    @Override public void onMapReady(GoogleMap googleMap)
+    {
         mMap = googleMap;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             getCurrentLocation();
         }
-        else{
+        else
+        {
             // request for user's permission for location services
             animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
             requestPermissions();
@@ -98,24 +100,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addLocationsToMap(CampusLocations.getSGWLocations());  //adds the polygons for the SGW campus
         addLocationsToMap(CampusLocations.getLoyolaLocations()); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
-        LatLng coco = new LatLng(45.494619, -73.577376); // Concordia's coordinates
-        mMap.addMarker(new MarkerOptions().position(coco).title("Marker in Concordia"));
+        mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coco, zoomLevel));
-
-
-    } //end of onMapReady
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
+    }
 
     // moves the camera to keep on user's location on any change in its location
     @Override
-    public void onMyLocationChange(Location location){
+    public void onMyLocationChange(Location location)
+    {
         LatLng loc = new LatLng (location.getLatitude(), location.getLongitude());
         animateCamera(loc, zoomLevel);
     }
 
     //detects camera movement and the cause for the movement
     @Override
-    public void onCameraMoveStarted(int reason) {
+    public void onCameraMoveStarted(int reason)
+    {
         if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {   //user gestured on the map
             // remove the onMyLocationChangeListener when user is moving the map otherwise the map is automatically centered
             mMap.setOnMyLocationChangeListener(null);
@@ -134,22 +135,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Different styles can be created by assigning different tags to the polygons
      * If you need polygons with the same styling just assign them the same tags
      */
-    private void stylePolygon(Polygon polygon) {
+    private void stylePolygon(Polygon polygon)
+    {
+        int strokeColor, fillColor; //color format is #AARRGGBB where AA is for the opacity. 00 is fully transparent. FF is opaque
         String type = "";
-        // Get the data object stored with the polygon
-        if (polygon.getTag() != null) {
+        if (polygon.getTag() != null)
             type = polygon.getTag().toString();
-        }
-
-        int strokeColor = Color.parseColor("#000000");
-        int fillColor = Color.parseColor("#FF74091F"); //color format is #AARRGGBB where AA is for the opacity. 00 is fully transparent. FF is opaque
-
-        switch (type) {
-            // If no type is given, allow the API to use the default.
+        
+        switch (type)
+        {
             case "alpha":
                 strokeColor = Color.parseColor("#BB000000");
                 fillColor = Color.parseColor("#BB74091F");
                 break;
+            default:
+                strokeColor = Color.parseColor("#BB000000");
+                fillColor = Color.parseColor("#FF74091F");
         }
         polygon.setStrokeColor(strokeColor);
         polygon.setFillColor(fillColor);
@@ -176,25 +177,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
     // when user gesture moves the camera). Check onCameraMoveStarted listener method
-    @Override
-    public boolean onMyLocationButtonClick () {
+    @Override public boolean onMyLocationButtonClick()
+    {
         mMap.setMyLocationEnabled(true);
         return false; // returning false calls the super method, returning true does not
     }
 
 
-    private void animateCamera(LatLng latLng, float zoomLevel){
+    private void animateCamera(LatLng latLng, float zoomLevel)
+    {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
     }
 
-    private void getCurrentLocation(){
+    private void getCurrentLocation()
+    {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        try{
+        try
+        {
             Task location = fusedLocationProviderClient.getLastLocation();
-            location.addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful()){
+            location.addOnCompleteListener(new OnCompleteListener()
+            {
+                @Override public void onComplete(@NonNull Task task) {
+                    if(task.isSuccessful())
+                    {
                         Location currentLocation = (Location) task.getResult();
                         LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                         animateCamera(currentLatLng, zoomLevel);
@@ -204,6 +209,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch (SecurityException e){
             // some problem occurred, return Concordia downtown Campus Location
             animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
+            e.printStackTrace();
         }
     }
 
@@ -215,36 +221,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
 //    }
 
-    private void toggleCampus() {
+    private void toggleCampus()
+    {
         mMap.setOnMyLocationChangeListener(null);
-        if (toggleButton.isChecked()) {
+        if (toggleButton.isChecked())
             animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
-        } else {
+        else
             animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
-        }
     }
 
-    private void requestPermissions(){
+    private void requestPermissions()
+    {
         // permission not granted, request for permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
-        } else {
-            // Permission has already been granted, DO NOTHING
-        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);        
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case ACCESS_FINE_LOCATION: {
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode)
+        {
+            case ACCESS_FINE_LOCATION:
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
                     // permission granted, move the camera to current location
                     mMap.setMyLocationEnabled(true);
                     getCurrentLocation();
                 }
-            }
         }
     }
-
-} //end of Maps Activity Class
+}
