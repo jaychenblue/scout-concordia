@@ -1,0 +1,12 @@
+Name:Name of Building
+{
+	Address: String
+	Icon Name: String
+	Opening Times: String
+	Coordinates: LatLng[]
+	{45.497741, -73.579635},
+        {45.497921, -73.579455},
+        {45.497884, -73.579376},
+        {45.497708, -73.579562}		// Note no , at the end of the file for this
+	Center: {45.497708, -73.579562}
+}
