@@ -1,33 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:map="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--tools:context=".MapsActivity" >-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/place_autocomplete_fragment"-->
+<!--        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+
+<!--    <fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        xmlns:map="http://schemas.android.com/apk/res-auto"-->
+<!--        xmlns:tools="http://schemas.android.com/tools"-->
+<!--        android:id="@+id/map"-->
+<!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@id/place_autocomplete_fragment" />-->
+
+
+<!--    <ToggleButton-->
+<!--        android:id="@+id/toggleButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="ToggleButton"-->
+<!--        android:textOff="@string/toggle_off"-->
+<!--        android:textOn="@string/toggle_on" />-->
+
+<!--</FrameLayout>-->
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:map="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
+android:name="com.google.android.gms.maps.SupportMapFragment"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-tools:context=".MapsActivity" >
-
- <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:map="http://schemas.android.com/apk/res-auto"
-     xmlns:tools="http://schemas.android.com/tools"
-     android:id="@+id/map"
-     android:name="com.google.android.gms.maps.SupportMapFragment"
-     android:layout_width="match_parent"
-     android:layout_height="match_parent"
-     tools:context=".MapsActivity" />
-
-    <fragment
-        android:id="@+id/place_autocomplete_fragment"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+tools:context=".MapsActivity">
 
 
-    <ToggleButton
-        android:id="@+id/toggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ToggleButton"
-        android:textOff="@string/toggle_off"
-        android:textOn="@string/toggle_on" />
+<fragment
+    android:id="@+id/place_autocomplete_fragment"
+    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 
-</FrameLayout>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/place_autocomplete_fragment" />
+
+<ToggleButton
+    android:id="@+id/toggleButton"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="ToggleButton"
+    android:textOff="@string/toggle_off"
+    android:textOn="@string/toggle_on" />
+
+</RelativeLayout>
