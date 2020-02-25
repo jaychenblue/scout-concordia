@@ -115,7 +115,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getCurrentLocation();
 
         setClickListeners(); // sets the polygon listeners
-        BuildingInfo.writeCenters(BuildingInfo.getLoyolaLocations());
     }
 
     // moves the camera to keep on user's location on any change in its location
