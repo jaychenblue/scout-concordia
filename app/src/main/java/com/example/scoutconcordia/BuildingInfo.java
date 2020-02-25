@@ -92,7 +92,7 @@ public class BuildingInfo implements java.io.Serializable
         PrintWriter pw = null;
         try
         {
-            pw = new PrintWriter("C:/Users/MonPC/Desktop/School/CURRENT/SOEN 390/scout-concordia/app/src/debug/res/raw/centers.txt");
+            pw = new PrintWriter("");
             for (int i = 0; i < locations.length; i++)
             {
                 double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
@@ -181,7 +181,7 @@ public class BuildingInfo implements java.io.Serializable
                         {45.496891, -73.579469},
                         {45.496788, -73.579574},
                         {45.496802, -73.579606},
-                        {45.496676, -73.579733},
+                        {45.496676, -73.579733}
                 };
 
         // (ER) 2155, Guy
@@ -192,7 +192,7 @@ public class BuildingInfo implements java.io.Serializable
                         {45.496522, -73.579631},
                         {45.496216, -73.579905},
                         {45.496247, -73.579972},
-                        {45.496162, -73.580068},
+                        {45.496162, -73.580068}
                 };
 
         // (EV) Engineering, Computer Science and Visual Arts Integrated Complex. 1515, Sainte-Catherine O.
