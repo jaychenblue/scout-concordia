@@ -103,6 +103,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
+        // Refresh to fix Map not displaying properly
+        toggleCampus();
+        getCurrentLocation();
     }
 
     // moves the camera to keep on user's location on any change in its location
