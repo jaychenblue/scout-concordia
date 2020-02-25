@@ -1,9 +1,9 @@
 Name:Name of Building
 {
-	Address: String
-	Icon Name: String
-	Opening Times: String
-	Coordinates: LatLng[]
+	Address: ""
+	Icon Name: ""
+	Opening Times: ""
+	Coordinates:
 	{45.497741, -73.579635},
         {45.497921, -73.579455},
         {45.497884, -73.579376},

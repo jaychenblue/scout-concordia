@@ -1,5 +1,7 @@
 package com.example.scoutconcordia;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -9,18 +11,77 @@ import java.io.ObjectOutputStream;
 
 public class BuildingInfo implements java.io.Serializable
 {
-    String name;
-    String address;
-
-    // constructor
+    private String name;
+    private String address;
+    private String iconName;
+    private LatLng[] coordinates;
+    private LatLng center;
+    
+    public BuildingInfo()
+    {
+        name = null;
+        address = null;
+        iconName = "smiling.png";
+        coordinates = null;
+        center = null;
+    };
+    
     public BuildingInfo(String name, String address)
     {
         this.name = name;
         this.address = address;
     }
-
-    public static void getBuildingInfo() {}
-
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    
+    public String getAddress()
+    {
+        return address;
+    }
+    
+    public void setAddress(String address)
+    {
+        this.address = address;
+    }
+    
+    public String getIconName()
+    {
+        return iconName;
+    }
+    
+    public void setIconName(String iconName)
+    {
+        this.iconName = iconName;
+    }
+    
+    public LatLng[] getCoordinates()
+    {
+        return coordinates;
+    }
+    
+    public void setCoordinates(LatLng[] coordinates)
+    {
+        this.coordinates = coordinates;
+    }
+    
+    public LatLng getCenter()
+    {
+        return center;
+    }
+    
+    public void setCenter(LatLng center)
+    {
+        this.center = center;
+    }
+    
     public static void writeToFile(String fileName, BuildingInfo buildingInfos) throws IOException
     {
         File f = new File(fileName);
