@@ -103,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coco, zoomLevel));
 
-
+        setClickListeners(); // sets the polygon listeners
     } //end of onMapReady
 
     // moves the camera to keep on user's location on any change in its location
@@ -127,6 +127,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void setClickListeners() {
+        mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
+            @Override
+            public void onPolygonClick(Polygon polygon) {
+                System.out.println("You clicked on this polygon:" + polygon);
+            }
+        });
+    }
 
     /**
      *
@@ -444,6 +452,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new LatLng(45.496820, -73.578841)));
         H_building.setTag("alpha");
         stylePolygon(H_building);
+
 
         // (K) 2150, Bishop
         Polygon K_building = mMap.addPolygon(new PolygonOptions()
