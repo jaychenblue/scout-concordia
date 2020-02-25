@@ -96,7 +96,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-    
+
         addLocationsToMap(CampusLocations.getSGWLocations());  //adds the polygons for the SGW campus
         addLocationsToMap(CampusLocations.getLoyolaLocations()); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
@@ -106,6 +106,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Refresh to fix Map not displaying properly
         toggleCampus();
         getCurrentLocation();
+
+        setClickListeners(); // sets the polygon listeners
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -131,6 +133,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void setClickListeners() {
+        mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
+            @Override
+            public void onPolygonClick(Polygon polygon) {
+                System.out.println("You clicked on this polygon:" + polygon);
+            }
+        });
+    }
 
     /**
      *
@@ -144,7 +154,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String type = "";
         if (polygon.getTag() != null)
             type = polygon.getTag().toString();
-        
+
         switch (type)
         {
             case "alpha":
@@ -159,10 +169,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polygon.setFillColor(fillColor);
         polygon.setClickable(true);
     }
-    
+
     private void addLocationsToMap(double[][][] locations)
     {
-        
+
         for (int i = 0; i < locations.length; i++)
         {
             PolygonOptions po = new PolygonOptions();
@@ -237,7 +247,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         // permission not granted, request for permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);        
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
     }
 
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
