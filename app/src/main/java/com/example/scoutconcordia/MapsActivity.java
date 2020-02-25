@@ -22,7 +22,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -82,6 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             getCurrentLocation();
@@ -176,12 +180,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int i = 0; i < locations.length; i++)
         {
             PolygonOptions po = new PolygonOptions();
-            LatLng[] addMe = new LatLng[locations[i].length];
+            double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
             for (int j = 0; j < locations[i].length; j++)
             {
+                if (j == 0)
+                {
+                    x1 = locations[i][j][0];
+                    x2 = locations[i][j][0];
+                    y1 = locations[i][j][1];
+                    y2 = locations[i][j][1];
+                }
+                if (locations[i][j][0] < x1)
+                    x1 = locations[i][j][0];
+                if (locations[i][j][0] > x2)
+                    x2 = locations[i][j][0];
+                if (locations[i][j][1] < y1)
+                    y1 = locations[i][j][1];
+                if (locations[i][j][1] > y2)
+                    y2 = locations[i][j][1];
+
                 po.add(new LatLng(locations[i][j][0], locations[i][j][1]));
             }
             Polygon justAddedPolygon = mMap.addPolygon(po);
+            float center_x = (float)x1 + (float)((x2 - x1) / 2);
+            float center_y = (float)y1 + (float)((y2 - y1) / 2);
+            Marker polyMarker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(x1, y1))
+                    .title("HB")
+                    .infoWindowAnchor(center_x, center_y)
+                    .anchor(center_x, center_y)
+                    .visible(true)
+                    .flat(true)
+                    .alpha(1)
+                    .zIndex(44)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .snippet("Vince Helped"));
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
         }
