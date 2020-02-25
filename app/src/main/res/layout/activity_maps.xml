@@ -15,6 +15,13 @@ tools:context=".MapsActivity" >
      android:layout_height="match_parent"
      tools:context=".MapsActivity" />
 
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
