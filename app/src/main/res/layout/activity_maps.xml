@@ -44,11 +44,16 @@ android:layout_height="match_parent"
 tools:context=".MapsActivity">
 
 
-<fragment
+<!--<fragment
     android:id="@+id/place_autocomplete_fragment"
     android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content" />-->
+    <fragment android:id="@+id/autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        />
 
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -57,7 +62,7 @@ tools:context=".MapsActivity">
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/place_autocomplete_fragment" />
+    android:layout_below="@id/autocomplete_fragment" />
 
 <ToggleButton
     android:id="@+id/toggleButton"
