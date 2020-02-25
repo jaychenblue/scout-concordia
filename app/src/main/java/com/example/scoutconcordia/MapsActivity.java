@@ -13,6 +13,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ToggleButton;
 
@@ -144,6 +145,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("You clicked on this polygon:" + polygon);
             }
         });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                //Log.d("", marker.getTitle());
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                System.out.println("YOU CLICKED ON THE MARKER: " + marker.getTitle());
+                return true;
+            }
+        });
     }
 
     /**
@@ -205,16 +221,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             float center_x = (float)x1 + (float)((x2 - x1) / 2);
             float center_y = (float)y1 + (float)((y2 - y1) / 2);
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(x1, y1))
+                    .position(new LatLng(center_x, center_y))
                     .title("HB")
                     .infoWindowAnchor(center_x, center_y)
-                    .anchor(center_x, center_y)
+                    //.anchor(center_x, center_y)
                     .visible(true)
                     .flat(true)
                     .alpha(1)
                     .zIndex(44)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .snippet("Vince Helped"));
+
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
         }
