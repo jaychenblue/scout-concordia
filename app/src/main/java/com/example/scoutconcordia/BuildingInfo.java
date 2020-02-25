@@ -2,11 +2,7 @@ package com.example.scoutconcordia;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 
 public class BuildingInfo implements java.io.Serializable
@@ -89,6 +85,49 @@ public class BuildingInfo implements java.io.Serializable
         oos.writeObject(buildingInfos);
         oos.flush();
         oos.close();
+    }
+    
+    public static void writeCenters(double[][][] locations)
+    {
+        PrintWriter pw = null;
+        try
+        {
+            pw = new PrintWriter("C:/Users/MonPC/Desktop/School/CURRENT/SOEN 390/scout-concordia/app/src/debug/res/raw/centers.txt");
+            for (int i = 0; i < locations.length; i++)
+            {
+                double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+                for (int j = 0; j < locations[i].length; j++)
+                {
+                    if (j == 0)
+                    {
+                        x1 = locations[i][j][0];
+                        x2 = locations[i][j][0];
+                        y1 = locations[i][j][1];
+                        y2 = locations[i][j][1];
+                    }
+                    if (locations[i][j][0] < x1)
+                        x1 = locations[i][j][0];
+                    if (locations[i][j][0] > x2)
+                        x2 = locations[i][j][0];
+                    if (locations[i][j][1] < y1)
+                        y1 = locations[i][j][1];
+                    if (locations[i][j][1] > y2)
+                        y2 = locations[i][j][1];
+            
+                }
+                float center_x = (float) x1 + (float) ((x2 - x1) / 2);
+                float center_y = (float) y1 + (float) ((y2 - y1) / 2);
+                pw.println("{ " + center_x + ", " + center_y  + "}");
+            }
+        } catch (FileNotFoundException fnf)
+        {
+            System.out.println("Stop being Stupid!");
+        }
+        finally
+        {
+            if (pw != null)
+                pw.close();
+        }
     }
 
     public static double[][][] getSGWLocations()
