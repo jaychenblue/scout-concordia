@@ -104,8 +104,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
 
-        addLocationsToMap(CampusLocations.getSGWLocations());  //adds the polygons for the SGW campus
-        addLocationsToMap(CampusLocations.getLoyolaLocations()); //adds the polygons for the Loyola campus
+        addLocationsToMap(BuildingInfo.getSGWLocations());  //adds the polygons for the SGW campus
+        addLocationsToMap(BuildingInfo.getLoyolaLocations()); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
         mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
