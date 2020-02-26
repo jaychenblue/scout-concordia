@@ -65,7 +65,90 @@ public class BuildingInfo implements java.io.Serializable
         oos.close();
     }
     
-    
+    public static LinkedList<BuildingInfo> obtainBuildings(File readMe)
+    {
+        int currentPos = 0;
+        Scanner reader = null;
+        String currentLine = null;
+        BuildingInfo currentBuilding = null;
+        BuildingInfo template = new BuildingInfo();
+        LinkedList<BuildingInfo> returnMe = new LinkedList<BuildingInfo>(template);
+        
+        try
+        {
+            reader = new Scanner(readMe);
+            while(reader.hasNext())
+            {
+                currentBuilding = new BuildingInfo();
+                currentLine = reader.nextLine();
+                currentPos = currentLine.indexOf("Name: ");
+                if (currentPos < 0)
+                    throw new InputMismatchException("Expected a name but didn't find one");
+                currentBuilding.name = (currentLine.substring(currentPos + 5));
+                
+                currentLine = reader.nextLine();
+                currentPos = currentLine.indexOf("Address: \"");
+                if (currentPos < 0)
+                    throw new InputMismatchException("Expected an address but didn't find one");
+                currentBuilding.address = (currentLine.substring(currentPos+10,currentLine.length() - 1));
+                
+                currentLine = reader.nextLine();
+                currentPos = currentLine.indexOf("Icon Name: \"");
+                if (currentPos < 0)
+                    throw new InputMismatchException("Expected an icon link but didn't find one");
+                currentBuilding.iconName = (currentLine.substring(currentPos+12,currentLine.length() - 1));
+                
+                currentLine = reader.nextLine();
+                currentPos = currentLine.indexOf("Opening Times: \"");
+                if (currentPos < 0)
+                    throw new InputMismatchException("Expected opening times but didn't find one");
+                currentBuilding.openingTimes = (currentLine.substring(currentPos+17,currentLine.length() - 1));
+                
+                while (currentLine.charAt(currentLine.length()) != '}')
+                {
+                    int posOfhalfway = 0;
+                    double x_coordinate = 0, y_coordinate = 0;
+                    currentLine = reader.nextLine();
+                    currentPos = currentLine.indexOf("{");
+                    posOfhalfway = currentLine.indexOf(",");
+                    x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfhalfway));
+                    y_coordinate = Double.parseDouble(currentLine.substring(posOfhalfway+2, currentLine.length()-2));
+                    currentBuilding.coordinates.add(new LatLng(x_coordinate, y_coordinate));
+                }
+                for (int i = 0; i < 2; i++)
+                {
+                    int posOfhalfway = 0;
+                    double x_coordinate = 0, y_coordinate = 0;
+                    currentLine = reader.nextLine();
+                    currentPos = currentLine.indexOf("{");
+                    posOfhalfway = currentLine.indexOf(",");
+                    x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfhalfway));
+                    y_coordinate = Double.parseDouble(currentLine.substring(posOfhalfway+2, currentLine.length()-1));
+                    if (i < 1)
+                        currentBuilding.coordinates.add(new LatLng(x_coordinate, y_coordinate));
+                    else
+                        currentBuilding.center = new LatLng(x_coordinate, y_coordinate);
+                }
+                
+                returnMe.add(currentBuilding);
+                reader.nextLine();
+            }
+        }
+        catch (FileNotFoundException fnf)
+        {
+            System.out.println("File was moved during the reading process");
+        }
+        catch (InputMismatchException ime)
+        {
+            System.out.println(ime.getMessage());
+        }
+        finally
+        {
+            if (reader != null)
+                reader.close();
+        }
+        return returnMe;
+    }
     
     public static void writeCenters(double[][][] locations)
     {
