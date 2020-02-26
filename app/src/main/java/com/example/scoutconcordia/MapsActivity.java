@@ -148,23 +148,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-            @Override
-            public void onInfoWindowClick(Marker marker) {
-                //Log.d("", marker.getTitle());
-            }
-        });
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 System.out.println("YOU CLICKED ON THE MARKER: " + marker.getTitle());
+
+                // move the camera to the marker location
+                animateCamera(marker.getPosition(), zoomLevel);
+
+                // either display/hide the info window
+                if (marker.isInfoWindowShown())
+                {
+                    marker.hideInfoWindow();
+                } else {
+                    marker.showInfoWindow();
+                }
+
+                // change the icon of the marker
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.smiling)));
                 return true;
             }
         });
-
-
     }
 
     /**
@@ -228,7 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(center_x, center_y))
                     .title("HB")
-                    .infoWindowAnchor(center_x, center_y)
+                    //.infoWindowAnchor(center_x, center_y)
                     //.anchor(center_x, center_y)
                     .visible(true)
                     .flat(true)
@@ -236,7 +240,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .zIndex(44)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .snippet("Vince Helped"));
-
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
         }
