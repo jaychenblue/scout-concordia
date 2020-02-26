@@ -63,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar);
+        bottomNavigationView.setSelectedItemId(R.id.nav_map);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
