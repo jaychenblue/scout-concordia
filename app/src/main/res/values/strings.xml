@@ -3,5 +3,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="toggle_on">Loyola</string>
     <string name="toggle_off">SGW</string>
+    <string name="nav_schedule">Schedule</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_shuttle">Shuttle</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
 </resources>

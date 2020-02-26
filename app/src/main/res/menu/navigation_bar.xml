@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_schedule"
+        android:title="@string/nav_schedule" />
+
+    <item
+        android:id="@+id/nav_map"
+        android:title="@string/nav_map" />
+
+    <item
+        android:id="@+id/nav_shuttle"
+        android:title="@string/nav_shuttle" />
+</menu>
