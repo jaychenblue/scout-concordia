@@ -3,6 +3,8 @@ package com.example.scoutconcordia;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.*;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 
 public class BuildingInfo implements java.io.Serializable
@@ -10,7 +12,8 @@ public class BuildingInfo implements java.io.Serializable
     private String name;
     private String address;
     private String iconName;
-    private LatLng[] coordinates;
+    private String openingTimes;
+    private LinkedList<LatLng> coordinates;
     private LatLng center;
     
     public BuildingInfo()
@@ -33,19 +36,9 @@ public class BuildingInfo implements java.io.Serializable
         return name;
     }
     
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-    
     public String getAddress()
     {
         return address;
-    }
-    
-    public void setAddress(String address)
-    {
-        this.address = address;
     }
     
     public String getIconName()
@@ -53,19 +46,9 @@ public class BuildingInfo implements java.io.Serializable
         return iconName;
     }
     
-    public void setIconName(String iconName)
-    {
-        this.iconName = iconName;
-    }
-    
-    public LatLng[] getCoordinates()
+    public LinkedList<LatLng> getCoordinates()
     {
         return coordinates;
-    }
-    
-    public void setCoordinates(LatLng[] coordinates)
-    {
-        this.coordinates = coordinates;
     }
     
     public LatLng getCenter()
@@ -73,19 +56,16 @@ public class BuildingInfo implements java.io.Serializable
         return center;
     }
     
-    public void setCenter(LatLng center)
-    {
-        this.center = center;
-    }
     
     public static void writeToFile(String fileName, BuildingInfo buildingInfos) throws IOException
     {
         File f = new File(fileName);
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
         oos.writeObject(buildingInfos);
-        oos.flush();
         oos.close();
     }
+    
+    
     
     public static void writeCenters(double[][][] locations)
     {
