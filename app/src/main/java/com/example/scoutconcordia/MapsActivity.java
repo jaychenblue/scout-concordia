@@ -1,25 +1,19 @@
 package com.example.scoutconcordia;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
-
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -31,12 +25,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-
-import java.security.KeyStore;
-import java.security.acl.LastOwnerException;
-import java.util.concurrent.LinkedTransferQueue;
-
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -79,8 +67,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         break;
 
                     case R.id.nav_shuttle:
-                        Intent shuttleIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleDisplayActivity.class);
                         startActivity(shuttleIntent);
+
+
+
                         break;
                 }
                 return false;
