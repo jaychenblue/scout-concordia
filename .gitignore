@@ -13,3 +13,6 @@
 /captures
 .externalNativeBuild
 .cxx
+.idea
+.idea/misc.xml
+.idea/workspace.xml
