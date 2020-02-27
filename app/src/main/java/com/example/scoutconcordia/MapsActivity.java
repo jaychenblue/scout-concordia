@@ -115,6 +115,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getCurrentLocation();
 
         setClickListeners(); // sets the polygon listeners
+
+        //Set custom InfoWindow Adapter
+        CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
+        mMap.setInfoWindowAdapter(adapter);
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -239,11 +243,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .alpha(1)
                     .zIndex(44)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .snippet("Vince Helped"));
+                    .snippet("This is a test piece of text to see how it will look like in the window"));
+            // NOTE FOR AVERY. THIS IS PROBABLY WHERE WE WILL WANT TO READ THE FILE. CREATE AN OBJECT AND THEN WE WILL ASSIGN IT TO THE MAKRER WHICH WE CAN READ FROM USING THE CustomInfoWindow class
+            BuildingInfo Hall_Building = new BuildingInfo("Hall Building", "Henry F. Hall Building. 1455, De Maisonneuve O.");
+            polyMarker.setTag(Hall_Building);
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
         }
     }
+
+
 
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
