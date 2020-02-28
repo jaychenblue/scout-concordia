@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources><string name="app_name">ScoutConcordia</string>
+    <string name="title_activity_maps">la carte</string>
+    <string name="toggle_on">Loyola</string>
+    <string name="toggle_off">SGW</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
+</resources>
