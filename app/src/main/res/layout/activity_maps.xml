@@ -14,20 +14,11 @@
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
 
-    <ToggleButton
-        android:id="@+id/toggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ToggleButton"
-        android:textOff="@string/toggle_off"
-        android:textOn="@string/toggle_on" />
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="10"
-        android:layout_marginTop="45dp"
         android:background="#74091F">
 
         <TextView
@@ -51,7 +42,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="10"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:background="#74091F">
 
         <TextView
@@ -70,13 +61,13 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/testButton"
+    <ToggleButton
+        android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="190dp"
-        android:onClick="onClickMe"
-        android:text="Button" />
-
+        android:layout_marginTop="80dp"
+        android:text="ToggleButton"
+        android:textOff="@string/toggle_off"
+        android:textOn="@string/toggle_on" />
 
 </FrameLayout>

@@ -51,12 +51,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ToggleButton toggleButton;
 
 
-
-    public void onClickMe(View v){
-        EditText fromSearchBar = findViewById(R.id.fromSearchBar);
-        String fromTest = fromSearchBar.getText().toString();
-        Toast.makeText(this, fromTest, Toast.LENGTH_LONG).show();
-    }
+//    //get FromSearch bar input from user
+//    EditText fromSearchBar = findViewById(R.id.fromSearchBar);
+//    //convert to string
+//    String from = fromSearchBar.getText().toString();
+//
+//    //get ToSearch bar input from user
+//    EditText toSearchBar = findViewById(R.id.toSearchBar);
+//    //convert to string
+//    String to = toSearchBar.getText().toString();
 
 
     @Override
