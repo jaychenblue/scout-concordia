@@ -10,13 +10,18 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.print.PrintAttributes;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -50,8 +55,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
-
+    private Button directionButton;
     private ToggleButton toggleButton;
+    private boolean isInfoWindowShown = false;
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -62,6 +68,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         addListenerOnToggle();
+
+
+        addListenerOnPress();
     }
 
     // If button pushed change Campus
@@ -73,6 +82,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 toggleCampus();
             }
         });
+    }
+
+    // this is the listener for the get directions button.
+    // Once we get the search bar working, we can add a method for search here so that when the button is clicked it searches for location and gives the directions.
+    public void addListenerOnPress()
+    {
+        directionButton = (Button) findViewById(R.id.directionsButton);
+        // can add a functionality here that gives us the directions when we press on the button
     }
 
 
@@ -155,22 +172,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                System.out.println("YOU CLICKED ON THE MARKER: " + marker.getTitle());
+                isInfoWindowShown = false;
 
                 // move the camera to the marker location
                 animateCamera(marker.getPosition(), zoomLevel);
 
-                // either display/hide the info window
-                if (marker.isInfoWindowShown())
-                {
-                    marker.hideInfoWindow();
-                } else {
+                if (!isInfoWindowShown) {
                     marker.showInfoWindow();
+                    directionButton.setVisibility(View.VISIBLE);
+
+                    // this sets the parameters for the button that appears on click. (The direction button)
+                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                    //layoutParams.topMargin = 100;
+                    //layoutParams.leftMargin = 100;
+                    directionButton.setLayoutParams(layoutParams);
+
+                    isInfoWindowShown = true;
+                } else {
+                    marker.hideInfoWindow();
+                    directionButton.setVisibility(View.INVISIBLE);
+                    isInfoWindowShown = false;
                 }
 
                 // change the icon of the marker
                 marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.smiling)));
                 return true;
+            }
+        });
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                directionButton.setVisibility(View.INVISIBLE);
+                isInfoWindowShown = false;
             }
         });
     }
