@@ -5,36 +5,55 @@
     android:orientation="vertical"
     android:background="@android:color/transparent">
 
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#74091F"
+            android:textSize="40sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false" />
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:textColor="#74091F"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:background="@android:color/white"
-            android:orientation="vertical">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="40sp"
-                android:textColor="#74091F"
-                android:gravity="center"/>
 
-            <TextView
-                android:id="@+id/tv_subtitle"
+            <Button
+                android:id="@+id/button3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="false" />
+                android:text="Button" />
 
-            <TextView
-                android:id="@+id/tv_address"
+            <Button
+                android:id="@+id/button4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="false"
-                android:textStyle="bold"
-                android:textColor="#74091F"
-                android:textSize="20sp"/>
-
+                android:text="Button" />
         </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
