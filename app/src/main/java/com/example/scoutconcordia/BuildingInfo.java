@@ -31,10 +31,11 @@ public class BuildingInfo
         center = null;
     }
 
-    public BuildingInfo(String name, String address)
+    public BuildingInfo(String name, String address, String openingTimes)
     {
         this.name = name;
         this.address = address;
+        this.openingTimes = openingTimes;
     }
     
     public String getName()
@@ -61,6 +62,8 @@ public class BuildingInfo
     {
         return center;
     }
+
+    public String getOpeningTimes() { return openingTimes; }
     
     
     public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)

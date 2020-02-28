@@ -194,8 +194,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     isInfoWindowShown = false;
                 }
 
-                // change the icon of the marker
-                marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.smiling)));
+                // change the icon of the marker (this was for testing purposes)
+                //marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.smiling)));
                 return true;
             }
         });
@@ -262,10 +262,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .visible(true)
                     .flat(true)
                     .alpha(1)
-                    .zIndex(44)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .snippet("This is a test piece of text to see how it will look like in the window"));
-            
+                    //.snippet("This is a test piece of text to see how it will look like in the window")
+                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    .zIndex(44));
+
             if (resID != 0)
             {
                 int height = 90;
@@ -275,7 +275,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
                 polyMarker.setIcon(smallMarkerIcon);
             }
-            BuildingInfo Hall_Building = new BuildingInfo(((BuildingInfo)currentBuilding.getEle()).getName(), ((BuildingInfo)currentBuilding.getEle()).getAddress());
+            BuildingInfo Hall_Building = new BuildingInfo(((BuildingInfo)currentBuilding.getEle()).getName(), ((BuildingInfo)currentBuilding.getEle()).getAddress(), ((BuildingInfo)currentBuilding.getEle()).getOpeningTimes());
             polyMarker.setTag(Hall_Building);
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
