@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -58,15 +59,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        // RectangularBounds bounds = RectangularBounds.newInstance(
+        //         new LatLng(-33.880490, 151.184363),
+        //         new LatLng(-33.858754, 151.229596));
 
+        //autocompleteFragment.setLocationBias(bounds); will return places within this area, may return results outside the aread
+
+        // Select here whatever infortmation you want to retrieve for the selected place
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        //the types of places search should display
+        autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
+
+        //autocompleteFragment.set
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 12.0f));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), zoomLevel));
+                mMap.setOnMyLocationChangeListener(null);
             }
 
             @Override
@@ -120,7 +132,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add a marker in Concordia and move the camera
         LatLng coco = new LatLng(45.494619, -73.577376); // Concordia's coordinates
         mMap.addMarker(new MarkerOptions().position(coco).title("Marker in Concordia"));
-        float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coco, zoomLevel));
 
 
