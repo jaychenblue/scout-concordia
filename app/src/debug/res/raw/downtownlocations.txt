@@ -27,7 +27,7 @@ Name: CI Building
 Name: CL Building
 {
     Address: "1665, Sainte-Catherine O."
-    Icon Name: ""
+    Icon Name: "cl"
     Opening Times: ""
     Coordinates:
         {45.494165, -73.579656},
@@ -87,7 +87,7 @@ Name: ER Building
 Name: EV Building
 {
     Address: "Engineering, Computer Science and Visual Arts Integrated Complex. 1515, Sainte-Catherine O."
-    Icon Name: ""
+    Icon Name: "ev"
     Opening Times: ""
     Coordinates:
         {45.495595, -73.578762},
@@ -125,7 +125,7 @@ Name: FA Building
 Name: FB Building
 {
     Address: "Faubourg Building 1250, Guy. 1600 Sainte-Catherine O."
-    Icon Name: ""
+    Icon Name: "fb"
     Opening Times: ""
     Coordinates:
         {45.494696, -73.578039},
@@ -148,7 +148,7 @@ Name: FB Building
 Name: FG Building
 {
     Address: " Faubourg Sainte-Catherine Building 1610, Sainte-Catherine O."
-    Icon Name: ""
+    Icon Name: "fg"
     Opening Times: ""
     Coordinates:
         {45.493822, -73.579067},
@@ -213,7 +213,7 @@ Name: GM Building
 Name: GN Building
 {
     Address: "Grey Nuns Building 1190, Guy. 1175, St-Mathieu"
-    Icon Name: ""
+    Icon Name: "gn"
     Opening Times: ""
     Coordinates:
         {45.492593, -73.576534},
@@ -304,7 +304,7 @@ Name: GS Building
 Name: H Building
 {
     Address: "Henry F. Hall Building. 1455, De Maisonneuve O."
-    Icon Name: ""
+    Icon Name: "h"
     Opening Times: ""
     Coordinates:
         {45.497163, -73.579557},
@@ -334,7 +334,7 @@ Name: K Building
 Name: LB Building
 {
     Address: "J.W McConnell Building. 1400, De Maisonneuve O."
-    Icon Name: ""
+    Icon Name: "lb"
     Opening Times: ""
     Coordinates:
         {45.496706, -73.578530},
@@ -414,7 +414,7 @@ Name: M Building
 Name: MB Building
 {
     Address: "John Molson Building. 1450, Guy"
-    Icon Name: ""
+    Icon Name: "mb"
     Opening Times: ""
     Coordinates:
         {45.495358, -73.579367},

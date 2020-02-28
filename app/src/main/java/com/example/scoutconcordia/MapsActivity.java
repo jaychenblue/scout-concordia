@@ -6,6 +6,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.Manifest;
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -185,8 +188,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         switch (type)
         {
             case "alpha":
-                strokeColor = Color.parseColor("#BB000000");
-                fillColor = Color.parseColor("#BB74091F");
+                strokeColor = Color.parseColor("#FF000000");
+                fillColor = Color.parseColor("#FF74091F");
                 break;
             default:
                 strokeColor = Color.parseColor("#BB000000");
@@ -212,6 +215,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentCoordinate = currentCoordinate.getNext();
             }
             Polygon justAddedPolygon = mMap.addPolygon(po);
+            Resources res = this.getResources();
+            int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
                     .position(((BuildingInfo)currentBuilding.getEle()).getCenter())
                     .title(((BuildingInfo)currentBuilding.getEle()).getName())
@@ -224,6 +229,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .snippet("This is a test piece of text to see how it will look like in the window"));
             // NOTE FOR AVERY. THIS IS PROBABLY WHERE WE WILL WANT TO READ THE FILE. CREATE AN OBJECT AND THEN WE WILL ASSIGN IT TO THE MAKRER WHICH WE CAN READ FROM USING THE CustomInfoWindow class
+
+            if (resID != 0)
+            {
+                int height = 90;
+                int width = 90;
+                Bitmap b = BitmapFactory.decodeResource(getResources(), resID);
+                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
+                polyMarker.setIcon(smallMarkerIcon);
+            }
             BuildingInfo Hall_Building = new BuildingInfo(((BuildingInfo)currentBuilding.getEle()).getName(), ((BuildingInfo)currentBuilding.getEle()).getAddress());
             polyMarker.setTag(Hall_Building);
             justAddedPolygon.setTag("alpha");

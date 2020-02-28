@@ -1,7 +1,7 @@
 Name: AD Building
 {
 	Address: "7141, Sherbrooke O. (Administration Building)"
-	Icon Name: ""
+	Icon Name: "ad"
 	Opening Times: ""
 	Coordinates:
 	{45.457911, -73.640124},
@@ -78,7 +78,7 @@ Name: BH Building
 Name: CC Building
 {
 	Address: "7141, Sherbrooke O. (Central Building)"
-	Icon Name: ""
+	Icon Name: "cc"
 	Opening Times: ""
 	Coordinates:
 	{45.458379, -73.640794},
@@ -105,7 +105,7 @@ Name: CC Building
 Name: CJ Building
 {
 	Address: "7141, Sherbrooke O. (Communication Studies and Journalism Building)"
-	Icon Name: ""
+	Icon Name: "cj"
 	Opening Times: ""
 	Coordinates:
 	{45.458379, -73.640794},
@@ -145,7 +145,7 @@ Name: DO Building
 Name: FC Building
 {
 	Address: "7141, Sherbrooke O. ( F.C. Smith Building)"
-	Icon Name: ""
+	Icon Name: "fc"
 	Opening Times: ""
 	Coordinates:
 	{45.458599, -73.639588},
@@ -209,7 +209,7 @@ Name: FC Building
 Name: GE Building
 {
 	Address: "7141, Sherbrooke O. (Centre for Structural and Functional Genomics)"
-	Icon Name: ""
+	Icon Name: "ge"
 	Opening Times: ""
 	Coordinates:
 	{45.456945, -73.640742},
@@ -228,7 +228,7 @@ Name: GE Building
 Name: HA Building
 {
 	Address: "7141, Sherbrooke O. (Hingston Hall, wing HA)"
-	Icon Name: ""
+	Icon Name: "ha"
 	Opening Times: ""
 	Coordinates:
 	{45.459410, -73.641485},
@@ -249,7 +249,7 @@ Name: HA Building
 Name: HB Building
 {
 	Address: "7141, Sherbrooke O. (Hingston Hall, wing HB)"
-	Icon Name: ""
+	Icon Name: "hb"
 	Opening Times: ""
 	Coordinates:
 	{45.459140, -73.642244},
@@ -272,7 +272,7 @@ Name: HB Building
 Name: HC Building
 {
 	Address: "7141, Sherbrooke O. (Hingston Hall, wing HC)"
-	Icon Name: ""
+	Icon Name: "hc"
 	Opening Times: ""
 	Coordinates:
 	{45.459623, -73.642271},
@@ -365,7 +365,7 @@ Name: PS Building
 Name: PT Building
 {
 	Address: "7141, Sherbrooke O. (Oscar Peterson Concert Hall)"
-	Icon Name: ""
+	Icon Name: "pt"
 	Opening Times: ""
 	Coordinates:
 	{45.459372, -73.639253},
@@ -384,7 +384,7 @@ Name: PT Building
 Name: PY Building
 {
 	Address: "7141, Sherbrooke O. (Psychology Building)"
-	Icon Name: ""
+	Icon Name: "py"
 	Opening Times: ""
 	Coordinates:
 	{45.458848, -73.640835},
@@ -450,7 +450,7 @@ Name: RA Building
 Name: RF Building
 {
 	Address: "7141, Sherbrooke O. (Loyola Jesuit Hall and Conference Centre)"
-	Icon Name: ""
+	Icon Name: "rf"
 	Opening Times: ""
 	Coordinates:
 	{45.458508, -73.641375},
@@ -519,7 +519,7 @@ Name: SH Building
 Name: SI Building
 {
 	Address: "4455, West Broadway (St. Ignatius of Loyola Church)"
-	Icon Name: ""
+	Icon Name: "si"
 	Opening Times: ""
 	Coordinates:
 	{45.457965, -73.642684},
@@ -568,7 +568,7 @@ Name: SI Building
 Name: SP Building
 {
 	Address: "7141, Sherbrooke O. (Richard J. Renaud Science Complex)"
-	Icon Name: ""
+	Icon Name: "sp"
 	Opening Times: ""
 	Coordinates:
 	{45.457438, -73.642003},
@@ -631,7 +631,7 @@ Name: TB Building
 Name: VE Building
 {
 	Address: "7141, Sherbrooke O. (Vanier extension)"
-	Icon Name: ""
+	Icon Name: "ve"
 	Opening Times: ""
 	Coordinates:
 	{45.458836, -73.639003},
@@ -644,7 +644,7 @@ Name: VE Building
 Name: VL Building
 {
 	Address: "7141, Sherbrooke O. (Vanier Library Building)"
-	Icon Name: ""
+	Icon Name: "vl"
 	Opening Times: ""
 	Coordinates:
 	{45.459168, -73.638807},
