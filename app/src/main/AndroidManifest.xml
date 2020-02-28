@@ -29,7 +29,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".MapsActivity">
+        <activity android:name=".MapsActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,9 +38,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CalendarActivity"></activity>
+        <activity android:name=".CalendarActivity"
+            android:noHistory="true"></activity>
 
-        <activity android:name=".ShuttleScheduleActivity"></activity>
+        <activity android:name=".ShuttleScheduleActivity"
+            android:noHistory="true"></activity>
 
         <activity android:name=".MainActivity"></activity>
 

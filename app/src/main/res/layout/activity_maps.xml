@@ -12,10 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:itemIconTint="@color/nav_button_color_selector"
         app:menu="@menu/navigation_bar"
         app:itemTextColor="@color/nav_button_color_selector"
-        app:itemTextAppearanceActive="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
-        app:itemTextAppearanceInactive="@style/TextAppearance.AppCompat.Widget.Button.Colored"
+        app:itemTextAppearanceActive="@style/BottomNavigationViewStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavigationViewStyle"
         android:background="@color/burgandy"/>
 
     <fragment

@@ -13,4 +13,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="BottomNavigationViewStyle">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
 </resources>
