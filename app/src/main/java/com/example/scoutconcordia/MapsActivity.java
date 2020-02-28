@@ -1,5 +1,7 @@
 package com.example.scoutconcordia;
 
+import android.app.Application;
+import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -33,6 +35,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -100,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-
+        
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
@@ -202,7 +205,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addLocationsToMap(InputStream location)
     {
+        
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
+        //BuildingInfo.encryptFile();
         LinkedList.Node currentBuilding = buildings.getHead();
         for (int i = 0; i < buildings.size(); i++)
         {
@@ -220,16 +225,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
                     .position(((BuildingInfo)currentBuilding.getEle()).getCenter())
                     .title(((BuildingInfo)currentBuilding.getEle()).getName())
-                    //.infoWindowAnchor(center_x, center_y)
-                    //.anchor(center_x, center_y)
                     .visible(true)
                     .flat(true)
                     .alpha(1)
                     .zIndex(44)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .snippet("This is a test piece of text to see how it will look like in the window"));
-            // NOTE FOR AVERY. THIS IS PROBABLY WHERE WE WILL WANT TO READ THE FILE. CREATE AN OBJECT AND THEN WE WILL ASSIGN IT TO THE MAKRER WHICH WE CAN READ FROM USING THE CustomInfoWindow class
-
+            
             if (resID != 0)
             {
                 int height = 90;
