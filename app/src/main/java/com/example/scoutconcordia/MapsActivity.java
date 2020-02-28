@@ -1,13 +1,9 @@
 package com.example.scoutconcordia;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.Manifest;
@@ -16,11 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ToggleButton;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,16 +23,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-
-import java.security.KeyStore;
-import java.security.acl.LastOwnerException;
-import java.util.concurrent.LinkedTransferQueue;
-
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
@@ -62,13 +47,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         addListenerOnToggle();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                System.out.print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-
                 switch(menuItem.getItemId()){
                     case R.id.nav_map:
                         break;
@@ -76,11 +59,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
                         startActivity(calendarIntent);
+                        MapsActivity.this.overridePendingTransition(0, 0);
                         break;
 
                     case R.id.nav_shuttle:
-                        Intent shuttleIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
                         startActivity(shuttleIntent);
+                        MapsActivity.this.overridePendingTransition(0, 0);
                         break;
                 }
                 return false;
@@ -1469,6 +1454,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
     }
 
 } //end of Maps Activity Class

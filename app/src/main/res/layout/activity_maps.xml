@@ -8,7 +8,7 @@
     tools:context=".MapsActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_bar"
+        android:id="@+id/nav_bar_activity_maps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -16,7 +16,7 @@
         app:itemTextColor="@color/nav_button_color_selector"
         app:itemTextAppearanceActive="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
         app:itemTextAppearanceInactive="@style/TextAppearance.AppCompat.Widget.Button.Colored"
-        android:background="@color/magenta"/>
+        android:background="@color/burgandy"/>
 
     <fragment
         android:id="@+id/map"

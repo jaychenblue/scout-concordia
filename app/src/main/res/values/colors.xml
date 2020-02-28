@@ -3,7 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="magenta">#800020</color>
-    <color name="buttonActiveText">#d6a4a1</color>
-    <color name="buttonInActiveText">#fafafa</color>
+    <color name="burgandy">#74091F</color>
+    <color name="buttonActiveText">#AF8A6B</color>
+    <color name="buttonInActiveText">#FAFAFA</color>
 </resources>
