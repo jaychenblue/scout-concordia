@@ -33,9 +33,6 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         tvSubTitle.setText(marker.getSnippet());
         tvAddress.setText(building.getAddress());
 
-
-
-
         return view;
     }
 
