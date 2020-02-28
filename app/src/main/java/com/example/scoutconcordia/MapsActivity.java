@@ -1,20 +1,17 @@
 package com.example.scoutconcordia;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 
-import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ToggleButton;
 
@@ -24,18 +21,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-import java.security.KeyStore;
-import java.security.acl.LastOwnerException;
-import java.util.concurrent.LinkedTransferQueue;
+import java.io.File;
+import java.io.InputStream;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -104,8 +98,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
 
-        addLocationsToMap(BuildingInfo.getSGWLocations());  //adds the polygons for the SGW campus
-        addLocationsToMap(BuildingInfo.getLoyolaLocations()); //adds the polygons for the Loyola campus
+        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
+        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
         mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
@@ -203,39 +197,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polygon.setClickable(true);
     }
 
-    private void addLocationsToMap(double[][][] locations)
+    private void addLocationsToMap(InputStream location)
     {
-
-        for (int i = 0; i < locations.length; i++)
+        LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
+        LinkedList.Node currentBuilding = buildings.getHead();
+        for (int i = 0; i < buildings.size(); i++)
         {
             PolygonOptions po = new PolygonOptions();
-            double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-            for (int j = 0; j < locations[i].length; j++)
+            LinkedList<LatLng> coordinates = ((BuildingInfo)currentBuilding.getEle()).getCoordinates();
+            LinkedList.Node currentCoordinate = coordinates.getHead();
+            for (int j = 0; j < coordinates.size(); j++)
             {
-                if (j == 0)
-                {
-                    x1 = locations[i][j][0];
-                    x2 = locations[i][j][0];
-                    y1 = locations[i][j][1];
-                    y2 = locations[i][j][1];
-                }
-                if (locations[i][j][0] < x1)
-                    x1 = locations[i][j][0];
-                if (locations[i][j][0] > x2)
-                    x2 = locations[i][j][0];
-                if (locations[i][j][1] < y1)
-                    y1 = locations[i][j][1];
-                if (locations[i][j][1] > y2)
-                    y2 = locations[i][j][1];
-
-                po.add(new LatLng(locations[i][j][0], locations[i][j][1]));
+                po.add((LatLng)currentCoordinate.getEle());
+                currentCoordinate = currentCoordinate.getNext();
             }
             Polygon justAddedPolygon = mMap.addPolygon(po);
-            float center_x = (float)x1 + (float)((x2 - x1) / 2);
-            float center_y = (float)y1 + (float)((y2 - y1) / 2);
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(center_x, center_y))
-                    .title("HB")
+                    .position(((BuildingInfo)currentBuilding.getEle()).getCenter())
+                    .title(((BuildingInfo)currentBuilding.getEle()).getName())
                     //.infoWindowAnchor(center_x, center_y)
                     //.anchor(center_x, center_y)
                     .visible(true)
@@ -245,10 +224,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .snippet("This is a test piece of text to see how it will look like in the window"));
             // NOTE FOR AVERY. THIS IS PROBABLY WHERE WE WILL WANT TO READ THE FILE. CREATE AN OBJECT AND THEN WE WILL ASSIGN IT TO THE MAKRER WHICH WE CAN READ FROM USING THE CustomInfoWindow class
-            BuildingInfo Hall_Building = new BuildingInfo("Hall Building", "Henry F. Hall Building. 1455, De Maisonneuve O.");
+            BuildingInfo Hall_Building = new BuildingInfo(((BuildingInfo)currentBuilding.getEle()).getName(), ((BuildingInfo)currentBuilding.getEle()).getAddress());
             polyMarker.setTag(Hall_Building);
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
+            currentBuilding = currentBuilding.getNext();
         }
     }
 

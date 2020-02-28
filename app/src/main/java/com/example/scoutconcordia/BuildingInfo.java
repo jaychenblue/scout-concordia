@@ -1,5 +1,7 @@
 package com.example.scoutconcordia;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.*;
@@ -7,7 +9,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
-public class BuildingInfo implements java.io.Serializable
+public class BuildingInfo
 {
     private String name;
     private String address;
@@ -21,10 +23,10 @@ public class BuildingInfo implements java.io.Serializable
         name = null;
         address = null;
         iconName = "smiling.png";
-        coordinates = null;
+        coordinates = new LinkedList<LatLng>(new LatLng(0,0));
         center = null;
-    };
-    
+    }
+
     public BuildingInfo(String name, String address)
     {
         this.name = name;
@@ -65,7 +67,7 @@ public class BuildingInfo implements java.io.Serializable
         oos.close();
     }
     
-    public static LinkedList<BuildingInfo> obtainBuildings(File readMe)
+    public static LinkedList<BuildingInfo> obtainBuildings(InputStream readMe)
     {
         int currentPos = 0;
         Scanner reader = null;
@@ -81,11 +83,13 @@ public class BuildingInfo implements java.io.Serializable
             {
                 currentBuilding = new BuildingInfo();
                 currentLine = reader.nextLine();
+                Log.println(Log.WARN, "printing", currentLine);
                 currentPos = currentLine.indexOf("Name: ");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
                 currentBuilding.name = (currentLine.substring(currentPos + 5));
-                
+                reader.nextLine();
+
                 currentLine = reader.nextLine();
                 currentPos = currentLine.indexOf("Address: \"");
                 if (currentPos < 0)
@@ -102,45 +106,47 @@ public class BuildingInfo implements java.io.Serializable
                 currentPos = currentLine.indexOf("Opening Times: \"");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected opening times but didn't find one");
-                currentBuilding.openingTimes = (currentLine.substring(currentPos+17,currentLine.length() - 1));
-                
-                while (currentLine.charAt(currentLine.length()) != '}')
+                currentBuilding.openingTimes = (currentLine.substring(currentPos+16,currentLine.length() - 1));
+                reader.nextLine();
+                currentLine = reader.nextLine();
+
+                while (currentLine.charAt(currentLine.length()-1) != '}')
                 {
                     int posOfhalfway = 0;
                     double x_coordinate = 0, y_coordinate = 0;
-                    currentLine = reader.nextLine();
                     currentPos = currentLine.indexOf("{");
                     posOfhalfway = currentLine.indexOf(",");
                     x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfhalfway));
                     y_coordinate = Double.parseDouble(currentLine.substring(posOfhalfway+2, currentLine.length()-2));
                     currentBuilding.coordinates.add(new LatLng(x_coordinate, y_coordinate));
+                    currentLine = reader.nextLine();
                 }
                 for (int i = 0; i < 2; i++)
                 {
                     int posOfhalfway = 0;
                     double x_coordinate = 0, y_coordinate = 0;
-                    currentLine = reader.nextLine();
                     currentPos = currentLine.indexOf("{");
                     posOfhalfway = currentLine.indexOf(",");
                     x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfhalfway));
-                    y_coordinate = Double.parseDouble(currentLine.substring(posOfhalfway+2, currentLine.length()-1));
+                    y_coordinate = Double.parseDouble(currentLine.substring(posOfhalfway+2, currentLine.length()-2));
                     if (i < 1)
                         currentBuilding.coordinates.add(new LatLng(x_coordinate, y_coordinate));
                     else
                         currentBuilding.center = new LatLng(x_coordinate, y_coordinate);
+                    currentLine = reader.nextLine();
                 }
-                
                 returnMe.add(currentBuilding);
-                reader.nextLine();
+                if (reader.hasNextLine())
+                    reader.nextLine();
             }
-        }
-        catch (FileNotFoundException fnf)
-        {
-            System.out.println("File was moved during the reading process");
         }
         catch (InputMismatchException ime)
         {
-            System.out.println(ime.getMessage());
+            Log.println(Log.WARN, "printing", ime.getMessage());
+        }
+        catch (IOError ioe)
+        {
+            Log.println(Log.WARN, "printing", "An error occurred with the stream");
         }
         finally
         {
@@ -1294,5 +1300,17 @@ public class BuildingInfo implements java.io.Serializable
                 lJRbuilding, lPCbuilding, lPSbuilding, lPTbuilding, lPYbuilding, lRAbuilding,
                 lRFbuilding, lSCbuilding, lSHbuilding, lSIbuilding, lSPbuilding, lTAbuilding,
                 lTBbuilding, lVEbuilding, lVLbuilding};
+    }
+
+    @Override public String toString()
+    {
+        String printMe = "";
+        printMe += "Name: " + this.name + "\n";
+        printMe += "Address: " + this.address + "\n";
+        printMe += "IconName: " + this.iconName + "\n";
+        printMe += "OpeningTimes: " + this.iconName + "\n";
+        printMe += "Coordinates: " + coordinates.toString() + "\n";
+        printMe += "Center: " + this.center;
+        return printMe;
     }
 }

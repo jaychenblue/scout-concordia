@@ -18,7 +18,7 @@ public class LinkedList <E> implements BaseMethods<E>
     private E classType;
     private static final File destination = new File("Temp.txt");
     
-    private class Node
+    public class Node
     {
         private E element;
         private LinkedList.Node next;
@@ -45,9 +45,9 @@ public class LinkedList <E> implements BaseMethods<E>
 
         private void setNext(Node nexty) {next = nexty;}
         private void setPrev(Node prevy) {prev = prevy;}
-        private Node getNext() {return next;}
+        public Node getNext() {return next;}
         private Node getPrev() {return prev;}
-        private E getEle() {return element;}
+        public E getEle() {return element;}
         public String toString() {return element.toString();}
     }
     
@@ -328,4 +328,5 @@ public class LinkedList <E> implements BaseMethods<E>
     public boolean add(E element) {return addToTail(element);}
     public void add(int index, E element){addToIndex(index, element);}
     public E remove(int index){return removeNode(index);}
+    public Node getHead() {return head;}
 }
