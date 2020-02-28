@@ -22,28 +22,6 @@
         android:textOff="@string/toggle_off"
         android:textOn="@string/toggle_on" />
 
-
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/view2"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="45dp"-->
-<!--        android:orientation="vertical"-->
-<!--        android:background="#74091F">-->
-
-<!--        <EditText-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="From:"/>-->
-
-<!--        <EditText-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:hint="To:" />-->
-
-<!--    </LinearLayout>-->
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
@@ -62,7 +40,7 @@
             android:drawableRight="@drawable/ic_search_black_24dp"
             android:drawablePadding="5dp"/>
         <EditText
-            android:id="@+id/from"
+            android:id="@+id/fromSearchBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -86,11 +64,19 @@
             android:drawableRight="@drawable/ic_search_black_24dp"
             android:drawablePadding="30dp"/>
         <EditText
-            android:id="@+id/to"
+            android:id="@+id/toSearchBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/testButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="190dp"
+        android:onClick="onClickMe"
+        android:text="Button" />
 
 
 </FrameLayout>
