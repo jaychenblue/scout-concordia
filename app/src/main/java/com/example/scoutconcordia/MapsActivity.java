@@ -70,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //the types of places search should display
         autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
 
-        //restricts searches to Canada only so that we do not get random locations when searching 
+        //restricts searches to Canada only so that we do not get random locations when searching
         autocompleteFragment.setCountry("CA");
 
         //autocompleteFragment.set
