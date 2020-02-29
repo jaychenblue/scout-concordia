@@ -35,6 +35,13 @@ tools:context=".MapsActivity" >
             android:layout_height="wrap_content"
             android:text="Get Directions"
             android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/exploreInsideButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Explore Inside"
+            android:visibility="invisible" />
     </LinearLayout>
 
 

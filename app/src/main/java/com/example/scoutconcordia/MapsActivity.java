@@ -56,6 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
     private Button directionButton;
+    private Button exploreInsideButton;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
 
@@ -69,8 +70,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         addListenerOnToggle();
 
-
-        addListenerOnPress();
+        addDirectionButtonListener();
+        addExploreInsideButtonListener();
     }
 
     // If button pushed change Campus
@@ -86,9 +87,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // this is the listener for the get directions button.
     // Once we get the search bar working, we can add a method for search here so that when the button is clicked it searches for location and gives the directions.
-    public void addListenerOnPress()
+    public void addDirectionButtonListener()
     {
         directionButton = (Button) findViewById(R.id.directionsButton);
+        // can add a functionality here that gives us the directions when we press on the button
+    }
+
+    // this is the listener for the explore inside button.
+    public void addExploreInsideButtonListener()
+    {
+        exploreInsideButton = (Button) findViewById(R.id.exploreInsideButton);
         // can add a functionality here that gives us the directions when we press on the button
     }
 
@@ -179,18 +187,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if (!isInfoWindowShown) {
                     marker.showInfoWindow();
-                    directionButton.setVisibility(View.VISIBLE);
 
                     // this sets the parameters for the button that appears on click. (The direction button)
-                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    //layoutParams.topMargin = 100;
-                    //layoutParams.leftMargin = 100;
-                    directionButton.setLayoutParams(layoutParams);
+                    directionButton.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                    directionButtonLayoutParams.topMargin = 125;
+                    directionButtonLayoutParams.leftMargin = -toggleButton.getWidth();
+                    directionButton.setLayoutParams(directionButtonLayoutParams);
+
+                    // this sets the parameters for the button that appears on click. (The explore inside button)
+                    exploreInsideButton.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                    exploreButtonLayoutParams.topMargin = 125;
+                    //exploreButtonLayoutParams.leftMargin = 100;
+                    exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
 
                     isInfoWindowShown = true;
                 } else {
                     marker.hideInfoWindow();
                     directionButton.setVisibility(View.INVISIBLE);
+                    exploreInsideButton.setVisibility(View.INVISIBLE);
                     isInfoWindowShown = false;
                 }
 
@@ -204,6 +220,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onMapClick(LatLng latLng) {
                 directionButton.setVisibility(View.INVISIBLE);
+                exploreInsideButton.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
             }
         });
