@@ -14,9 +14,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,18 +46,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     final private LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
 
     private ToggleButton toggleButton;
-
-
-//    //get FromSearch bar input from user
-//    EditText fromSearchBar = findViewById(R.id.fromSearchBar);
-//    //convert to string
-//    String from = fromSearchBar.getText().toString();
-//
-//    //get ToSearch bar input from user
-//    EditText toSearchBar = findViewById(R.id.toSearchBar);
-//    //convert to string
-//    String to = toSearchBar.getText().toString();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
