@@ -1,7 +1,7 @@
 Name: B Building
 {
     Address: "2160, Bishop"
-    Icon Name: ""
+    Icon Name: "b"
     Opening Times: "NA"
     Coordinates:
         {45.497741, -73.579635},
@@ -14,7 +14,7 @@ Name: B Building
 Name: CI Building
 {
     Address: "2149, Mackay"
-    Icon Name: ""
+    Icon Name: "ci"
     Opening Times: "NA"
     Coordinates:
         {45.497406, -73.580015},
@@ -44,7 +44,7 @@ Name: CL Building
 Name: D Building
 {
     Address: "2140, Bishop"
-    Icon Name: ""
+    Icon Name: "d"
     Opening Times: "NA"
     Coordinates:
         {45.497742, -73.579411},
@@ -57,7 +57,7 @@ Name: D Building
 Name: EN Building
 {
     Address: "2070, Mackay"
-    Icon Name: ""
+    Icon Name: "en"
     Opening Times: "Mon - Thu: 09:00am - 05:00pm<br>Fri : 09:00am - 03:30 pm<br>Sat - Sun: Closed"
     Coordinates:
         {45.496699, -73.579784},
@@ -72,7 +72,7 @@ Name: EN Building
 Name: ER Building
 {
     Address: "2155, Guy"
-    Icon Name: ""
+    Icon Name: "er"
     Opening Times: "NA"
     Coordinates:
         {45.496260, -73.580351},
@@ -112,7 +112,7 @@ Name: EV Building
 Name: FA Building
 {
     Address: "2060, Mackay"
-    Icon Name: ""
+    Icon Name: "fa"
     Opening Times: "Mon - Thu: 09:00am - 05:00pm<br>Fri: 09:00am - 03:30pm<br>Sat - Sun: Closed"
     Coordinates:
         {45.496777, -73.579586},
@@ -179,7 +179,7 @@ Name: FG Building
 Name: GA Building
 {
     Address: "Grey Nuns Annex 1211-1215, St-Mathieu"
-    Icon Name: ""
+    Icon Name: "ga"
     Opening Times: "Mon - Thu: 09:00am - 09:00pm<br>Fri : 09:00am - 05:00pm<br>Sat - Sun: 10:00am - 05:00pm"
     Coordinates:
         {45.493850, -73.578355},
@@ -196,7 +196,7 @@ Name: GA Building
 Name: GM Building
 {
     Address: "1435 Guy St, Montreal"
-    Icon Name: ""
+    Icon Name: "gm"
     Opening Times: "NA"
     Coordinates:
         {45.495781, -73.579147},
@@ -286,7 +286,7 @@ Name: GN Building
 Name: GS Building
 {
     Address: "1538, Sherbrooke"
-    Icon Name: ""
+    Icon Name: "gs"
     Opening Times: "NA"
     Coordinates:
         {45.496627, -73.581460},
@@ -317,7 +317,7 @@ Name: H Building
 Name: K Building
 {
     Address: "2150, Bishop"
-    Icon Name: ""
+    Icon Name: "k"
     Opening Times: "Mon - Thu: 10:00am - 06:00pm<br>Fri : 11:00am - 06:00pm<br>Sat : 11:00am - 06:00pm<br>Sun : Closed"
     Coordinates:
         {45.497627, -73.579634},
@@ -373,7 +373,7 @@ Name: LB Building
 Name: LD Building
 {
     Address: "1424, Bishop"
-    Icon Name: ""
+    Icon Name: "ld"
     Opening Times: "NA"
     Coordinates:
         {45.496564, -73.577470},
@@ -386,7 +386,7 @@ Name: LD Building
 Name: LS Building
 {
     Address: "1535, De Maisonneuve O."
-    Icon Name: ""
+    Icon Name: "ls"
     Opening Times: "NA"
     Coordinates:
         {45.496200, -73.579633},
@@ -401,7 +401,7 @@ Name: LS Building
 Name: M Building
 {
     Address: "2135, Mackay"
-    Icon Name: ""
+    Icon Name: "m"
     Opening Times: "NA"
     Coordinates:
         {45.497323, -73.579844},
@@ -432,7 +432,7 @@ Name: MB Building
 Name: MI Building
 {
     Address: "2130, Bishop"
-    Icon Name: ""
+    Icon Name: "mi"
     Opening Times: "NA"
     Coordinates:
         {45.497647, -73.579403},
@@ -447,7 +447,7 @@ Name: MI Building
 Name: MU Building
 {
     Address: "2170, Bishop"
-    Icon Name: ""
+    Icon Name: "mu"
     Opening Times: "NA"
     Coordinates:
         {45.497785, -73.579703},
@@ -460,7 +460,7 @@ Name: MU Building
 Name: P Building
 {
     Address: "2020, Mackay"
-    Icon Name: ""
+    Icon Name: "p"
     Opening Times: "NA"
     Coordinates:
         {45.496625, -73.579262},
@@ -473,7 +473,7 @@ Name: P Building
 Name: PR Building
 {
     Address: "2100, Mackay"
-    Icon Name: ""
+    Icon Name: "pr"
     Opening Times: "NA"
     Coordinates:
         {45.496946, -73.579938},
@@ -486,7 +486,7 @@ Name: PR Building
 Name: Q Building
 {
     Address: "2010, Mackay"
-    Icon Name: ""
+    Icon Name: "q"
     Opening Times: "NA"
     Coordinates:
         {45.496578, -73.579170},
@@ -499,7 +499,7 @@ Name: Q Building
 Name: R Building
 {
     Address: "2050, Mackay"
-    Icon Name: ""
+    Icon Name: "r"
     Opening Times: "NA"
     Coordinates:
         {45.496745, -73.579492},
@@ -512,7 +512,7 @@ Name: R Building
 Name: RR Building
 {
     Address: "2040, Mackay"
-    Icon Name: ""
+    Icon Name: "rr"
     Opening Times: "NA"
     Coordinates:
         {45.496651, -73.579480},
@@ -525,7 +525,7 @@ Name: RR Building
 Name: S Building
 {
     Address: "2145, Mackay"
-    Icon Name: ""
+    Icon Name: "s"
     Opening Times: "NA"
     Coordinates:
         {45.497363, -73.579927},
@@ -540,7 +540,7 @@ Name: S Building
 Name: SB Building
 {
     Address: "Samuel Bronfman Building. 1590, Docteur-Penfield"
-    Icon Name: ""
+    Icon Name: "sb"
     Opening Times: "NA"
     Coordinates:
         {45.496435, -73.586209},
@@ -565,7 +565,7 @@ Name: SB Building
 Name: T Building
 {
     Address: "2030, Mackay"
-    Icon Name: ""
+    Icon Name: "t"
     Opening Times: "Mon - Fri: 09:00am - 05:00pm<br>Sat - Sun: Closed"
     Coordinates:
         {45.496668, -73.579345},
@@ -578,7 +578,7 @@ Name: T Building
 Name: TD Building
 {
     Address: "1601 Sainte-Catherine St W, Montreal, Quebec"
-    Icon Name: ""
+    Icon Name: "td"
     Opening Times:"Mon - Thu: 09:00am - 06:00pm<br>Fri : 09:00am - 08:00pm<br>Sat : 09:00am - 04:000pm<br>Sun : 11:00am - 04:00pm"
     Coordinates:
         {45.495128, -73.578501},
@@ -595,7 +595,7 @@ Name: TD Building
 Name: V Building
 {
     Address: "2110, Mackay"
-    Icon Name: ""
+    Icon Name: "v"
     Opening Times: "Mon - Fri : 10:00am - 04:00pm"
     Coordinates:
         {45.496984, -73.580018},
@@ -608,7 +608,7 @@ Name: V Building
 Name: VA Building
 {
     Address: "Visual Arts Building. 1395, Rene-Levesque O."
-    Icon Name: ""
+    Icon Name: "va"
     Opening Times: "NA"
     Coordinates:
         {45.495401, -73.573767},
@@ -623,7 +623,7 @@ Name: VA Building
 Name: X Building
 {
     Address: "2080, Mackay"
-    Icon Name: ""
+    Icon Name: "x"
     Opening Times: "NA"
     Coordinates:
         {45.496857, -73.579758},
@@ -636,7 +636,7 @@ Name: X Building
 Name: Z Building
 {
     Address: "2090, Mackay"
-    Icon Name: ""
+    Icon Name: "z"
     Opening Times: "Mon - Fri : 09:00am - 05:00pm"
     Coordinates:
         {45.496911, -73.579816},
