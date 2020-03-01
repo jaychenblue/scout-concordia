@@ -8,7 +8,7 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".MapsActivity">
 
-    <fragment android:id="@+id/autocomplete_fragment"
+<fragment android:id="@+id/autocomplete_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
@@ -21,9 +21,10 @@ tools:context=".MapsActivity">
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/autocomplete_fragment" />
-
-    <ToggleButton
+    android:layout_below="@id/autocomplete_fragment"
+	tools:context=".MapsActivity"/>
+	
+	<ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="75dp"
         android:layout_height="30dp"
@@ -38,5 +39,26 @@ tools:context=".MapsActivity">
         android:layout_centerInParent="true"
 
         />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/directionsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Directions"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/exploreInsideButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Explore Inside"
+            android:visibility="invisible" />
+    </LinearLayout>
 
 </RelativeLayout>
