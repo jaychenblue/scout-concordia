@@ -10,8 +10,7 @@
 
     <!-- Splash screen theme -->
     <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/burgundy</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:windowBackground">@drawable/splash_screen_background</item>
     </style>
 
 </resources>
