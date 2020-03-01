@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+
+<!--primary colour palette-->
+    <color name="colorPrimary">#74091F</color>
+    <color name="colorAccent">#9E1A37</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="highlights">#AF8A6B</color>
+
+
+<!--    complementary colours-->
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
     <color name="burgandy">#74091F</color>
     <color name="buttonActiveText">#AF8A6B</color>
     <color name="buttonInActiveText">#FAFAFA</color>
     <color name="burgundy">#FF74091F</color>
     <color name="mainBurgundy">#800020</color>
-    <color name="white">#ffffff</color>
     <color name="darkBurgundyHighlights">#990000</color>
     <color name="lightGray">#d1d3d3</color>
     <color name="mediumGray">#8e979d</color>
+
 </resources>
