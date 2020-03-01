@@ -3,6 +3,9 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="burgandy">#74091F</color>
+    <color name="buttonActiveText">#AF8A6B</color>
+    <color name="buttonInActiveText">#FAFAFA</color>
     <color name="burgundy">#FF74091F</color>
     <color name="mainBurgundy">#800020</color>
     <color name="white">#ffffff</color>

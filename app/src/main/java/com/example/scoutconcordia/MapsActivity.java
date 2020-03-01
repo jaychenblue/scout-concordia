@@ -16,6 +16,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.print.PrintAttributes;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -112,6 +116,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         addListenerOnToggle();
 
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_maps);
+        bottomNavigationView.setSelectedItemId(R.id.nav_map);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch(menuItem.getItemId()){
+                    case R.id.nav_map:
+                        break;
+
+                    case R.id.nav_schedule:
+                        Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        startActivity(calendarIntent);
+                        MapsActivity.this.overridePendingTransition(0, 0);
+                        break;
+
+                    case R.id.nav_shuttle:
+                        Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
+                        startActivity(shuttleIntent);
+                        MapsActivity.this.overridePendingTransition(0, 0);
+                        break;
+                }
+                return false;
+            }
+        });
         addDirectionButtonListener();
         addExploreInsideButtonListener();
     }
@@ -422,6 +450,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
     }
