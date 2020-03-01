@@ -1,13 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:map="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:name="com.google.android.gms.maps.SupportMapFragment"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MapsActivity">
+
+<fragment android:id="@+id/autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        />
+
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MapsActivity">
+    android:layout_below="@id/autocomplete_fragment"
+	tools:context=".MapsActivity"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+	<ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="75dp"
+        android:layout_height="30dp"
+        android:text="ToggleButton"
+        android:textOff="@string/toggle_off"
+        android:textOn="@string/toggle_on"
+        android:layout_below="@id/autocomplete_fragment"
+        android:background="@drawable/shadow_toggle"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:checked="true"
+        android:layout_centerInParent="true"
+
+        />
+
+		<com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar_activity_maps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,18 +52,25 @@
         app:itemTextAppearanceInactive="@style/BottomNavigationViewStyle"
         android:background="@color/burgandy"/>
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MapsActivity" />
-
-    <ToggleButton
-        android:id="@+id/toggleButton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ToggleButton"
-        android:textOff="@string/toggle_off"
-        android:textOn="@string/toggle_on" />
-</FrameLayout>
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/directionsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Directions"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/exploreInsideButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Explore Inside"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</RelativeLayout>
