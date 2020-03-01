@@ -207,6 +207,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
         // Refresh to fix Map not displaying properly
         toggleCampus();
+        toggleButton.setChecked(false);
         getCurrentLocation();
 
         setClickListeners(); // sets the polygon listeners
