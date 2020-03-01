@@ -132,7 +132,7 @@ Name: CJ Building
 Name: DO Building
 {
 	Address: "7200, Sherbrooke O. (Stinger Dome)"
-	Icon Name: "do"
+	Icon Name: "do_building"
 	Opening Times: "Mon - Fri : 04:00am - 11:00pm"
 	Coordinates:
 	{45.457389, -73.637103},
