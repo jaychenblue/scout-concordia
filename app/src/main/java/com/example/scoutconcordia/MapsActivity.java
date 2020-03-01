@@ -233,15 +233,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // this sets the parameters for the button that appears on click. (The direction button)
                     directionButton.setVisibility(View.VISIBLE);
                     LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    directionButtonLayoutParams.topMargin = 125;
-                    directionButtonLayoutParams.leftMargin = -toggleButton.getWidth();
+                    directionButtonLayoutParams.topMargin = 200;
+                    directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
                     directionButton.setLayoutParams(directionButtonLayoutParams);
 
                     // this sets the parameters for the button that appears on click. (The explore inside button)
                     exploreInsideButton.setVisibility(View.VISIBLE);
                     LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                    exploreButtonLayoutParams.topMargin = 125;
-                    //exploreButtonLayoutParams.leftMargin = 100;
+                    exploreButtonLayoutParams.topMargin = 200;
+                    exploreButtonLayoutParams.leftMargin = 400;
                     exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
 
                     isInfoWindowShown = true;

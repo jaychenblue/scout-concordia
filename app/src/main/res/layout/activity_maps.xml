@@ -23,20 +23,28 @@ tools:context=".MapsActivity">
     android:layout_height="match_parent"
     android:layout_below="@id/autocomplete_fragment"
 	tools:context=".MapsActivity"/>
+	
+	<ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="75dp"
+        android:layout_height="30dp"
+        android:text="ToggleButton"
+        android:textOff="@string/toggle_off"
+        android:textOn="@string/toggle_on"
+        android:layout_below="@id/autocomplete_fragment"
+        android:background="@drawable/shadow_toggle"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
+        android:checked="true"
+        android:layout_centerInParent="true"
+
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
-
-        <ToggleButton
-            android:id="@+id/toggleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ToggleButton"
-            android:textOff="@string/toggle_off"
-            android:textOn="@string/toggle_on" />
 
         <Button
             android:id="@+id/directionsButton"
