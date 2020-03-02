@@ -8,9 +8,19 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- Splash screen theme -->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">10dp</item>
+	</style>
+
     <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowBackground">@drawable/splash_screen_background</item>
+        <item name="colorPrimary">@color/burgundy</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

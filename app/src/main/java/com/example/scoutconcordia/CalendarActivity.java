@@ -1,72 +1,50 @@
 package com.example.scoutconcordia;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.MenuItem;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class CalendarActivity extends AppCompatActivity {
-    private GoogleSignInClient googleSignInClient;
-    private GoogleSignInOptions gso;
-    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_calendar);
+        bottomNavigationView.setSelectedItemId(R.id.nav_schedule);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch(menuItem.getItemId()){
+                    case R.id.nav_map:
+                        Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
+                        startActivity(mapIntent);
+                        CalendarActivity.this.overridePendingTransition(0, 0);
+                        break;
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso);
-        signIn();
-    }
+                    case R.id.nav_schedule:
+                        break;
 
-
-    protected void signIn(){
-        Intent signInIntent = googleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    // result of the starActivityForResult in signIn()
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Verifies if the requqest code is that of the startActivityForResult using signInIntent in signIn()
-        if(requestCode == RC_SIGN_IN){
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInresult(task);
-        }
-    }
-
-    // handles the behavious once the signning in has completed
-    protected void handleSignInresult(Task<GoogleSignInAccount> task){
-        try{
-            GoogleSignInAccount account = task.getResult(ApiException.class);
-            Toast.makeText(this, account.getGivenName(), Toast.LENGTH_LONG).show();
-        }catch(ApiException e){
-            System.out.println("signInResult:failed code=" + e.getStatusCode());
-        }
+                    case R.id.nav_shuttle:
+                        Intent shuttleIntent = new Intent(CalendarActivity.this, ShuttleScheduleActivity.class);
+                        startActivity(shuttleIntent);
+                        CalendarActivity.this.overridePendingTransition(0, 0);
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, 0);
     }
 }
