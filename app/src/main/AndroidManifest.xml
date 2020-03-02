@@ -40,15 +40,19 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_maps" />
-
-        <activity android:name=".MapsActivity"
-          android:launchMode="singleTask">
+        <activity android:name=".MapsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".FromToActivity" android:parentActivityName=".MapsActivity"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
+
+
 
         <activity android:name=".CalendarActivity"
             android:noHistory="true"></activity>

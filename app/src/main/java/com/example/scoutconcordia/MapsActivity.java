@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -44,7 +45,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.google.android.gms.common.api.Status;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.google.android.gms.maps.model.Polyline;
+
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -53,7 +63,14 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.EncodedPolyline;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
@@ -67,6 +84,105 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button exploreInsideButton;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+
+
+
+    public void openPopup(View view){
+        Intent i = new Intent(MapsActivity.this, FromToActivity.class);
+        startActivity(i);
+    }
+
+
+    //this pathPolyline is for drawing outdoor path
+    private Polyline pathPolyline = null;
+
+
+    public static final Map<String, String> locationMap = new TreeMap<>();
+
+
+    public void lodMapWithDirection(Intent intent) {
+        if(pathPolyline != null) {
+            pathPolyline.remove();
+        }
+
+        String from = intent.getStringExtra("from");
+        String to = intent.getStringExtra("to");
+
+
+
+        if(from == null || to == null){
+            return;
+        }
+
+        if(locationMap.get(from) == null || locationMap.get(to) == null){
+            Toast.makeText(MapsActivity.this, "The searched location is not inside Concordia Campus!",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //Define list to get all latlng for the route
+        List<LatLng> path = new ArrayList();
+
+       LatLng toC = new LatLng(Double.parseDouble(locationMap.get(to).split(",")[0]),Double.parseDouble(locationMap.get(to).split(",")[1]));
+        //Execute Directions API requests
+
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA")
+                .build();
+
+        DirectionsApiRequest req = DirectionsApi.getDirections(context, locationMap.get(from), locationMap.get(to));
+        try {
+            DirectionsResult res = req.await();
+
+            //Loop through legs and steps to get encoded polylines of each step
+            if (res.routes != null && res.routes.length > 0) {
+                DirectionsRoute route = res.routes[0];
+
+                if (route.legs != null) {
+                    for (int i = 0; i < route.legs.length; i++) {
+                        DirectionsLeg leg = route.legs[i];
+                        if (leg.steps != null) {
+                            for (int j = 0; j < leg.steps.length; j++) {
+                                DirectionsStep step = leg.steps[j];
+                                if (step.steps != null && step.steps.length > 0) {
+                                    for (int k = 0; k < step.steps.length; k++) {
+                                        DirectionsStep step1 = step.steps[k];
+                                        EncodedPolyline points1 = step1.polyline;
+                                        if (points1 != null) {
+                                            //Decode polyline and add points to list of route coordinates
+                                            List<com.google.maps.model.LatLng> coords1 = points1.decodePath();
+                                            for (com.google.maps.model.LatLng coord1 : coords1) {
+                                                path.add(new LatLng(coord1.lat, coord1.lng));
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    EncodedPolyline points = step.polyline;
+                                    if (points != null) {
+                                        //Decode polyline and add points to list of route coordinates
+                                        List<com.google.maps.model.LatLng> coords = points.decodePath();
+                                        for (com.google.maps.model.LatLng coord : coords) {
+                                            path.add(new LatLng(coord.lat, coord.lng));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getCause());
+        }
+
+        //Draw the polyline
+        if (path.size() > 0) {
+            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
+            pathPolyline = mMap.addPolyline(opts);
+            Marker mark = mMap.addMarker(new MarkerOptions().position(toC));
+        }
+    }
+
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -215,6 +331,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
+        lodMapWithDirection(getIntent());
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -338,6 +455,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LinkedList.Node currentCoordinate = coordinates.getHead();
             for (int j = 0; j < coordinates.size(); j++)
             {
+                //to get coordinates for direction path
+                LatLng ll = (LatLng)currentCoordinate.getEle();
+
+                if(j == 1) {
+
+                    locationMap.put(((BuildingInfo) currentBuilding.getEle()).getName().trim(), ll.latitude + "," + ll.longitude);
+                }
                 po.add((LatLng)currentCoordinate.getEle());
                 currentCoordinate = currentCoordinate.getNext();
             }

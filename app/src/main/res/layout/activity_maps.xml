@@ -66,6 +66,16 @@ tools:context=".MapsActivity">
             android:text="Get Directions"
             android:visibility="invisible" />
 
+         <Button
+            android:id="@+id/getDirection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Directions"
+            android:visibility="visible" 
+            android:layout_marginTop="70dp"
+            android:layout_marginRight="110dp"
+             android:onClick="openPopup"/>
+
         <Button
             android:id="@+id/exploreInsideButton"
             android:layout_width="wrap_content"
