@@ -250,8 +250,18 @@ public class LinkedList <E> implements BaseMethods<E>
         throw new UnsupportedOperationException("This class does not support that method.");
     }
 
-    public boolean contains(Object given) {
-        throw new UnsupportedOperationException("This class does not support that method.");
+    public boolean contains(Object given)
+    {
+        Node cycler = head;
+        for (int i = 0; i < size; i++)
+        {
+            if (cycler.getEle().equals(given))
+            {
+                return true;
+            }
+            cycler = cycler.getNext();
+        }
+        return false;
     }
 
     public int indexOf(Object given) {

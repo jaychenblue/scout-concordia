@@ -16,6 +16,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.print.PrintAttributes;
 import android.view.View;
@@ -142,6 +143,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
         addDirectionButtonListener();
         addExploreInsideButtonListener();
+
+        // Testing Graph
+        Graph g1 = new Graph(2);
+        LatLng p1 = new LatLng(0,0);
+        LatLng p2 = new LatLng(1,1);
+        g1.insertVertex(p1);
+        g1.insertVertex(p2);
+        Log.println(Log.INFO, "graph", Integer.toString(g1.insertEdge(p1,p2)));
+        if (g1.areAdjacent(p1,p2))
+            Log.println(Log.INFO, "graph", "P1 & P2 are Adjacent!");
+        LatLng[] points = g1.vertices();
+        for (int i = 0; i < points.length; i++)
+            Log.println(Log.INFO, "graph", points[i].toString());
     }
 
     // If button pushed change Campus
