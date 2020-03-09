@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 
-public class LinkedList <E> implements BaseMethods<E>
+public class LinkedList <E>
 {
     private Node head;
     private Node tail;
@@ -237,19 +237,6 @@ public class LinkedList <E> implements BaseMethods<E>
         return printme.toString();
     }
 
-
-
-    public Object clone() {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-
-    public boolean addAll(int i, Collection given) {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-    public boolean addAll(Collection given) {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-
     public boolean contains(Object given)
     {
         Node cycler = head;
@@ -264,66 +251,32 @@ public class LinkedList <E> implements BaseMethods<E>
         return false;
     }
 
-    public int indexOf(Object given) {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-
-    public int lastIndexOf(Object given) {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-
-    public Object[] toArray() {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-    public Object[] toArray(Object[] a) {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-
-    public void trimToSize() {
-        throw new UnsupportedOperationException("This class does not support that method.");
-    }
-    
-
-    /*
-    private Serializable deepClone(Serializable o)
+    // Returns -1 if not found and otherwise the index of the object
+    public int indexOf(Object given)
     {
-        ObjectOutputStream oos = null;
-        ObjectInputStream ois = null;
-        E returnMe = null;
-        try
+        Node cycler = head;
+        for (int i = 0; i < size; i++)
         {
-            oos = new ObjectOutputStream(new FileOutputStream(destination));
-            oos.writeObject(o);
-            oos.flush();
-            ois = new ObjectInputStream(new FileInputStream(destination));
-            returnMe = (E)ois.readObject();
-            try
+            if (cycler.getEle().equals(given))
             {
-                oos.close();
-                ois.close();
+                return i;
             }
-            catch (IOException ioe2)
-            {
-                System.out.println("There was an issue in closing one of the binary streams");
-            }
+            cycler = cycler.getNext();
         }
-        catch (ClassNotFoundException cnfe)
+        return -1;
+    }
+
+    public Object[] toArray()
+    {
+        Object[] returnMe = new Object[size];
+        Node cycler = head;
+        for (int i = 0; i < size; i++)
         {
-            System.out.println("Class read isn't located anywhere that registers with the written OBJ");
+            returnMe[i] = cycler.element;
+            cycler = cycler.getNext();
         }
-        catch (FileNotFoundException fnf)
-        {
-            System.out.println("Temporary FIle was moved while serializing and de-serializing OBJs");
-        }
-        catch (IOException ioe)
-        {
-            System.out.println("An issue occurred while opening the binary files");
-        }
-        finally
-        {
-            return returnMe;
-        }
-    }*/
+        return returnMe;
+    }
     
     public boolean removeOBJ(Object o)
     {
