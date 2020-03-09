@@ -23,6 +23,20 @@ public class BuildingInfoTest {
         assertEquals("ABC", output);
     }
 
+    @Test
+    public void getAddressTest() {
+        String output = b.getAddress();
+
+        assertEquals("123", output);
+    }
+
+    @Test
+    public void getOpeningTimesTest() {
+        String output = b.getOpeningTimes();
+
+        assertEquals("0800", output);
+    }
+
     @After
     public void after() throws Exception {
         b = null;
