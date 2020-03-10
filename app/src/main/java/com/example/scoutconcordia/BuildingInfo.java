@@ -66,7 +66,7 @@ public class BuildingInfo
     public String getOpeningTimes() { return openingTimes; }
     
     
-    public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
+    /*public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
     {
         Scanner reader = null;
         PrintWriter writer = null;
@@ -134,7 +134,7 @@ public class BuildingInfo
                 writer.close();
         }
     }
-    
+    */
     public static LinkedList<BuildingInfo> obtainBuildings(InputStream readMe)
     {
         int currentPos = 0;
