@@ -21,7 +21,7 @@
 
 * Language: Java
 
-# Team Members
+### Team Members
 
 Name | Username
 --- | ---
@@ -35,9 +35,11 @@ Seif Elderbi | SeifElDerby
 Victor Manea | vicmanea
 Vincent Cerri | vincentcerri
 
-# Guidelines
+### Guidelines
 
 Please read the guidelines at CONTRIBUTING.md and the <a href="https://github.com/jaychenblue/scout-concordia/wiki">GitHub Wiki</a> before contributing.
+
+<br />
 
 <!-- GETTING STARTED -->
 # Getting Started
