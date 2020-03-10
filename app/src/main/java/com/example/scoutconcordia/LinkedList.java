@@ -158,7 +158,9 @@ public class LinkedList <E>
         return returnMe;
     }
     
-    private boolean remove(Serializable s)
+    private E remove(int index){return removeNode(index);}
+    
+    private boolean remove(Object s)
     {
         Node cycler = head;
         for (int i = 0; i < size; i++)
@@ -284,12 +286,11 @@ public class LinkedList <E>
             return false;
         if (o.getClass() != classType.getClass())
             return false;
-        return remove((Serializable)o);
+        return remove(o);
     }
     
     public int size() {return size;}
     public boolean add(E element) {return addToTail(element);}
     public void add(int index, E element){addToIndex(index, element);}
-    public E remove(int index){return removeNode(index);}
     public Node getHead() {return head;}
 }
