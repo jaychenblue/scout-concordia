@@ -14,7 +14,7 @@ buildscript {
     }
 }
 
-//sonarQube setup
+//sonarQube plugin setup
 plugins {
     id "org.sonarqube" version "2.7"
 }
