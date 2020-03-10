@@ -13,16 +13,36 @@
 <br />
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+# General Information
 
-ScoutConcordia is an Android app written in Java.
+* Course: SOEN 390 - Winter 2020
 
-### Built With
-* [Java](https://www.java.com/en/download/)
-* [Android Studio](https://developer.android.com/studio)
+* Platform: Android
+
+* Language: Java
+
+### Team Members
+
+Name | Username
+--- | ---
+Averynder Singh | Averynder
+Brinda Mailvaganam | 13rinda
+Jay Chen | jaychenblue
+Jennifer Younanian | JenYn
+Jun Yang | JYSW380
+Manpreet Sohal | ManpreetSohal
+Seif Elderbi | SeifElDerby
+Victor Manea | vicmanea
+Vincent Cerri | vincentcerri
+
+### Guidelines
+
+Please read the guidelines at CONTRIBUTING.md and the <a href="https://github.com/jaychenblue/scout-concordia/wiki">GitHub Wiki</a> before contributing.
+
+<br />
 
 <!-- GETTING STARTED -->
-## Getting Started
+# Getting Started
 
 To get the app working on your computer, follow the steps below.
 
