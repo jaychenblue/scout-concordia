@@ -26,7 +26,6 @@ public class LinkedListTest {
 
     @After
     public void after() throws Exception {
-        numbs = null;
         l = null;
         assertNull(l);
     }
@@ -49,6 +48,8 @@ public class LinkedListTest {
 
         assertNotNull(list);
         assertEquals(6, list.size());
+
+        list = null;
     }
 
     // test getters
