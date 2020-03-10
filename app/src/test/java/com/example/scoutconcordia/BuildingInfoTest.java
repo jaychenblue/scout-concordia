@@ -16,6 +16,8 @@ public class BuildingInfoTest {
         b = new BuildingInfo("ABC", "123", "0800");
     }
 
+    // test getters
+
     @Test
     public void getNameTest() {
         String output = b.getName();
@@ -36,6 +38,14 @@ public class BuildingInfoTest {
 
         assertEquals("0800", output);
     }
+
+    // test toString method
+    @Test
+    public void testToString() {
+        assertEquals("Name: ABC\nAddress: 123\nIconName: smiling.png\nOpeningTimes: 0800\nCoordinates:(0,0)\nCenter:", b.toString());
+    }
+
+    // test constructor
 
     @After
     public void after() throws Exception {
