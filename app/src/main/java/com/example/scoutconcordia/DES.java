@@ -2,20 +2,15 @@ package com.example.scoutconcordia;
 
 import android.util.Log;
 
-import com.google.android.gms.common.util.Hex;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Scanner;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+
 
 public class DES {
 
@@ -31,15 +26,13 @@ public class DES {
     }
     final private static SecretKey myDesKey = keygenerator.generateKey();
 
-
+    /** Method for decrypting a file. Requires an input stream and an output stream **/
     public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
     {
         Scanner reader = null;
         PrintWriter writer = null;
         try
         {
-            //KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
-            //SecretKey myDesKey = keygenerator.generateKey();
             Cipher desCipher = Cipher.getInstance("DES");
             reader = new Scanner(readFromMe);
             writer = new PrintWriter(writeToMe);
@@ -49,14 +42,8 @@ public class DES {
                 desCipher.init(Cipher.DECRYPT_MODE, myDesKey);
                 String decryptMe = reader.nextLine();
 
-                byte[] textDecrypted = desCipher.doFinal(decryptMe.getBytes("UTF8"));
-                writer.println(textDecrypted);
-
-                //byte[] enc = android.util.Base64.decode(decryptMe, android.util.Base64.DEFAULT);
-                //byte[] textDecrypted = desCipher.doFinal(enc);
-                //byte[] textDecrypted = desCipher.doFinal(decryptMe.getBytes("UTF8"));  //original
-                //String writeMe = new String(textDecrypted);
-                //writer.println(writeMe);
+                byte[] textDecrypted = desCipher.doFinal(hexToByte(decryptMe));
+                writer.println(new String(textDecrypted));
             }
         }
         catch(Exception e)
@@ -73,27 +60,19 @@ public class DES {
         }
     }
 
+    /** Method for encrypting a file. Requires an input stream and an output stream **/
     public static void encryptFile(InputStream readFromMe, OutputStream writeToMe)
     {
         Scanner reader = null;
         PrintWriter writer = null;
         try
         {
-            //KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
-            //SecretKey myDesKey = keygenerator.generateKey();
             Cipher desCipher = Cipher.getInstance("DES");
             reader = new Scanner(readFromMe);
             writer = new PrintWriter(writeToMe);
 
             while (reader.hasNextLine())
             {
-                //String encryptMe = reader.nextLine();
-                //byte[] text = encryptMe.getBytes("UTF8");
-                //desCipher.init(Cipher.ENCRYPT_MODE, myDesKey);
-                //byte[] textEncrypted = desCipher.doFinal(text);
-                //String writeMe = new String(textEncrypted);
-                //writer.println(writeMe);
-
                 desCipher.init(Cipher.ENCRYPT_MODE, myDesKey);
                 String encryptMe = reader.nextLine();
                 byte[] textEncrypted = desCipher.doFinal(encryptMe.getBytes("UTF-8"));
@@ -113,6 +92,7 @@ public class DES {
         }
     }
 
+    /** Helper method for converting an array of bytes to hex characters **/
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -123,6 +103,7 @@ public class DES {
         return new String(hexChars);
     }
 
+    /** Helper method for converting hex characters to an array of bytes **/
     public static byte[] hexToByte(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];
@@ -132,4 +113,62 @@ public class DES {
         }
         return data;
     }
+
+    /** Here is some code that was used to test to see if the encryption and decryption was working.
+     * Leaving this code here for now to see the format that was used for calling the methods.
+     * We can delete this later once implemented fully.
+     *
+    // testing file encryption
+    String next_line = null;
+    Scanner reader = null;  // scanner for reading files
+
+    String encrypted_filename = "encrypted_sgw_locations.txt";
+    String decrypted_filename = "decrypted_sgw_locations.txt";
+    OutputStream fos = null;
+    InputStream fis = null;
+
+        try {
+        fis = getResources().openRawResource(getResources().getIdentifier("downtownlocations2", "raw", getPackageName()));
+        fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));
+
+        //lets encrypt the file
+        DES.encryptFile(fis, fos);
+        fis.close();
+        fos.close();
+
+        // test to see if the file has anything in it. This will print out the encrypted file.
+        fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));
+        reader = new Scanner(fis);
+        while (reader.hasNextLine())
+        {
+            next_line = reader.nextLine();
+            System.out.println(next_line);
+        }
+        reader.close();
+
+        // now we want to decrypt the file to see if the file is back to its original state.
+        fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));  // input the encrypted file
+        fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), decrypted_filename)); // output the decrypted file
+
+        // lets decrypt the file
+        DES.decryptFile(fis, fos);
+        fis.close();
+        fos.close();
+
+        fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), decrypted_filename));
+        reader = new Scanner(fis);
+        while (reader.hasNextLine())
+        {
+            next_line = reader.nextLine();
+            System.out.println(next_line);
+        }
+        reader.close();
+
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (
+    IOException e) {
+        e.printStackTrace();
+    }
+    **/
 }

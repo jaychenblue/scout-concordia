@@ -64,77 +64,7 @@ public class BuildingInfo
     }
 
     public String getOpeningTimes() { return openingTimes; }
-    
-    
-    /*public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
-    {
-        Scanner reader = null;
-        PrintWriter writer = null;
-        try
-        {
-            KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
-            SecretKey myDesKey = keygenerator.generateKey();
-            Cipher desCipher = Cipher.getInstance("DES");
-            reader = new Scanner(readFromMe);
-            writer = new PrintWriter(writeToMe);
-        
-            while (reader.hasNextLine())
-            {
-                String decryptMe = reader.nextLine();
-                desCipher.init(Cipher.DECRYPT_MODE, myDesKey);
-                byte[] textDecrypted = desCipher.doFinal(decryptMe.getBytes("UTF8"));
-                String writeMe = new String(textDecrypted);
-                writer.println(writeMe);
-            }
-        }
-        catch(Exception e)
-        {
-            Log.println(Log.WARN, "decrypting", "An Exception occured");
-        }
-        finally
-        {
-            if (reader != null)
-                reader.close();
-            if (writer != null)
-                writer.close();
-        }
-    }
-    
-    public static void encryptFile(InputStream readFromMe, OutputStream writeToMe)
-    {
-        Scanner reader = null;
-        PrintWriter writer = null;
-        try
-        {
-            KeyGenerator keygenerator = KeyGenerator.getInstance("DES");
-            SecretKey myDesKey = keygenerator.generateKey();
-            Cipher desCipher = Cipher.getInstance("DES");
-            reader = new Scanner(readFromMe);
-            writer = new PrintWriter(writeToMe);
-            
-            while (reader.hasNextLine())
-            {
-                String encryptMe = reader.nextLine();
-                byte[] text = encryptMe.getBytes("UTF8");
-                desCipher.init(Cipher.ENCRYPT_MODE, myDesKey);
-                byte[] textEncrypted = desCipher.doFinal(text);
-                String writeMe = new String(textEncrypted);
-                writer.println(writeMe);
-            }
-        }
-        catch(Exception e)
-        {
-            Log.println(Log.WARN, "decrypting", "An Exception occured");
-        }
-        finally
-        {
-            if (reader != null)
-                reader.close();
-            if (writer != null)
-                writer.close();
-        }
-    }
-    */
+
     public static LinkedList<BuildingInfo> obtainBuildings(InputStream readMe)
     {
         int currentPos = 0;
