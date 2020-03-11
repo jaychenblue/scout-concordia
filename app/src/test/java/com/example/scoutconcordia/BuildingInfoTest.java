@@ -23,22 +23,8 @@ public class BuildingInfoTest {
     public void testGetters() {
         assertEquals("ABC", b.getName());
         assertEquals("123", b.getAddress());
-        //assertEquals("smiling.png", b.getIconName());
-        //assertEquals("(0,0)", b.getCoordinates());
         assertEquals("0800", b.getOpeningTimes());
     }
-
-    // test toString method
-//    @Test
-//    public void testToString() {
-//        assertEquals("Name: ABC\n" +
-//                "Address: 123\n" +
-//                "IconName: smiling.png\n" +
-//                "OpeningTimes: 0800\n" +
-//                "Coordinates:(0,0)\n" +
-//                "Center:",
-//                b.toString());
-//    }
 
     // test constructor
     @Test
@@ -51,12 +37,6 @@ public class BuildingInfoTest {
 
         building = null;
     }
-
-    // testing the linked list
-//    @Test
-//    public void testObtainBuildings() {
-//
-//    }
 
     @After
     public void after() throws Exception {

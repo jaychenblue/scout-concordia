@@ -57,7 +57,6 @@ public class LinkedListTest {
     public void testGetters() {
         assertEquals(3, l.size());
         assertNotNull(l.getHead());
-        assertNotNull(l.remove(1));
         assertTrue(l.add(77));
     }
 
