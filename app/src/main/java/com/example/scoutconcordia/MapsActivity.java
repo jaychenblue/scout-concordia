@@ -341,7 +341,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addLocationsToMap(InputStream location)
     {
-
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
         //BuildingInfo.encryptFile();
         LinkedList.Node currentBuilding = buildings.getHead();
