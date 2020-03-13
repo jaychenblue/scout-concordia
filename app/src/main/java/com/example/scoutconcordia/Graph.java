@@ -181,13 +181,15 @@ public class Graph
     }
 
     // reads a from a node file to add nodes to a graph
-    public void addNodesToGraph(InputStream readFromMe)
+    public static Graph addNodesToGraph(InputStream readFromMe)
     {
         int currentPos = 0;
         Scanner reader = null;
         String currentLine = null;
         String floorName = null;
+        Graph returnMe = null;
         LatLng currentCoordinate = null;
+        LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
         try
         {
             reader = new Scanner(readFromMe);
@@ -216,8 +218,8 @@ public class Graph
                     x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
                     y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-2));
                     currentCoordinate = new LatLng(x_coordinate, y_coordinate);
-
-                    this.insertVertex(currentCoordinate);
+                    
+                    coordinatesToInsert.add(currentCoordinate);
                     currentLine = reader.nextLine();
                 }
                 int posOfHalfway = 0;
@@ -227,14 +229,27 @@ public class Graph
                 x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
                 y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-1));
                 currentCoordinate = new LatLng(x_coordinate, y_coordinate);
-
-                this.insertVertex(currentCoordinate);
+                
+                coordinatesToInsert.add(currentCoordinate);
             }
         } catch (InputMismatchException e) {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
+        finally
+        {
+            LinkedList.Node current = null;
+            returnMe = new Graph(coordinatesToInsert.size());
+            for (int i = 0; i < coordinatesToInsert.size(); i++)
+            {
+                if (i == 0)
+                    current = coordinatesToInsert.getHead();
+                if (current != null)
+                    returnMe.insertVertex((LatLng)current.getEle());
+                current = current.getNext();
+            }
+        }
+        return returnMe;
     }
 }
