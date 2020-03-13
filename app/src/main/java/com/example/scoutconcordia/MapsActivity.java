@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.BufferedOutputStream;
@@ -74,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
     private Button directionButton;
     private Button exploreInsideButton;
+    private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
 
@@ -151,6 +153,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
         addDirectionButtonListener();
         addExploreInsideButtonListener();
+        addPopUpBarListener();
 
 
         // Lets try creating a graph for Hall 8th Floor
@@ -195,6 +198,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         exploreInsideButton = (Button) findViewById(R.id.exploreInsideButton);
         // can add a functionality here that gives us the directions when we press on the button
+    }
+
+    // this is the listener for the pop up bar at the bottom of the screen.
+    public void addPopUpBarListener()
+    {
+        popUpBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
+        // can add functionality here if we click on the pop up bar
     }
 
 
@@ -294,22 +304,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // this sets the parameters for the button that appears on click. (The direction button)
                     directionButton.setVisibility(View.VISIBLE);
                     LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    directionButtonLayoutParams.topMargin = 200;
-                    directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
+                    //directionButtonLayoutParams.topMargin = 200;
+                    //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
                     directionButton.setLayoutParams(directionButtonLayoutParams);
 
                     // this sets the parameters for the button that appears on click. (The explore inside button)
                     exploreInsideButton.setVisibility(View.VISIBLE);
                     LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                    exploreButtonLayoutParams.topMargin = 200;
-                    exploreButtonLayoutParams.leftMargin = 400;
+                    //exploreButtonLayoutParams.topMargin = 200;
+                    //exploreButtonLayoutParams.leftMargin = 400;
                     exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+
+                    // this sets the parameters for the pop up bar that appears on click
+                    popUpBar.setVisibility(View.VISIBLE);
+
 
                     isInfoWindowShown = true;
                 } else {
                     marker.hideInfoWindow();
                     directionButton.setVisibility(View.INVISIBLE);
                     exploreInsideButton.setVisibility(View.INVISIBLE);
+                    popUpBar.setVisibility(View.INVISIBLE);
                     isInfoWindowShown = false;
                 }
 
@@ -324,6 +339,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapClick(LatLng latLng) {
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
+                popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
             }
         });

@@ -50,13 +50,26 @@ tools:context=".MapsActivity">
         android:textFontWeight="500"
         android:checked="true"
         android:layout_centerInParent="true"
+        />
 
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_above="@id/nav_bar_activity_maps"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/white"
+        tools:ignore="BottomAppBar"
+        android:visibility="invisible"
         />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_above="@id/nav_bar_activity_maps"
+        android:layout_alignRight="@id/map"
         >
 
         <Button
@@ -64,14 +77,23 @@ tools:context=".MapsActivity">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get Directions"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:textColor="@color/white"
+            android:background="@drawable/shadow_toggle"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="30pt"
+            android:padding="5dp"/>
 
         <Button
             android:id="@+id/exploreInsideButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Explore Inside"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:textColor="@color/white"
+            android:background="@drawable/shadow_toggle"
+            android:layout_marginRight="22pt"
+            android:padding="5dp"/>
     </LinearLayout>
 
 </RelativeLayout>
