@@ -161,7 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try
         {
             fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
-            Graph hall_8_floor = Graph.addNodesToGraph(fis);
+            Graph hall_8_floor = Graph.addNodesToGraph("hall8nodes", fis);
             LatLng[] tempArray = hall_8_floor.vertices();
             for (int i = 0; i < tempArray.length; i++)
             {
