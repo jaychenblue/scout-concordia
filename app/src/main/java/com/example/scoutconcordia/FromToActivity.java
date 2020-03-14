@@ -63,7 +63,7 @@ public class FromToActivity extends Activity {
         Intent intent = new Intent(this, MapsActivity.class);
         intent.putExtra("from", from);
         intent.putExtra("to", to);
-        intent.putExtra("mode", "walkingß");
+        intent.putExtra("mode", "walking");
         startActivity(intent);
     }
 }

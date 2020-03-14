@@ -86,6 +86,7 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
@@ -121,6 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             pathPolyline.remove();
         }
 
+
         String from = intent.getStringExtra("from");
         String to = intent.getStringExtra("to");
 
@@ -146,7 +148,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .apiKey("AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA")
                 .build();
 
-        DirectionsApiRequest req = DirectionsApi.getDirections(context, locationMap.get(from), locationMap.get(to));
+        String mode = intent.getStringExtra("mode");
+        DirectionsApiRequest req = DirectionsApi.newRequest(context);
+        if(mode.equals("driving")){
+            req.mode(TravelMode.DRIVING).origin(locationMap.get(from)).destination(locationMap.get(to));
+        } else {
+            req.mode(TravelMode.WALKING).origin(locationMap.get(from)).destination(locationMap.get(to));
+        }
+
         try {
             DirectionsResult res = req.await();
 
