@@ -48,6 +48,7 @@ public class FromToActivity extends Activity {
         String from = fromSearch.getText().toString();
         AutoCompleteTextView toSearch = findViewById(R.id.toSearchBar);
         String to = toSearch.getText().toString();
+
         Intent intent = new Intent(this, MapsActivity.class);
         intent.putExtra("from", from);
         intent.putExtra("to", to);
@@ -60,10 +61,26 @@ public class FromToActivity extends Activity {
         String from = fromSearch.getText().toString();
         AutoCompleteTextView toSearch = findViewById(R.id.toSearchBar);
         String to = toSearch.getText().toString();
+
         Intent intent = new Intent(this, MapsActivity.class);
         intent.putExtra("from", from);
         intent.putExtra("to", to);
         intent.putExtra("mode", "walking");
         startActivity(intent);
     }
+
+    public void byShuttle(View view) {
+        AutoCompleteTextView fromSearch = findViewById(R.id.fromSearchBar);
+        String from = fromSearch.getText().toString();
+        AutoCompleteTextView toSearch = findViewById(R.id.toSearchBar);
+        String to = toSearch.getText().toString();
+
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("from", from);
+        intent.putExtra("to", to);
+        intent.putExtra("mode", "shuttle");
+        startActivity(intent);
+    }
+
+
 }

@@ -63,7 +63,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="2"
+        android:weightSum="3"
         >
 
         <Button
@@ -85,6 +85,16 @@
         android:onClick="byWalking"
         android:text="Walking"
         android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/Shuttle"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="160dp"
+            android:onClick="byShuttle"
+            android:text="Shuttle"
+            android:layout_weight="1"/>
     </LinearLayout>
 
 

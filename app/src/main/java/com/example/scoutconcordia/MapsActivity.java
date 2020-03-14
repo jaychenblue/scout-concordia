@@ -118,6 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void lodMapWithDirection(Intent intent) {
+        //to remove previous path line
         if(pathPolyline != null) {
             pathPolyline.remove();
         }
@@ -127,11 +128,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String to = intent.getStringExtra("to");
 
 
-
+        //this is to prevent auto shut down the app at the beginning just load the getDirection
         if(from == null || to == null){
             return;
         }
 
+        //when either location selected are not inside concordia campus, then will give a feedback
         if(locationMap.get(from) == null || locationMap.get(to) == null){
             Toast.makeText(MapsActivity.this, "The searched location is not inside Concordia Campus!",
                     Toast.LENGTH_LONG).show();
@@ -148,15 +150,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .apiKey("AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA")
                 .build();
 
+        //get the different mode of travelling
         String mode = intent.getStringExtra("mode");
         DirectionsApiRequest req = DirectionsApi.newRequest(context);
         if(mode.equals("driving")){
             req.mode(TravelMode.DRIVING).origin(locationMap.get(from)).destination(locationMap.get(to));
-        } else {
+        } else if(mode.equals("walking")) {
             req.mode(TravelMode.WALKING).origin(locationMap.get(from)).destination(locationMap.get(to));
+        } else {
+            req.mode(TravelMode.TRANSIT).origin(locationMap.get(from)).destination(locationMap.get(to));
         }
 
         try {
+            //waiting request
             DirectionsResult res = req.await();
 
             //Loop through legs and steps to get encoded polylines of each step
