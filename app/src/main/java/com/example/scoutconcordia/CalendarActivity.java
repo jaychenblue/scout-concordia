@@ -83,6 +83,42 @@ public class CalendarActivity extends AppCompatActivity {
         });
     }
 
+    // dialog to display a selection list with all calendar entry names
+    // single selection is allowed, and first value is selected by default
+    // dialog is not cancellable
+    // user either has to select an option, or go back to MapsActivity by pressing cancel or back button
+
+    public Dialog onCreateDialogSingleChoice() {
+        final CharSequence[] cs = calendarNames.toArray(new CharSequence[calendarNames.size()]);    // char sequence holds the names of all calendars of the user
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MaterialThemeDialog);
+        selectedCalendarId = calendarIds.get(0);
+        builder.setTitle("Select schedule calendar")
+                .setCancelable(false)
+                .setSingleChoiceItems(cs, 0, new DialogInterface.OnClickListener() {    //creates the selection list
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        selectedCalendarId = calendarIds.get(which);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {    // cancel button
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
+                        startActivity(mapIntent);
+                        CalendarActivity.this.overridePendingTransition(0, 0);
+                    }
+                })
+                .setPositiveButton("Select", new DialogInterface.OnClickListener() {    // select button
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //display calendar
+                    }
+                });
+
+
+        return builder.create();
+    }
+
     // creates a new sign in intent
     protected void signIn() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
@@ -115,7 +151,7 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(0, 0);
+        overridePendingTransition(0, 0);    // removes the exit adn enter animations when changing activities
     }
 
     // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
@@ -164,6 +200,7 @@ public class CalendarActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void v){
             super.onPostExecute(v);
+            onCreateDialogSingleChoice().show();
         }
     }
 
