@@ -86,8 +86,6 @@ public class ShuttleInfo {
             "12:05",
             "12:20", "12:55", "13:30", "13:45", "14:05", "14:40", "14:55", "15:15", "15:50", "16:05", "16:25", "17:15", "18:05", "18:40", "19:15", "19:50"};
 
-    public ShuttleInfo() {
-    }
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
