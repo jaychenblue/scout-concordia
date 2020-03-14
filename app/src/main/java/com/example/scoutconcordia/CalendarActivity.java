@@ -1,6 +1,10 @@
 package com.example.scoutconcordia;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -9,6 +13,8 @@ import android.widget.Toast;
 import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -17,12 +23,26 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.calendar.model.CalendarListEntry;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CalendarActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInOptions gso;
     private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult request code)
-
+    private String email = null;    // email address of user
+    private Calendar service = null;    // Google Calendar Api service
+    private ArrayList<String> calendarNames = new ArrayList<>();    // user's google calendars' name list
+    private ArrayList<String> calendarIds = new ArrayList<>();    // user's google calendars' name list
+    private String selectedCalendarId = null;   // holds the id of the google calendar that the user has chosen to import
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,9 +105,9 @@ public class CalendarActivity extends AppCompatActivity {
     protected void handleSignInresult(Task<GoogleSignInAccount> task) {
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            Toast.makeText(getApplicationContext(),account.getEmail(), Toast.LENGTH_LONG).show();
+            email = account.getEmail();
+            new RetrieveCalendars().execute();  // async task to retrieve the list of google calendars
         } catch (Throwable e) {
-            Toast.makeText(getApplicationContext(),e.toString(), Toast.LENGTH_LONG).show();
             Log.d(TAG, e.getMessage());
         }
     }
@@ -97,4 +117,54 @@ public class CalendarActivity extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(0, 0);
     }
+
+    // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
+    // - set up a google api calendar service (get an access token using the user's email and set this token to the credentials used
+    //   to build the Calendar service object)
+    // - retrieves a list of google calendars
+    private class RetrieveCalendars extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            String scopes = "oauth2:email";
+            String token = null;
+            try {
+                token = GoogleAuthUtil.getToken(getApplicationContext(), email, scopes);
+                JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+                NetHttpTransport HTTP_TRANSPORT = new com.google.api.client.http.javanet.NetHttpTransport();
+
+                GoogleCredential CREDENTIALS = new GoogleCredential.Builder().setTransport(new NetHttpTransport())
+                        .setJsonFactory(JacksonFactory.getDefaultInstance())
+                        .build();
+
+                CREDENTIALS.setAccessToken(token);
+
+                service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, CREDENTIALS)
+                        .setApplicationName("ScoutConcordia").build();
+
+                String pageToken = null;
+                do {
+                    CalendarList calendarList = service.calendarList().list().setPageToken(pageToken).execute();
+                    List<CalendarListEntry> calendars = calendarList.getItems();
+
+                    for(CalendarListEntry calendarListEntry : calendars) {
+                        String name = calendarListEntry.getSummary();
+                        String id = calendarListEntry.getId();
+                        calendarNames.add(name);
+                        calendarIds.add(id);
+                    }
+                    pageToken = calendarList.getNextPageToken();    // if there is no next page token will be null
+                }
+                while (pageToken != null);
+            } catch (Throwable t) {
+                Log.e("TAG", t.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v){
+            super.onPostExecute(v);
+        }
+    }
+
 }
