@@ -43,16 +43,27 @@ public class FromToActivity extends Activity {
         toSearchBar.setAdapter(adapter2);
     }
 
-    public void Go(View view) {
+    public void byDriving(View view) {
         AutoCompleteTextView fromSearch = findViewById(R.id.fromSearchBar);
         String from = fromSearch.getText().toString();
         AutoCompleteTextView toSearch = findViewById(R.id.toSearchBar);
         String to = toSearch.getText().toString();
-
-
         Intent intent = new Intent(this, MapsActivity.class);
         intent.putExtra("from", from);
         intent.putExtra("to", to);
+        intent.putExtra("mode", "driving");
+        startActivity(intent);
+    }
+
+    public void byWalking(View view) {
+        AutoCompleteTextView fromSearch = findViewById(R.id.fromSearchBar);
+        String from = fromSearch.getText().toString();
+        AutoCompleteTextView toSearch = findViewById(R.id.toSearchBar);
+        String to = toSearch.getText().toString();
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("from", from);
+        intent.putExtra("to", to);
+        intent.putExtra("mode", "walkingß");
         startActivity(intent);
     }
 }
