@@ -26,11 +26,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,7 +46,10 @@ public class CalendarActivity extends AppCompatActivity {
     private Calendar service = null;    // Google Calendar Api service
     private ArrayList<String> calendarNames = new ArrayList<>();    // user's google calendars' name list
     private ArrayList<String> calendarIds = new ArrayList<>();    // user's google calendars' name list
+    private List<Event> eventsList = new ArrayList<>(); // List of calendar events from the selected calendar
     private String selectedCalendarId = null;   // holds the id of the google calendar that the user has chosen to import
+    private java.util.Calendar calendar = java.util.Calendar.getInstance(); // calendar object for creating mutating (set time, add days) Date objects
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,12 +118,22 @@ public class CalendarActivity extends AppCompatActivity {
                 .setPositiveButton("Select", new DialogInterface.OnClickListener() {    // select button
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //display calendar
+                        new RetrieveEvents().execute();
                     }
                 });
 
 
         return builder.create();
+    }
+
+    // sets time of a Date type object to 00:00:00:00 (H:S:M:MS)
+    private Date setTime(Date date){
+        calendar.setTime(date);
+        calendar.set(java.util.Calendar.MILLISECOND, 0);
+        calendar.set(java.util.Calendar.SECOND, 0);
+        calendar.set(java.util.Calendar.MINUTE, 0);
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        return calendar.getTime();
     }
 
     // creates a new sign in intent
@@ -155,8 +172,8 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
-    // - set up a google api calendar service (get an access token using the user's email and set this token to the credentials used
-    //   to build the Calendar service object)
+    // - build a global google api calendar service to be then used to retrieve events from a calendar
+    //      (get an access token using the user's email and set this token to the credentials used)
     // - retrieves a list of google calendars
     private class RetrieveCalendars extends AsyncTask<Void, Void, Void> {
         @Override
@@ -201,6 +218,49 @@ public class CalendarActivity extends AppCompatActivity {
         protected void onPostExecute(Void v){
             super.onPostExecute(v);
             onCreateDialogSingleChoice().show();
+        }
+    }
+
+    // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
+    // - uses the global google calendar api servive
+    // - retrieves a list of a google calendar events (within the interval today - today + 7)
+    private class RetrieveEvents extends AsyncTask<Void, Void, Void> {
+        Date test = null;
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Date dateMin =  setTime(new Date());   // current date with time set to 00:00:00:00 (H:M:S:MS), lower limit for events search query
+                /**
+                 * 8 days are added to the date as time is set to 00:00:00:00 (H:M:S:MS)
+                 * at time 00:00:00:00 (H:M:S:MS) date would change to the next date
+                 */
+                calendar.add(java.util.Calendar.DATE, 8);
+                Date dateMax = calendar.getTime(); // upper limit for events search query, upper limit is 7 days from current day
+                test = dateMax;
+                String pageToken = null;
+                do {
+                    // returns events within the data interval from today to next 7 days
+                    Events events = service.events().list(selectedCalendarId)
+                            .setTimeMin(new DateTime(dateMin))
+                            .setTimeMax(new DateTime(dateMax))
+                            .setPageToken(pageToken)
+                            .execute();
+                    List<Event> eventItems= events.getItems();
+                    eventItems.addAll(0, eventsList);
+                    eventsList = eventItems;
+
+                    pageToken = events.getNextPageToken();
+                }
+                while (pageToken != null);
+            } catch (Throwable t) {
+                Log.e(TAG, t.getMessage());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v){
+            super.onPostExecute(v);
         }
     }
 
