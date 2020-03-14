@@ -1,5 +1,7 @@
 package com.example.scoutconcordia;
 
+import java.util.Calendar;
+
 public class ShuttleInfo {
 
     // These attributes hold the shuttle times form specific campuses on given days
@@ -78,6 +80,349 @@ public class ShuttleInfo {
             "12:20", "12:55", "13:30", "13:45", "14:05", "14:40", "14:55", "15:15", "15:50", "16:05", "16:25", "17:15", "18:05", "18:40", "19:15", "19:50"};
 
     public ShuttleInfo() {
+    }
+
+    // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
+    // From there, it builds an estimate of how long it would take for the entire trip.
+    public double getNextEarliestTimeFromSGW() {
+
+
+        Calendar cal = Calendar.getInstance();
+//            cal.setTime(date);
+        double hour = cal.get(Calendar.HOUR_OF_DAY);
+        double minutes = cal.get(Calendar.MINUTE);
+
+        String timeString = (int) hour + ":" + (int) minutes;
+
+        // This variable keeps track of the current time.
+        double timeOfDay =  Math.round((hour + (minutes / 60)) * 100.0) / 100.0;
+
+        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        // This variable keeps track of the current day.
+        String today = null;
+
+        switch(currentDay){
+
+            case 1:
+                today = "Sunday";
+                break;
+
+            case 2:
+                today = "Monday";
+                break;
+
+            case 3:
+                today =  "Tuesday";
+                break;
+
+            case 4:
+                today =  "Wednesday";
+                break;
+
+            case 5:
+                today =  "Thursday";
+                break;
+
+            case 6:
+                today =   "Friday";
+                break;
+
+            case 7:
+                today =  "Saturday";
+                break;
+        }
+
+//            System.out.println(today);
+//            System.out.println("time is: " + timeOfDay);
+
+
+
+        // now we iterate through the schedule to check the next best time.
+
+
+        String messageToUser = null;
+        double nextShuttleTime = 0;
+        double[] shuttleTimes;
+        int indexPosition = 0;
+
+
+        switch(today){
+
+            case "Sunday":
+                messageToUser = "There are no bus shuttles on Sundays!";
+                break;
+
+            case "Monday":
+
+                shuttleTimes = getSGWMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+
+
+                break;
+
+            case "Tuesday":
+
+
+                shuttleTimes = getSGWMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+            case "Wednesday":
+                shuttleTimes = getSGWMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+            case "Thursday":
+                shuttleTimes = getSGWMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+            case "Friday":
+
+                shuttleTimes = getSGWFridayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_friday_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+
+            case "Saturday":
+                messageToUser = "There are no bus shuttles on Saturdays!";
+                break;
+        }
+
+        // The shuttle time is hardcoded at 30 minutes, because of fluctuations, it is an estimation
+        double estimatedTime =  Math.round((((nextShuttleTime - timeOfDay)*60 ) + 30) * 100.0) / 100.0;
+
+        String overallEstimation = "The estimated route time is: " + estimatedTime;
+
+        System.out.println((messageToUser + "\n" + overallEstimation + " minutes"));
+
+//            return (messageToUser + "\n" + overallEstimation);
+
+        return estimatedTime;
+
+    }
+
+
+
+
+    // This method checks the time and day and finds the next relevant shuttle bus time, from Loyola.
+    // From there, it builds an estimate of how long it would take for the entire trip.
+    public double getNextEarliestTimeFromLoyola() {
+
+
+        Calendar cal = Calendar.getInstance();
+//            cal.setTime(date);
+        double hour = cal.get(Calendar.HOUR_OF_DAY);
+        double minutes = cal.get(Calendar.MINUTE);
+
+        String timeString = (int) hour + ":" + (int) minutes;
+
+        // This variable keeps track of the current time.
+        double timeOfDay =  Math.round((hour + (minutes / 60)) * 100.0) / 100.0;
+
+        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        // This variable keeps track of the current day.
+        String today = null;
+
+        switch(currentDay){
+
+            case 1:
+                today = "Sunday";
+                break;
+
+            case 2:
+                today = "Monday";
+                break;
+
+            case 3:
+                today =  "Tuesday";
+                break;
+
+            case 4:
+                today =  "Wednesday";
+                break;
+
+            case 5:
+                today =  "Thursday";
+                break;
+
+            case 6:
+                today =   "Friday";
+                break;
+
+            case 7:
+                today =  "Saturday";
+                break;
+        }
+
+//            System.out.println(today);
+//            System.out.println("time is: " + timeOfDay);
+
+
+
+        // now we iterate through the schedule to check the next best time.
+
+
+        String messageToUser = null;
+        double nextShuttleTime = 0;
+        double[] shuttleTimes;
+        int indexPosition = 0;
+
+
+        switch(today){
+
+            case "Sunday":
+                messageToUser = "There are no bus shuttles on Sundays!";
+                break;
+
+            case "Monday":
+
+                shuttleTimes = getLoyolaMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+
+
+                break;
+
+            case "Tuesday":
+
+
+                shuttleTimes = getLoyolaMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+            case "Wednesday":
+                shuttleTimes = getLoyolaMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+            case "Thursday":
+                shuttleTimes = getLoyolaMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+            case "Friday":
+
+                shuttleTimes = getLoyolaFridayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_friday_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+
+                break;
+
+
+            case "Saturday":
+                messageToUser = "There are no bus shuttles on Saturdays!";
+                break;
+        }
+
+        // The shuttle time is hardcoded at 30 minutes, because of fluctuations, it is an estimation
+        double estimatedTime =  Math.round((((nextShuttleTime - timeOfDay)*60 ) + 30) * 100.0) / 100.0;
+
+        String overallEstimation = "The estimated route time is: " + estimatedTime;
+
+        System.out.println((messageToUser + "\n" + overallEstimation + " minutes"));
+
+//            return (messageToUser + "\n" + overallEstimation);
+
+        return estimatedTime;
+
     }
 
     // This returns a double array, which holds the shuttle time of the requested day and location
