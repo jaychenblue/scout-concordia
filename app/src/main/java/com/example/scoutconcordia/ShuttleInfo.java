@@ -80,5 +80,111 @@ public class ShuttleInfo {
     public ShuttleInfo() {
     }
 
+    // This returns a double array, which holds the shuttle time of the requested day and location
+    public double[] getLoyolaMondayToThursdayTimes() {
+
+        String[] numRange = schedule_monToThurs_Loyola;
+
+        int[] hours = new int[numRange.length];
+        double[] minutes = new double[numRange.length];
+
+        for (int i = 0; i < numRange.length; i++) {
+            String[] allTimes = numRange[i].split(":");
+            hours[i] = Integer.parseInt(allTimes[0]);
+            minutes[i] = Integer.parseInt(allTimes[1]);
+        }
+
+        double[] actualTimes = new double[hours.length];
+        double calculatedMinutes = 0;
+        for (int j = 0; j < actualTimes.length; j++) {
+
+            calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
+            actualTimes[j] = (hours[j] + (calculatedMinutes));
+
+//                System.out.println(actualTimes[j]);
+        }
+
+        return actualTimes;
+    }
+
+    // This returns a double array, which holds the shuttle time of the requested day and location
+    public double[] getSGWMondayToThursdayTimes() {
+
+        String[] numRange = schedule_MonToThurs_SGW;
+
+        int[] hours = new int[numRange.length];
+        double[] minutes = new double[numRange.length];
+
+        for (int i = 0; i < numRange.length; i++) {
+            String[] allTimes = numRange[i].split(":");
+            hours[i] = Integer.parseInt(allTimes[0]);
+            minutes[i] = Integer.parseInt(allTimes[1]);
+        }
+
+        double[] actualTimes = new double[hours.length];
+        double calculatedMinutes = 0;
+        for (int j = 0; j < actualTimes.length; j++) {
+
+            calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
+            actualTimes[j] = (hours[j] + (calculatedMinutes));
+
+//                System.out.println(actualTimes[j]);
+        }
+        return actualTimes;
+
+    }
+
+    // This returns a double array, which holds the shuttle time of the requested day and location
+    public double[] getLoyolaFridayTimes() {
+
+        String[] numRange = schedule_friday_Loyola;
+
+        int[] hours = new int[numRange.length];
+        double[] minutes = new double[numRange.length];
+
+        for (int i = 0; i < numRange.length; i++) {
+            String[] allTimes = numRange[i].split(":");
+            hours[i] = Integer.parseInt(allTimes[0]);
+            minutes[i] = Integer.parseInt(allTimes[1]);
+        }
+
+        double[] actualTimes = new double[hours.length];
+        double calculatedMinutes = 0;
+        for (int j = 0; j < actualTimes.length; j++) {
+
+            calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
+            actualTimes[j] = (hours[j] + (calculatedMinutes));
+
+//                System.out.println(actualTimes[j]);
+        }
+        return actualTimes;
+
+    }
+
+    // This returns a double array, which holds the shuttle time of the requested day and location
+    public double[] getSGWFridayTimes() {
+
+        String[] numRange = schedule_friday_SGW;
+
+        int[] hours = new int[numRange.length];
+        double[] minutes = new double[numRange.length];
+
+        for (int i = 0; i < numRange.length; i++) {
+            String[] allTimes = numRange[i].split(":");
+            hours[i] = Integer.parseInt(allTimes[0]);
+            minutes[i] = Integer.parseInt(allTimes[1]);
+        }
+
+        double[] actualTimes = new double[hours.length];
+        double calculatedMinutes = 0;
+        for (int j = 0; j < actualTimes.length; j++) {
+
+            calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
+            actualTimes[j] = (hours[j] + (calculatedMinutes));
+
+//                System.out.println(actualTimes[j]);
+        }
+        return actualTimes;
+    }
 
 }
