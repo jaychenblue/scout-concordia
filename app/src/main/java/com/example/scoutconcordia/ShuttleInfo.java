@@ -2,6 +2,13 @@ package com.example.scoutconcordia;
 
 import java.util.Calendar;
 
+
+// To use this class, the app has to essentially create an object of 'ShuttleInfo'.
+// Then, the app needs to call either of two methods, depending on the location of the user.
+// If the user is at SGW, the object should call 'getNextEarliestTimeFromSGW()'.
+// If the user is at Loyola, the object should call 'getNextEarliestTimeFromLoyola()'.
+
+
 public class ShuttleInfo {
 
     // These attributes hold the shuttle times form specific campuses on given days
@@ -84,6 +91,7 @@ public class ShuttleInfo {
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
+
     public double getNextEarliestTimeFromSGW() {
 
 
@@ -257,6 +265,7 @@ public class ShuttleInfo {
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from Loyola.
     // From there, it builds an estimate of how long it would take for the entire trip.
+
     public double getNextEarliestTimeFromLoyola() {
 
 
