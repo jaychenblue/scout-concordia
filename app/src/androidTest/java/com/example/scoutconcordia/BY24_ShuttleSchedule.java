@@ -38,7 +38,7 @@ public class BY24_ShuttleSchedule {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY24_ShuttleSchedule() {
+    public void bY24_ShuttleSchedule() throws InterruptedException {
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.nav_shuttle), withContentDescription("Shuttle"),
                         childAtPosition(
@@ -48,6 +48,7 @@ public class BY24_ShuttleSchedule {
                                 2),
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
+        Thread.sleep(2500);
     }
 
     private static Matcher<View> childAtPosition(

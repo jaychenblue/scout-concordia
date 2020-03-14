@@ -23,6 +23,7 @@ public class BY13_OutlineBuildings {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY13_OutlineBuildings() {
+    public void bY13_OutlineBuildings() throws InterruptedException {
+        Thread.sleep(5000);
     }
 }

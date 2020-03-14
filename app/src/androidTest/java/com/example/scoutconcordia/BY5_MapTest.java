@@ -23,6 +23,7 @@ public class BY5_MapTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY5_MapTest() {
+    public void bY5_MapTest() throws InterruptedException {
+        Thread.sleep(5000);
     }
 }

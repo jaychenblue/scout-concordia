@@ -41,7 +41,7 @@ public class BY81_searchBar {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY81_searchBar() {
+    public void bY81_searchBar() throws InterruptedException {
         ViewInteraction editText = onView(
                 allOf(withId(R.id.places_autocomplete_search_input),
                         childAtPosition(
@@ -52,6 +52,7 @@ public class BY81_searchBar {
                                 1),
                         isDisplayed()));
         editText.perform(click());
+        Thread.sleep(2500);
 
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.places_autocomplete_edit_text),
@@ -62,6 +63,7 @@ public class BY81_searchBar {
                                 1),
                         isDisplayed()));
         appCompatEditText.perform(replaceText("hall building concordia university"), closeSoftKeyboard());
+        Thread.sleep(2500);
 
         ViewInteraction relativeLayout = onView(
                 allOf(childAtPosition(
@@ -72,6 +74,7 @@ public class BY81_searchBar {
                         0),
                         isDisplayed()));
         relativeLayout.perform(click());
+        Thread.sleep(2500);
     }
 
     private static Matcher<View> childAtPosition(

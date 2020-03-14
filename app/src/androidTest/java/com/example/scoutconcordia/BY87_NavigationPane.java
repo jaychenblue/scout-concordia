@@ -38,28 +38,8 @@ public class BY87_NavigationPane {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY87_NavigationPane() {
+    public void bY87_NavigationPane() throws InterruptedException {
         ViewInteraction bottomNavigationItemView = onView(
-                allOf(withId(R.id.nav_schedule), withContentDescription("Schedule"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.nav_bar_activity_maps),
-                                        0),
-                                0),
-                        isDisplayed()));
-        bottomNavigationItemView.perform(click());
-
-        ViewInteraction bottomNavigationItemView2 = onView(
-                allOf(withId(R.id.nav_map), withContentDescription("Map"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.nav_bar_activity_calendar),
-                                        0),
-                                1),
-                        isDisplayed()));
-        bottomNavigationItemView2.perform(click());
-
-        ViewInteraction bottomNavigationItemView3 = onView(
                 allOf(withId(R.id.nav_shuttle), withContentDescription("Shuttle"),
                         childAtPosition(
                                 childAtPosition(
@@ -67,7 +47,41 @@ public class BY87_NavigationPane {
                                         0),
                                 2),
                         isDisplayed()));
+        bottomNavigationItemView.perform(click());
+        Thread.sleep(2500);
+
+        ViewInteraction bottomNavigationItemView2 = onView(
+                allOf(withId(R.id.nav_map), withContentDescription("Map"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.nav_bar_activity_shuttle_schedule),
+                                        0),
+                                1),
+                        isDisplayed()));
+        bottomNavigationItemView2.perform(click());
+        Thread.sleep(2500);
+
+        ViewInteraction bottomNavigationItemView3 = onView(
+                allOf(withId(R.id.nav_schedule), withContentDescription("Schedule"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.nav_bar_activity_maps),
+                                        0),
+                                0),
+                        isDisplayed()));
         bottomNavigationItemView3.perform(click());
+        Thread.sleep(2500);
+
+        ViewInteraction bottomNavigationItemView4 = onView(
+                allOf(withId(R.id.nav_map), withContentDescription("Map"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.nav_bar_activity_calendar),
+                                        0),
+                                1),
+                        isDisplayed()));
+        bottomNavigationItemView4.perform(click());
+        Thread.sleep(2500);
     }
 
     private static Matcher<View> childAtPosition(

@@ -39,7 +39,8 @@ public class BY12_CenterMap {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY12_CenterMap() {
+    public void bY12_CenterMap() throws InterruptedException {
+        Thread.sleep(2500);
         ViewInteraction imageView = onView(
                 allOf(withContentDescription("My Location"),
                         childAtPosition(
@@ -49,6 +50,7 @@ public class BY12_CenterMap {
                                 0),
                         isDisplayed()));
         imageView.perform(click());
+        Thread.sleep(2500);
     }
 
     private static Matcher<View> childAtPosition(

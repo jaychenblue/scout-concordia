@@ -40,26 +40,29 @@ public class BY14_AdditionalInfo {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY14_AdditionalInfo() {
+    public void bY14_AdditionalInfo() throws InterruptedException {
+        Thread.sleep(2500);
         ViewInteraction button = onView(
                 allOf(withId(R.id.directionsButton), withText("Get Directions"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.RelativeLayout")),
-                                        4),
+                                        5),
                                 0),
                         isDisplayed()));
         button.perform(click());
+        Thread.sleep(2500);
 
-        ViewInteraction button2 = onView(
+        ViewInteraction button5 = onView(
                 allOf(withId(R.id.exploreInsideButton), withText("Explore Inside"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.RelativeLayout")),
-                                        4),
+                                        5),
                                 1),
                         isDisplayed()));
-        button2.perform(click());
+        button5.perform(click());
+        Thread.sleep(2500);
     }
 
     private static Matcher<View> childAtPosition(

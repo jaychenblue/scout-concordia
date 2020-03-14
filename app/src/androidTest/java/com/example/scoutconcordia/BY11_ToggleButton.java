@@ -38,7 +38,8 @@ public class BY11_ToggleButton {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY11_ToggleButton() {
+    public void bY11_ToggleButton() throws InterruptedException {
+        Thread.sleep(2500);
         ViewInteraction toggleButton = onView(
                 allOf(withId(R.id.toggleButton), withText("SGW"),
                         childAtPosition(
@@ -48,6 +49,7 @@ public class BY11_ToggleButton {
                                 3),
                         isDisplayed()));
         toggleButton.perform(click());
+        Thread.sleep(2500);
 
         ViewInteraction toggleButton2 = onView(
                 allOf(withId(R.id.toggleButton), withText("Loyola"),
@@ -58,6 +60,7 @@ public class BY11_ToggleButton {
                                 3),
                         isDisplayed()));
         toggleButton2.perform(click());
+        Thread.sleep(2500);
     }
 
     private static Matcher<View> childAtPosition(
