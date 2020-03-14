@@ -137,6 +137,9 @@ public class ShuttleInfo {
             case 7:
                 today =  "Saturday";
                 break;
+            default:
+                today = "Monday";
+                break;
         }
 
 //            System.out.println(today);
@@ -243,6 +246,25 @@ public class ShuttleInfo {
             case "Saturday":
                 messageToUser = "There are no bus shuttles on Saturdays!";
                 break;
+
+
+
+            default:
+            shuttleTimes = getSGWMondayToThursdayTimes();
+
+            for (int i = 0; i < shuttleTimes.length; i++){
+                if (timeOfDay < shuttleTimes[i]){
+                    nextShuttleTime = shuttleTimes[i];
+                    indexPosition = i;
+                    break;
+                }
+            }
+
+            messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+
+
+            break;
+
         }
 
         // The shuttle time is hardcoded at 30 minutes, because of fluctuations, it is an estimation
@@ -310,6 +332,10 @@ public class ShuttleInfo {
 
             case 7:
                 today =  "Saturday";
+                break;
+
+            default:
+                today = "Monday";
                 break;
         }
 
@@ -417,6 +443,25 @@ public class ShuttleInfo {
             case "Saturday":
                 messageToUser = "There are no bus shuttles on Saturdays!";
                 break;
+
+
+            default:
+                shuttleTimes = getLoyolaMondayToThursdayTimes();
+
+                for (int i = 0; i < shuttleTimes.length; i++){
+                    if (timeOfDay < shuttleTimes[i]){
+                        nextShuttleTime = shuttleTimes[i];
+                        indexPosition = i;
+                        break;
+                    }
+                }
+
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+
+
+                break;
+
+
         }
 
         // The shuttle time is hardcoded at 30 minutes, because of fluctuations, it is an estimation
