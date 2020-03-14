@@ -37,7 +37,7 @@ Vincent Cerri | vincentcerri
 
 ### Guidelines
 
-Please read the guidelines at CONTRIBUTING.md and the <a href="https://github.com/jaychenblue/scout-concordia/wiki">GitHub Wiki</a> before contributing.
+Please read the <a href="https://github.com/jaychenblue/scout-concordia/wiki">GitHub Wiki</a> before contributing.
 
 <br />
 
