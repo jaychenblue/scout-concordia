@@ -69,7 +69,7 @@ public class FromToActivity extends Activity {
         startActivity(intent);
     }
 
-    public void byShuttle(View view) {
+    public void byBus(View view) {
         AutoCompleteTextView fromSearch = findViewById(R.id.fromSearchBar);
         String from = fromSearch.getText().toString();
         AutoCompleteTextView toSearch = findViewById(R.id.toSearchBar);
@@ -78,7 +78,7 @@ public class FromToActivity extends Activity {
         Intent intent = new Intent(this, MapsActivity.class);
         intent.putExtra("from", from);
         intent.putExtra("to", to);
-        intent.putExtra("mode", "shuttle");
+        intent.putExtra("mode", "bus");
         startActivity(intent);
     }
 
