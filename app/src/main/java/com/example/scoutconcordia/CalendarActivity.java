@@ -150,51 +150,64 @@ public class CalendarActivity extends AppCompatActivity {
     private void displayTable() {
         tableIds = tableLayoutIds(); // ids of columns (text views) in the table table layout
         String[][] dateInfoObj = dateInfoObj(); // see method description
-        fillDayDateRows(dateInfoObj);
+        fillDayDateRows(dateInfoObj);   // set date and day labels
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd"); // date formatter to compare Date object dates
         SimpleDateFormat sdfTime = new SimpleDateFormat("h:mm"); // time formatter
 
         for (Event event : eventsList) {
-            Date startDate = new Date(event.getStart().getDateTime().getValue()); // start date of the event
-            Date endDate = new Date(event.getEnd().getDateTime().getValue());   // end date of the event
+            String eventName = null;
+            String eventLocation = null;
 
-            // even starts or ends outside school hours
-            if(getTimeHour(startDate) < 8 || getTimeHour(endDate) >= 23){
-                continue;
+            try{
+                eventName = event.getSummary();
+                eventLocation = event.getLocation();
+            }
+            catch(Throwable t){
+                Log.d(TAG, t.getMessage());
             }
 
-            long length = endDate.getTime() - startDate.getTime();
-            int totalRows = (int)(length / 1000 / 60) / 15;  // (length of event)/15 to get the number of rows the event covers
-                                                             // each row is 15 mins
-            String date = sdfDate.format(startDate); // convert date to "yyyy-MM-dd" format to compare with date from
-                                                 // datInfoObj as dates in dateInfoObj are stored in "yyyy-MM-dd"
+            try {
+                Date startDate = new Date(event.getStart().getDateTime().getValue());   // start date of the event
+                Date endDate = new Date(event.getEnd().getDateTime().getValue());   // end date of the event
 
-            int startRow = eventStartRow(startDate, endDate);
+                // even starts or ends outside school hours, continue without displaying
+                if(getTimeHour(startDate) < 8 || getTimeHour(endDate) >= 23){
+                    continue;
+                }
+                // time difference between start and end of event in milliseconds
+                long length = endDate.getTime() - startDate.getTime();
 
-            String eventName = event.getSummary();
-            String eventLocation = event.getLocation();
-            String start = sdfTime.format(startDate);
-            String end = sdfTime.format(endDate);
+                // (length of event)/15 to get the number of rows the event covers
+                // each row is 15 mins
+                int totalRows = (int)(length / 1000 / 60) / 15;
 
-            if (date.equals(dateInfoObj[0][1])) {   // today
-                fillEvent(0, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                // convert date to "yyyy-MM-dd" format to compare with date from
+                // datInfoObj as dates in dateInfoObj are stored in "yyyy-MM-dd"
+                String date = sdfDate.format(startDate);
+
+                int startRow = eventStartRow(startDate, endDate);
+                String start = sdfTime.format(startDate); // start time "h:mm"
+                String end = sdfTime.format(endDate); // // start time "h:mm"
+
+                if (date.equals(dateInfoObj[0][1])) {   // today
+                    fillEvent(0, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                } else if (date.equals(dateInfoObj[1][1])) { //tomorrow
+                    fillEvent(1, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+                } else if (date.equals(dateInfoObj[2][1])) { // day after
+                    fillEvent(2, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                } else if (date.equals(dateInfoObj[3][1])) {
+                    fillEvent(3, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+                } else if (date.equals(dateInfoObj[4][1])) {
+                    fillEvent(4, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                } else if (date.equals(dateInfoObj[5][1])) {
+                    fillEvent(5, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+                } else if (date.equals(dateInfoObj[6][1])) {
+                    fillEvent(6, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                }
             }
-            else if (date.equals(dateInfoObj[1][1])) { //tomorrow
-                fillEvent(1, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
-            }
-            else if (date.equals(dateInfoObj[2][1])) { // day after
-                fillEvent(2, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
-            }
-            else if (date.equals(dateInfoObj[3][1])) {
-                fillEvent(3, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
-            } else if (date.equals(dateInfoObj[4][1])) {
-                fillEvent(4, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
-            } else if (date.equals(dateInfoObj[5][1])) {
-                fillEvent(5, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
-            }
-            else if (date.equals(dateInfoObj[6][1])) {
-                fillEvent(6, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
-            }
+            catch(Throwable t){
+                Log.d(TAG, t.getMessage());
+            };
         }
     }
 
