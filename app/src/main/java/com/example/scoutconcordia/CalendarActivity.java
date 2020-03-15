@@ -418,7 +418,7 @@ public class CalendarActivity extends AppCompatActivity {
 
                 String pageToken = null;
                 do {
-                    CalendarList calendarList = service.calendarList().list().setPageToken(pageToken).execute();
+                    CalendarList calendarList = service.calendarList().list().setMinAccessRole("owner").setPageToken(pageToken).execute();
                     List<CalendarListEntry> calendars = calendarList.getItems();
 
                     for(CalendarListEntry calendarListEntry : calendars) {
