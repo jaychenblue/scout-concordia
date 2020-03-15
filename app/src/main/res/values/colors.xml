@@ -16,6 +16,7 @@
     <color name="burgundy">#FF74091F</color>
     <color name="mainBurgundy">#800020</color>
     <color name="darkBurgundyHighlights">#990000</color>
+    <color name="faintGray">#ebecec</color>
     <color name="lightGray">#d1d3d3</color>
     <color name="mediumGray">#8e979d</color>
     <color name="shadeOne">#CDB6A3</color>
