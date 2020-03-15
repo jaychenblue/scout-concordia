@@ -8,7 +8,6 @@
     <color name="black">#000000</color>
     <color name="highlights">#AF8A6B</color>
 
-
 <!--    complementary colours-->
     <color name="colorPrimaryDark">#00574B</color>
     <color name="burgandy">#74091F</color>
@@ -19,5 +18,7 @@
     <color name="darkBurgundyHighlights">#990000</color>
     <color name="lightGray">#d1d3d3</color>
     <color name="mediumGray">#8e979d</color>
+    <color name="shadeOne">#CDB6A3</color>
+    <color name="shadeTwo">#D7C5B5</color>
 
 </resources>

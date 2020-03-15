@@ -6,6 +6,2386 @@
     android:layout_height="match_parent"
     tools:context=".CalendarActivity">
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="top"
+        android:scrollbars="vertical"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+
+        <HorizontalScrollView
+            android:layout_width="fill_parent" android:layout_height="fill_parent"
+            android:scrollbars="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <TableLayout
+
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/scheduleTable"
+                    android:verticalScrollbarPosition="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:stretchColumns="1">
+                    <TableRow android:id="@+id/day"
+                        android:textAlignment="center"
+                        android:gravity="center">
+                        <TextView></TextView>
+                        <TextView
+                            android:id="@+id/date0"
+                            android:layout_width="80sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/date1"
+                            android:layout_width="80sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/date2"
+                            android:layout_width="80sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/date3"
+                            android:layout_width="80sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/date4"
+                            android:layout_width="80sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/date5"
+                            android:layout_width="80sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/date6"
+                            android:layout_width="80sp"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                    </TableRow>
+                    <TableRow
+                        android:textAlignment="center"
+                            android:gravity="center">
+                        <TextView></TextView>
+                        <TextView
+                            android:id="@+id/day0"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/day1"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/day2"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/day3"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/day4"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/day5"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                        <TextView
+                            android:id="@+id/day6"
+                            android:textAlignment="center"
+                            android:gravity="center"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="8:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one1"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two1"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three1"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four1"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five1"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six1"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven1"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="8:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one2"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two2"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three2"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four2"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five2"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six2"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven2"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="8:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one3"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two3"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three3"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four3"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five3"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six3"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven3"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="8:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one4"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two4"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three4"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four4"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five4"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six4"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven4"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="9:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one5"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two5"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three5"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four5"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five5"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six5"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven5"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="9:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one6"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two6"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three6"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four6"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five6"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six6"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven6"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="9:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one7"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two7"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three7"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four7"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five7"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six7"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven7"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="9:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one8"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two8"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three8"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four8"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five8"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six8"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven8"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="10:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one9"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two9"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three9"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four9"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five9"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six9"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven9"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="10:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one10"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two10"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three10"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four10"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five10"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six10"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven10"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="10:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one11"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two11"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three11"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four11"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five11"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six11"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven11"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="10:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one12"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two12"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three12"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four12"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five12"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six12"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven12"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="11:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one13"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two13"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three13"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four13"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five13"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six13"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven13"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="11:15"
+                            android:textColor="@color/mainBurgundy"
+                            android:background="@color/white"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one14"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two14"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three14"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four14"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five14"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six14"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven14"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter15"
+                            android:text="11:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one15"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two15"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three15"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four15"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five15"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six15"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven15"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter16"
+                            android:text="11:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one16"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two16"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three16"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four16"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five16"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six16"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven16"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter17"
+                            android:text="12:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one17"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two17"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three17"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four17"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five17"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six17"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven17"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter18"
+                            android:text="12:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one18"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two18"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three18"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four18"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five18"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six18"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven18"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter19"
+                            android:text="12:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one19"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two19"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three19"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four19"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five19"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six19"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven19"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter20"
+                            android:text="12:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one20"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two20"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three20"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four20"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five20"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six20"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven20"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter21"
+                            android:text="13:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one21"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two21"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three21"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four21"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five21"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six21"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven21"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter22"
+                            android:text="13:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one22"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two22"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three22"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four22"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five22"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six22"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven22"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter23"
+                            android:text="13:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one23"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two23"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three23"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four23"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five23"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six23"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven23"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter24"
+                            android:text="13:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one24"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two24"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three24"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four24"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five24"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six24"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven24"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="14:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one25"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two25"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three25"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four25"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five25"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six25"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven25"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="14:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one26"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two26"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three26"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four26"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five26"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six26"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven26"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="14:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one27"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two27"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three27"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four27"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five27"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six27"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven27"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:text="14:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one28"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two28"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three28"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four28"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five28"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six28"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven28"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter29"
+                            android:text="15:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one29"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two29"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three29"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four29"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five29"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six29"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven29"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter30"
+                            android:text="15:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one30"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two30"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three30"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four30"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five30"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six30"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven30"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter31"
+                            android:text="15:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one31"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two31"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three31"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four31"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five31"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six31"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven31"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter32"
+                            android:text="15:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one32"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two32"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three32"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four32"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five32"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six32"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven32"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter33"
+                            android:text="16:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one33"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two33"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three33"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four33"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five33"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six33"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven33"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter34"
+                            android:text="16:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one34"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two34"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three34"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four34"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five34"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six34"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven34"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter35"
+                            android:text="16:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one35"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two35"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three35"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four35"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five35"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six35"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven35"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter36"
+                            android:text="16:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one36"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two36"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three36"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four36"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five36"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six36"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven36"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter37"
+                            android:text="17:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one37"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two37"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three37"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four37"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five37"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six37"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven37"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter38"
+                            android:text="17:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one38"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two38"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three38"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four38"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five38"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six38"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven38"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter39"
+                            android:text="17:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one39"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two39"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three39"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four39"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five39"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six39"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven39"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter40"
+                            android:text="17:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one40"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two40"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three40"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four40"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five40"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six40"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven40"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter41"
+                            android:text="18:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one41"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two41"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three41"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four41"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five41"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six41"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven41"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter42"
+                            android:text="18:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one42"
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two42"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three42"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four42"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five42"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six42"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven42"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter43"
+                            android:text="18:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one43"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two43"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three43"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four43"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five43"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six43"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven43"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter44"
+                            android:text="18:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one44"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two44"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three44"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four44"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five44"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six44"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven44"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter45"
+                            android:text="19:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one45"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two45"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three45"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four45"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five45"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six45"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven45"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter46"
+                            android:text="19:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one46"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two46"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three46"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four46"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five46"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six46"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven46"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter47"
+                            android:text="19:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one47"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two47"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three47"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four47"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five47"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six47"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven47"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter48"
+                            android:text="19:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one48"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two48"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three48"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four48"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five48"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six48"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven48"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter49"
+                            android:text="20:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one49"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two49"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three49"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four49"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five49"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six49"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven49"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter50"
+                            android:text="20:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one50"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two50"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three50"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four50"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five50"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six50"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven50"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter51"
+                            android:text="20:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one51"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two51"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three51"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four51"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five51"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six51"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven51"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter52"
+                            android:text="20:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one52"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two52"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three52"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four52"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five52"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six52"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven52"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter53"
+                            android:text="21:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one53"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two53"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three53"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four53"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five53"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six53"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven53"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter54"
+                            android:text="21:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one54"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two54"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three54"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four54"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five54"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six54"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven54"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter55"
+                            android:text="21:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one55"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two55"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three55"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four55"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five55"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six55"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven55"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter56"
+                            android:text="21:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one56"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two56"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three56"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four56"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five56"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six56"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven56"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter57"
+                            android:text="22:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one57"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two57"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three57"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four57"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five57"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six57"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven57"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter58"
+                            android:text="22:15"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one58"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two58"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three58"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four58"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five58"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six58"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven58"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter59"
+                            android:text="22:30"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one59"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two59"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three59"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four59"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five59"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six59"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven59"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter60"
+                            android:text="22:45"
+                            android:background="@color/white"
+                            android:textColor="@color/mainBurgundy"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one60"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two60"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three60"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four60"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five60"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six60"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven60"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView android:id="@+id/quarter61"
+                            android:text="23:00"
+                            android:background="@color/mainBurgundy"
+                            android:textColor="@color/white"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/one61"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/two61"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/three61"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/four61"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/five61"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/six61"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                        <TextView android:id="@+id/seven61"
+
+                            android:textAlignment="center"
+                            android:gravity="center"></TextView>
+                    </TableRow>
+                </TableLayout>
+
+            </RelativeLayout>
+        </HorizontalScrollView>
+    </ScrollView>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar_activity_calendar"
         android:layout_width="wrap_content"

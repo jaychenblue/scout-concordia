@@ -4,10 +4,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import static android.content.ContentValues.TAG;
@@ -33,6 +37,7 @@ import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,6 +54,7 @@ public class CalendarActivity extends AppCompatActivity {
     private List<Event> eventsList = new ArrayList<>(); // List of calendar events from the selected calendar
     private String selectedCalendarId = null;   // holds the id of the google calendar that the user has chosen to import
     private java.util.Calendar calendar = java.util.Calendar.getInstance(); // calendar object for creating mutating (set time, add days) Date objects
+    private int[][] tableIds = null; // holds ids of textviews making up the tabel layout, [x][y], x os row , y is column
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,7 @@ public class CalendarActivity extends AppCompatActivity {
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
+        GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
         signIn();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_calendar);
@@ -126,6 +133,210 @@ public class CalendarActivity extends AppCompatActivity {
         return builder.create();
     }
 
+    // for every event in the events list of the google calendar
+    // verifies the day of the event, start time, and duration
+    // fills the table columns (textView) in the table layout overlapping the event timing
+    // Table structure is in TableLayout in activity_calendar.xml
+    //      - first column is representing time, second column is current day, the column after is the day after and so on
+    //          -> each column contains a textview
+    //      -first row is date, second row is day
+    //      - rows after are time sections (each row = 15 mins)
+    private void displayTable() {
+        tableIds = tableLayoutIds(); // ids of columns (text views) in the table table layout
+        String[][] dateInfoObj = dateInfoObj(); // see method description
+        fillDayDateRows(dateInfoObj);
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd"); // date formatter to compare Date object dates
+        SimpleDateFormat sdfTime = new SimpleDateFormat("h:mm"); // time formatter
+
+        for (Event event : eventsList) {
+            Date startDate = new Date(event.getStart().getDateTime().getValue()); // start date of the event
+            Date endDate = new Date(event.getEnd().getDateTime().getValue());   // end date of the event
+
+            // even starts or ends outside school hours
+            if(getTimeHour(startDate) < 8 || getTimeHour(endDate) >= 11){
+                continue;
+            }
+
+            long length = endDate.getTime() - startDate.getTime();
+            int totalRows = (int)(length / 1000 / 60) / 15;  // (length of event)/15 to get the number of rows the event covers
+                                                             // each row is 15 mins
+            String date = sdfDate.format(startDate); // convert date to "yyyy-MM-dd" format to compare with date from
+                                                 // datInfoObj as dates in dateInfoObj are stored in "yyyy-MM-dd"
+
+            int startRow = eventStartRow(startDate, endDate);
+
+            String eventName = event.getSummary();
+            String eventLocation = event.getLocation();
+            String start = sdfTime.format(startDate);
+            String end = sdfTime.format(endDate);
+
+            if (date.equals(dateInfoObj[0][1])) {   // today
+                fillEvent(0, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+            }
+            else if (date.equals(dateInfoObj[1][1])) { //tomorrow
+                fillEvent(1, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+            }
+            else if (date.equals(dateInfoObj[2][1])) { // day after
+                fillEvent(2, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+            }
+            else if (date.equals(dateInfoObj[3][1])) {
+                fillEvent(3, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+            } else if (date.equals(dateInfoObj[4][1])) {
+                fillEvent(4, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+            } else if (date.equals(dateInfoObj[5][1])) {
+                fillEvent(5, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+            }
+            else if (date.equals(dateInfoObj[6][1])) {
+                fillEvent(6, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+            }
+        }
+    }
+
+    // sets the values for the date's row (first row) and day's row (second row) for all 7 columns
+    // first column are set to today's date and day respectively, next column is next day
+    // uses the dateInfoObj created with String[][] dateInfoObj() method to get date and day value for each of the days
+    private void fillDayDateRows(String[][] dateInfoObj){
+        Resources r = getResources();
+        String name = getPackageName();
+        for(int i = 0; i < 7; ++i){
+            int dayColumnId = r.getIdentifier("day" + i, "id", name);
+            int dateColumnId = r.getIdentifier("date" + i, "id", name);
+            TextView dayColumn = findViewById(dayColumnId);
+            TextView dateColumn = findViewById(dateColumnId);
+            dateColumn.setText(dateInfoObj[i][0]);
+            dayColumn.setText(dateInfoObj[i][2]);
+        }
+    }
+
+    // returns a multidimensional array containing string values for the day and date from current day up to the 7th day
+    //String[][] dateInfoObj= new String[7][3]; // [x][0] = date (dd), [x][1] = date (yyyy-MM-dd), [x][2] = name of day, where x = 0 is today, x =1 is tomorrow and so on
+    private String[][] dateInfoObj(){
+        String[][] dateInfoObj= new String[7][3];
+        // 0 <= x < 7
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String today = sdf.format(new Date());
+
+        try {
+            calendar.setTime(sdf.parse(today));
+        } catch (Throwable t) {
+            Log.d(TAG, t.getMessage());
+        }
+
+        for(int i = 0; i < 7; ++i) {
+            dateInfoObj[i][0] = Integer.toString(calendar.get(java.util.Calendar.DATE));
+            dateInfoObj[i][1] = sdf.format(calendar.getTime());
+            dateInfoObj[i][2] = getDayOfWeek(calendar.get(java.util.Calendar.DAY_OF_WEEK));
+            calendar.add(java.util.Calendar.DATE, 1);
+        }
+        return dateInfoObj;
+    }
+
+    // sets text, text color, background for the text views overlapping the event timing
+    private void fillEvent(int eventDayColumn, int startRow, int totalRows, String summary, String location, String start, String end, int colorId){
+       // exception is thrown if textview does not exist, likely cause evant start or end date out of school hours
+        // no idea matching textview representing time interval
+        try {
+          for (int j = startRow; j < totalRows + startRow; ++j) {
+              TextView textView = (TextView) findViewById(tableIds[eventDayColumn][j]);
+              textView.setTextColor(getResources().getColor(R.color.white));
+              textView.setBackgroundColor(colorId);
+              if (j == startRow) {
+                  textView.setText(summary);
+              } else if (j == startRow + 1) {
+                  textView.setText(location);
+              } else if (j == startRow + 2) {
+                  textView.setText(start + " - " + end);
+              }
+              attachOnClickListener(textView);
+          }
+      }
+      catch (Throwable t){
+          Log.d(TAG, t.toString());
+          Log.d(TAG, "START:" +start + ", END:"+end);
+      }
+    }
+
+    private void attachOnClickListener(TextView textView){
+        textView.setClickable(true);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                directionsDialog().show();
+            }
+        });
+    }
+
+    private Dialog directionsDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Go to Location")
+                .setCancelable(true)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("GO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        return builder.create();
+    }
+
+    // returns the row number that the event begins at (e.g. if event start at 9, 5 will be returned, (9-8)*4 +(0/15)+1
+    // begins at 8:00 = row 1, at 8:15 = row 2, and so on
+    private int eventStartRow(Date start, Date end){
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        c.setTime(start);
+
+        int startHours = c.get(java.util.Calendar.HOUR_OF_DAY);
+        int startMins = c.get(java.util.Calendar.MINUTE);
+        int startRow = (startHours - 8) * 4 + (startMins / 15) + 1;
+
+        return startRow;
+    }
+
+
+    // returns a multidimensional array that holds ids of all text views for each column in the table Layout in activity_calendar.xml for displaying schedule
+    private int[][] tableLayoutIds(){
+        int[][] tableIds = new int[7][61];  // [x][y], x = 0 is the first row from the left in the table
+        // y = 1 (0 is not assigned) is the first column (from 8:00 to 8:15)
+        Resources r = getResources();
+        String name = getPackageName();
+
+        for (int i = 1; i < 61; i++) {
+            tableIds[0][i] = r.getIdentifier("one" + i, "id", name);
+            tableIds[1][i] = r.getIdentifier("two" + i, "id", name);
+            tableIds[2][i] = r.getIdentifier("three" + i, "id", name);
+            tableIds[3][i] = r.getIdentifier("four" + i, "id", name);
+            tableIds[4][i] = r.getIdentifier("five" + i, "id", name);
+            tableIds[5][i] = r.getIdentifier("six" + i, "id", name);
+            tableIds[6][i] = r.getIdentifier("seven" + i, "id", name);
+        }
+        return tableIds;
+    }
+
+    // returns the name of the day for the value returned by Calendar.DAY_OF_WEEK
+    private String getDayOfWeek(int value){
+        switch (value) {
+            case java.util.Calendar.SUNDAY:
+                return "SUN";
+            case java.util.Calendar.MONDAY:
+                return "MON";
+            case java.util.Calendar.TUESDAY:
+                return "TUE";
+            case java.util.Calendar.WEDNESDAY:
+                return "WED";
+            case java.util.Calendar.THURSDAY:
+                return "THU";
+            case java.util.Calendar.FRIDAY:
+                return "FRI";
+            default:
+                return "SAT";
+        }
+    }
+
     // sets time of a Date type object to 00:00:00:00 (H:S:M:MS)
     private Date setTime(Date date){
         calendar.setTime(date);
@@ -134,6 +345,11 @@ public class CalendarActivity extends AppCompatActivity {
         calendar.set(java.util.Calendar.MINUTE, 0);
         calendar.set(java.util.Calendar.HOUR_OF_DAY, 0);
         return calendar.getTime();
+    }
+
+    private int getTimeHour(Date date){
+        calendar.setTime(date);
+        return calendar.get(java.util.Calendar.HOUR_OF_DAY);
     }
 
     // creates a new sign in intent
@@ -261,6 +477,7 @@ public class CalendarActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void v){
             super.onPostExecute(v);
+            displayTable();
         }
     }
 
