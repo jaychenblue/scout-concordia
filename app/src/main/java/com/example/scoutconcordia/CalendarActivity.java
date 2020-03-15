@@ -159,7 +159,7 @@ public class CalendarActivity extends AppCompatActivity {
             Date endDate = new Date(event.getEnd().getDateTime().getValue());   // end date of the event
 
             // even starts or ends outside school hours
-            if(getTimeHour(startDate) < 8 || getTimeHour(endDate) >= 11){
+            if(getTimeHour(startDate) < 8 || getTimeHour(endDate) >= 23){
                 continue;
             }
 
