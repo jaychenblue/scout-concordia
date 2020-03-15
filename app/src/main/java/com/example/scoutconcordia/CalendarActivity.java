@@ -69,7 +69,13 @@ public class CalendarActivity extends AppCompatActivity {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
-        signIn();
+
+        if(lastSignedInAccount == null) {
+            signIn();
+        }else{
+            email = lastSignedInAccount.getEmail();
+            new RetrieveCalendars().execute();
+        }
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_calendar);
         bottomNavigationView.setSelectedItemId(R.id.nav_schedule);
