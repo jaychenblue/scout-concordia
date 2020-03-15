@@ -12,7 +12,8 @@ import java.util.Calendar;
 public class ShuttleInfo {
 
     // These attributes hold the shuttle times form specific campuses on given days
-    String[] schedule_monToThurs_Loyola = {"07:30",
+    String[] schedule_monToThurs_Loyola = {
+            "07:30",
             "07:40",
             "07:55",
             "08:20",
@@ -26,7 +27,22 @@ public class ShuttleInfo {
             "10:55",
             "11:10",
             "11:30",
-            "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+            "12:00",
+            "12:30",
+            "13:00",
+            "13:30",
+            "14:00",
+            "14:30",
+            "15:00",
+            "15:30",
+            "16:00",
+            "16:30",
+            "17:00",
+            "17:30",
+            "18:00",
+            "18:30",
+            "19:00",
+            "19:30",
             "20:00",
             "20:30",
             "20:45",
@@ -47,9 +63,26 @@ public class ShuttleInfo {
             "11:10",
             "11:30",
             "11:45",
-            "12:20", "12:40", "12:55", "13:30", "14:05", "14:20", "14:40", "15:15", "15:30", "15:50", "16:25", "16:40", "17:00", "18:05", "18:40", "19:15", "19:50"};
+            "12:20",
+            "12:40",
+            "12:55",
+            "13:30",
+            "14:05",
+            "14:20",
+            "14:40",
+            "15:15",
+            "15:30",
+            "15:50",
+            "16:25",
+            "16:40",
+            "17:00",
+            "18:05",
+            "18:40",
+            "19:15",
+            "19:50"};
 
-    String[] schedule_MonToThurs_SGW = {"07:45",
+    String[] schedule_MonToThurs_SGW = {
+            "07:45",
             "08:05",
             "08:20",
             "08:35",
@@ -62,7 +95,22 @@ public class ShuttleInfo {
             "10:55",
             "11:10",
             "11:45",
-            "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+            "12:00",
+            "12:30",
+            "13:00",
+            "13:30",
+            "14:00",
+            "14:30",
+            "15:00",
+            "15:30",
+            "16:00",
+            "16:30",
+            "17:00",
+            "17:30",
+            "18:00",
+            "18:30",
+            "19:00",
+            "19:30",
             "20:00",
             "20:10",
             "20:30",
@@ -84,7 +132,22 @@ public class ShuttleInfo {
             "11:10",
             "11:45",
             "12:05",
-            "12:20", "12:55", "13:30", "13:45", "14:05", "14:40", "14:55", "15:15", "15:50", "16:05", "16:25", "17:15", "18:05", "18:40", "19:15", "19:50"};
+            "12:20",
+            "12:55",
+            "13:30",
+            "13:45",
+            "14:05",
+            "14:40",
+            "14:55",
+            "15:15",
+            "15:50",
+            "16:05",
+            "16:25",
+            "17:15",
+            "18:05",
+            "18:40",
+            "19:15",
+            "19:50"};
 
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
@@ -142,13 +205,10 @@ public class ShuttleInfo {
                 break;
         }
 
-//            System.out.println(today);
-//            System.out.println("time is: " + timeOfDay);
 
 
 
         // now we iterate through the schedule to check the next best time.
-
 
         String messageToUser = null;
         double nextShuttleTime = 0;
@@ -525,7 +585,6 @@ public class ShuttleInfo {
             calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
             actualTimes[j] = (hours[j] + (calculatedMinutes));
 
-//                System.out.println(actualTimes[j]);
         }
         return actualTimes;
 
@@ -552,7 +611,6 @@ public class ShuttleInfo {
             calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
             actualTimes[j] = (hours[j] + (calculatedMinutes));
 
-//                System.out.println(actualTimes[j]);
         }
         return actualTimes;
 
@@ -579,7 +637,6 @@ public class ShuttleInfo {
             calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
             actualTimes[j] = (hours[j] + (calculatedMinutes));
 
-//                System.out.println(actualTimes[j]);
         }
         return actualTimes;
     }
