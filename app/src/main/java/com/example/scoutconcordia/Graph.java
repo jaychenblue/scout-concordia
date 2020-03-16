@@ -1,9 +1,12 @@
 package com.example.scoutconcordia;
 
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -181,7 +184,7 @@ public class Graph
     }
 
     // reads a from a node file to add nodes to a graph
-    public static Graph addNodesToGraph(String fileName, InputStream readFromMe)
+    public static Graph addNodesToGraph(InputStream readFromMe)
     {
         int currentPos = 0;
         Scanner reader = null;
@@ -191,9 +194,9 @@ public class Graph
         LatLng currentCoordinate = null;
         
         // Decrypting the file
-        DES theDecrypter = new DES();
-        //theDecrypter.unlockFile(fileName);
-        
+        //DES theDecrypter = new DES();
+        //InputStream readFromMe = theDecrypter.unlockFile(fileName);
+
         LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
         try
         {

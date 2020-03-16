@@ -37,7 +37,7 @@ public class DES extends FragmentActivity
     public DES() { }
 
     /** Method for decrypting a file. Requires an input stream and an output stream **/
-    private static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
+    public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
     {
         Scanner reader = null;
         PrintWriter writer = null;
@@ -71,7 +71,7 @@ public class DES extends FragmentActivity
     }
 
     /** Method for encrypting a file. Requires an input stream and an output stream **/
-    private static void encryptFile(InputStream readFromMe, OutputStream writeToMe)
+    public static void encryptFile(InputStream readFromMe, OutputStream writeToMe)
     {
         Scanner reader = null;
         PrintWriter writer = null;
@@ -124,6 +124,7 @@ public class DES extends FragmentActivity
         return data;
     }
 
+
     public void lockFile(String filename)
     {
         // testing file encryption
@@ -131,12 +132,13 @@ public class DES extends FragmentActivity
         Scanner reader = null;  // scanner for reading files
         OutputStream fos = null;
         InputStream fis = null;
-    
+        String output_filename = filename + "_locked.txt";
+
         try
         {
-            fis = getResources().openRawResource(getResources().getIdentifier("downtownlocations2", "raw", getPackageName()));
-            fos = new FileOutputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename));
-        
+            fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
+            fos = new FileOutputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), output_filename));
+
             //lets encrypt the file
             DES.encryptFile(fis, fos);
             fis.close();
@@ -162,7 +164,7 @@ public class DES extends FragmentActivity
         }
     }
     
-    public void unlockFile(String filename)
+    public void unlockFile(InputStream filename)
     {
         // testing file decryption
         String next_line = null;
@@ -172,15 +174,18 @@ public class DES extends FragmentActivity
         
         try
         {
+            // THIS IS NOT WORKING
             // now we want to decrypt the file to see if the file is back to its original state.
-            fis = new FileInputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename));  // input the encrypted file
-            fos = new FileOutputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename)); // output the decrypted file
-        
+            //fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName())); // input the encrypted file
+            //fis = new FileInputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename));  // input the encrypted file
+            //fos = new FileOutputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename)); // output the decrypted file
+
+
             // lets decrypt the file
             DES.decryptFile(fis, fos);
             fis.close();
             fos.close();
-            
+
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
@@ -190,6 +195,7 @@ public class DES extends FragmentActivity
             e.printStackTrace();
         }
     }
+
     /** Here is some code that was used to test to see if the encryption and decryption was working.
      * Leaving this code here for now to see the format that was used for calling the methods.
      * We can delete this later once implemented fully.

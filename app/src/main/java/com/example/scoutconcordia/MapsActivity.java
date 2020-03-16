@@ -78,6 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+    DES encrypter = new DES();
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -155,21 +156,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addExploreInsideButtonListener();
         addPopUpBarListener();
 
+        // lets encrypt all of the files before using them
+        encryptAllInputFiles();
 
         // Lets try creating a graph for Hall 8th Floor
-        InputStream fis = null;
-        try
-        {
-            fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
-            Graph hall_8_floor = Graph.addNodesToGraph("hall8nodes", fis);
-            LatLng[] tempArray = hall_8_floor.vertices();
-            for (int i = 0; i < tempArray.length; i++)
-            {
-                Log.println(Log.WARN, "testingGraph", tempArray[i].toString());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Graph hall_8_floor = new Graph(1);
+        createGraph(hall_8_floor, "encrypted_hall8.txt");
 
 
     }
@@ -252,11 +244,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
-
-
-
-
-
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -279,6 +266,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // logic here
         } else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) { // app moved the camera
             // logic here
+        }
+    }
+
+    // This is the method that will be used to encrypt all of the input files during the app startup.
+    public void encryptAllInputFiles()
+    {
+        InputStream fis = null;
+        OutputStream fos = null;
+        String filename = "";
+        String encrypted_filename = "";
+
+        try {
+            // encrypt hall 8th floor
+            filename = "hall8nodes";
+            encrypted_filename = "encrypted_hall8.txt";
+            fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
+            fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));
+            encrypter.encryptFile(fis, fos);
+
+            // encrypt any other floor map here...
+
+
+            // close the input and the output streams
+            fis.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // this method will be used for creating the floor graphs by reading form a node encrypted text file.
+    public void createGraph(Graph graphName, String encryptedFileName)
+    {
+        String tempDecryptedFile = "tempDecryptedFile.txt";
+        InputStream fis = null;
+        OutputStream fos = null;
+        try
+        {
+            // First we need to decrypt the file to have access to the locations
+            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
+            fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
+            encrypter.decryptFile(fis, fos);
+
+            // with the decrypted file, we can add the nodes to the graph
+            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
+            graphName = Graph.addNodesToGraph(fis);
+
+            // close the input and the output streams
+            fis.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // delete the temp file which was decrypted
+            File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
+            deleteMe.delete();
         }
     }
 
