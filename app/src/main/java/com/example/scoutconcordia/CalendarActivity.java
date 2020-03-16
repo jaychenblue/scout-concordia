@@ -1,5 +1,6 @@
 package com.example.scoutconcordia;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class CalendarActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
@@ -70,9 +72,12 @@ public class CalendarActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(lastSignedInAccount == null) {
+        if(lastSignedInAccount.getAccount() != null) {
             signIn();
-        }else{
+        }
+        else{
+
+
             email = lastSignedInAccount.getEmail();
             new RetrieveCalendars().execute();
         }
