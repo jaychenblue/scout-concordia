@@ -183,7 +183,7 @@ public class Graph
         return returnMe;
     }
 
-    // reads a from a node file to add nodes to a graph
+    // reads from a node file to add nodes to a graph
     public static Graph addNodesToGraph(InputStream readFromMe)
     {
         int currentPos = 0;
@@ -192,10 +192,6 @@ public class Graph
         String floorName = null;
         Graph returnMe = null;
         LatLng currentCoordinate = null;
-        
-        // Decrypting the file
-        //DES theDecrypter = new DES();
-        //InputStream readFromMe = theDecrypter.unlockFile(fileName);
 
         LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
         try
@@ -258,7 +254,6 @@ public class Graph
                 current = current.getNext();
             }
         }
-        //theDecrypter.lockFile(fileName);
         return returnMe;
     }
 }

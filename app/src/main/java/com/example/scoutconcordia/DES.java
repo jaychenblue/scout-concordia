@@ -4,11 +4,6 @@ import android.util.Log;
 
 import androidx.fragment.app.FragmentActivity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -47,6 +42,7 @@ public class DES extends FragmentActivity
             reader = new Scanner(readFromMe);
             writer = new PrintWriter(writeToMe);
 
+            // reads from the input file and outputs decrypted text to the output file
             while (reader.hasNextLine())
             {
                 desCipher.init(Cipher.DECRYPT_MODE, myDesKey);
@@ -81,6 +77,7 @@ public class DES extends FragmentActivity
             reader = new Scanner(readFromMe);
             writer = new PrintWriter(writeToMe);
 
+            // reads from the input file and outputs encrypted text to the output file
             while (reader.hasNextLine())
             {
                 desCipher.init(Cipher.ENCRYPT_MODE, myDesKey);
@@ -123,134 +120,4 @@ public class DES extends FragmentActivity
         }
         return data;
     }
-
-
-    public void lockFile(String filename)
-    {
-        // testing file encryption
-        String next_line = null;
-        Scanner reader = null;  // scanner for reading files
-        OutputStream fos = null;
-        InputStream fis = null;
-        String output_filename = filename + "_locked.txt";
-
-        try
-        {
-            fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
-            fos = new FileOutputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), output_filename));
-
-            //lets encrypt the file
-            DES.encryptFile(fis, fos);
-            fis.close();
-            fos.close();
-        
-            /*
-            // now we want to decrypt the file to see if the file is back to its original state.
-            fis = new FileInputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename));  // input the encrypted file
-            fos = new FileOutputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename)); // output the decrypted file
-        
-            // lets decrypt the file
-            DES.decryptFile(fis, fos);
-            fis.close();
-            fos.close();*/
-        
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-    
-    public void unlockFile(InputStream filename)
-    {
-        // testing file decryption
-        String next_line = null;
-        Scanner reader = null;  // scanner for reading files
-        OutputStream fos = null;
-        InputStream fis = null;
-        
-        try
-        {
-            // THIS IS NOT WORKING
-            // now we want to decrypt the file to see if the file is back to its original state.
-            //fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName())); // input the encrypted file
-            //fis = new FileInputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename));  // input the encrypted file
-            //fos = new FileOutputStream(new File(DES.this.getFilesDir().getAbsoluteFile(), filename)); // output the decrypted file
-
-
-            // lets decrypt the file
-            DES.decryptFile(fis, fos);
-            fis.close();
-            fos.close();
-
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /** Here is some code that was used to test to see if the encryption and decryption was working.
-     * Leaving this code here for now to see the format that was used for calling the methods.
-     * We can delete this later once implemented fully.
-     *
-    // testing file encryption
-    String next_line = null;
-    Scanner reader = null;  // scanner for reading files
-
-    String encrypted_filename = "encrypted_sgw_locations.txt";
-    String decrypted_filename = "decrypted_sgw_locations.txt";
-    OutputStream fos = null;
-    InputStream fis = null;
-
-        try {
-        fis = getResources().openRawResource(getResources().getIdentifier("downtownlocations2", "raw", getPackageName()));
-        fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));
-
-        //lets encrypt the file
-        DES.encryptFile(fis, fos);
-        fis.close();
-        fos.close();
-
-        // test to see if the file has anything in it. This will print out the encrypted file.
-        fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));
-        reader = new Scanner(fis);
-        while (reader.hasNextLine())
-        {
-            next_line = reader.nextLine();
-            System.out.println(next_line);
-        }
-        reader.close();
-
-        // now we want to decrypt the file to see if the file is back to its original state.
-        fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));  // input the encrypted file
-        fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), decrypted_filename)); // output the decrypted file
-
-        // lets decrypt the file
-        DES.decryptFile(fis, fos);
-        fis.close();
-        fos.close();
-
-        fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), decrypted_filename));
-        reader = new Scanner(fis);
-        while (reader.hasNextLine())
-        {
-            next_line = reader.nextLine();
-            System.out.println(next_line);
-        }
-        reader.close();
-
-    } catch (FileNotFoundException e) {
-        e.printStackTrace();
-    } catch (
-    IOException e) {
-        e.printStackTrace();
-    }
-    **/
 }
