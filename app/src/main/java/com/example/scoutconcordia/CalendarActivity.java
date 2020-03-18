@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -12,12 +13,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -38,8 +42,11 @@ import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
+import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +56,7 @@ public class CalendarActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInOptions gso;
     private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult request code)
+    private static final int RC_READ_CALENDAR = 9000; // request code for requesting permission to read calendar
     private String email = null;    // email address of user
     private Calendar service = null;    // Google Calendar Api service
     private ArrayList<String> calendarNames = new ArrayList<>();    // user's google calendars' name list
@@ -76,8 +84,6 @@ public class CalendarActivity extends AppCompatActivity {
             signIn();
         }
         else{
-
-
             email = lastSignedInAccount.getEmail();
             new RetrieveCalendars().execute();
         }
@@ -193,21 +199,22 @@ public class CalendarActivity extends AppCompatActivity {
                 int startRow = eventStartRow(startDate, endDate);
                 String start = sdfTime.format(startDate); // start time "h:mm"
                 String end = sdfTime.format(endDate); // // start time "h:mm"
+                String classHours = start + " - " + end;
 
                 if (date.equals(dateInfoObj[0][1])) {   // today
-                    fillEvent(0, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                    fillEvent(0, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
                 } else if (date.equals(dateInfoObj[1][1])) { //tomorrow
-                    fillEvent(1, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+                    fillEvent(1, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
                 } else if (date.equals(dateInfoObj[2][1])) { // day after
-                    fillEvent(2, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                    fillEvent(2, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
                 } else if (date.equals(dateInfoObj[3][1])) {
-                    fillEvent(3, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+                    fillEvent(3, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
                 } else if (date.equals(dateInfoObj[4][1])) {
-                    fillEvent(4, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                    fillEvent(4, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
                 } else if (date.equals(dateInfoObj[5][1])) {
-                    fillEvent(5, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeTwo));
+                    fillEvent(5, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
                 } else if (date.equals(dateInfoObj[6][1])) {
-                    fillEvent(6, startRow, totalRows, eventName, eventLocation, start, end, getResources().getColor(R.color.shadeOne));
+                    fillEvent(6, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
                 }
             }
             catch(Throwable t){
@@ -256,7 +263,7 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     // sets text, text color, background for the text views overlapping the event timing
-    private void fillEvent(int eventDayColumn, int startRow, int totalRows, String summary, String location, String start, String end, int colorId){
+    private void fillEvent(int eventDayColumn, int startRow, int totalRows, String summary, String location, String classHours, int colorId){
        // exception is thrown if textview does not exist, likely cause evant start or end date out of school hours
         // no idea matching textview representing time interval
         try {
@@ -265,34 +272,50 @@ public class CalendarActivity extends AppCompatActivity {
               textView.setTextColor(getResources().getColor(R.color.white));
               textView.setBackgroundColor(colorId);
               if (j == startRow) {
-                  textView.setText(summary);
+                  textView.setText(removeStringOverflow(summary, 15));
               } else if (j == startRow + 1) {
-                  textView.setText(location);
+                  textView.setText(removeStringOverflow(location, 15));
               } else if (j == startRow + 2) {
-                  textView.setText(start + " - " + end);
+                  textView.setText(classHours);
               }
-              attachOnClickListener(textView);
+              attachOnClickListener(textView, location, summary, classHours);
           }
       }
       catch (Throwable t){
           Log.d(TAG, t.toString());
-          Log.d(TAG, "START:" +start + ", END:"+end);
       }
     }
 
-    private void attachOnClickListener(TextView textView){
+    private String removeStringOverflow (String str, int substringLength){
+        try {
+            if (str.length() <= substringLength) {
+                return str;
+            } else {
+                return str.substring(0, substringLength) + "...";
+            }
+        }catch(Throwable t){
+            Log.d(TAG, t.getMessage());
+            return null;
+        }
+    }
+
+    private void attachOnClickListener(TextView textView, final String location, final String summary, final String classHours){
         textView.setClickable(true);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                directionsDialog().show();
+                List<String> items = new ArrayList<String>(Arrays.asList(location, summary, classHours));
+                items.removeAll(Collections.singleton(null));
+
+                directionsDialog(items.toArray(new String[0])).show();
             }
         });
     }
 
-    private Dialog directionsDialog(){
+    private Dialog directionsDialog(String[] items){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Go to Location")
+        builder.setTitle("Go to Location")
+                .setItems(items, null)
                 .setCancelable(true)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
