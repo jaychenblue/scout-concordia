@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
@@ -54,9 +55,9 @@ import java.util.Set;
 
 public class CalendarActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
+    private GoogleSignInAccount account;
     private GoogleSignInOptions gso;
-    private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult request code)
-    private static final int RC_READ_CALENDAR = 9000; // request code for requesting permission to read calendar
+    private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult request code
     private String email = null;    // email address of user
     private Calendar service = null;    // Google Calendar Api service
     private ArrayList<String> calendarNames = new ArrayList<>();    // user's google calendars' name list
@@ -80,11 +81,12 @@ public class CalendarActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(lastSignedInAccount.getAccount() != null) {
+        // if user has signed out, sign in. Else read calendar.
+        if(lastSignedInAccount == null || lastSignedInAccount.getAccount() == null) {
             signIn();
         }
         else{
-            email = lastSignedInAccount.getEmail();
+            account = lastSignedInAccount;
             new RetrieveCalendars().execute();
         }
 
@@ -118,11 +120,10 @@ public class CalendarActivity extends AppCompatActivity {
     // single selection is allowed, and first value is selected by default
     // dialog is not cancellable
     // user either has to select an option, or go back to MapsActivity by pressing cancel or back button
-
     public Dialog onCreateDialogSingleChoice() {
         final CharSequence[] cs = calendarNames.toArray(new CharSequence[calendarNames.size()]);    // char sequence holds the names of all calendars of the user
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MaterialThemeDialog);
-        selectedCalendarId = calendarIds.get(0);
+        selectedCalendarId = calendarIds.get(0); // there is at least one item available, as the default google calendar is not deletable
         builder.setTitle("Select schedule calendar")
                 .setCancelable(false)
                 .setSingleChoiceItems(cs, 0, new DialogInterface.OnClickListener() {    //creates the selection list
@@ -420,9 +421,8 @@ public class CalendarActivity extends AppCompatActivity {
     // handles the behaviour once the sign in has completed
     protected void handleSignInresult(Task<GoogleSignInAccount> task) {
         try {
-            GoogleSignInAccount account = task.getResult(ApiException.class);
-            email = account.getEmail();
-            new RetrieveCalendars().execute();  // async task to retrieve the list of google calendars
+            account = task.getResult(ApiException.class);
+            new RetrieveCalendars().execute();
         } catch (Throwable e) {
             Log.d(TAG, e.getMessage());
         }
@@ -441,10 +441,10 @@ public class CalendarActivity extends AppCompatActivity {
     private class RetrieveCalendars extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
-            String scopes = "oauth2:email";
+            String scopes = "oauth2:https://www.googleapis.com/auth/calendar.readonly";
             String token = null;
             try {
-                token = GoogleAuthUtil.getToken(getApplicationContext(), email, scopes);
+                token = GoogleAuthUtil.getToken(getApplicationContext(), account.getEmail(), scopes);
                 JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
                 NetHttpTransport HTTP_TRANSPORT = new com.google.api.client.http.javanet.NetHttpTransport();
 
