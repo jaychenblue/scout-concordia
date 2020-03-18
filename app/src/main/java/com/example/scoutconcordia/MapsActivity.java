@@ -5,7 +5,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -13,10 +12,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.icu.util.Output;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +27,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -40,22 +40,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import com.google.android.gms.common.api.Status;
 
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.Scanner;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -78,6 +67,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+
+    // We use this for image overlay of Hall building
+    private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
+    private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
+
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -156,6 +150,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addPopUpBarListener();
     }
 
+
+
+
+
+
+
     // If button pushed change Campus
     public void addListenerOnToggle()
     {
@@ -203,6 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             getCurrentLocation();
@@ -217,6 +218,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
+
+
+
 
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
@@ -237,7 +241,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+        // Map overlay of the Hall image over the building
+        BitmapFactory.Options dimensions = new BitmapFactory.Options();
+        dimensions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
+        int imgHeightPixels = dimensions.outHeight;
 
+        float imgHeightInPixels;
+        float imgRotation = -56;
+        float overlaySize = 65;
+        GroundOverlayOptions goo = new GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.fromResource(R.drawable.hall2p))
+                .position(hallOverlaySouthWest, 63)
+                .anchor(0, 1)
+                .bearing(imgRotation);
+        mMap.addGroundOverlay(goo);
 
     }
 
