@@ -1930,7 +1930,7 @@
                         </TextView>
                     </TableRow>
                     <TableRow>
-                        <TextView 
+                        <TextView
                             android:id="@+id/quarter41"
                             android:text="18:00"
                             android:background="@color/mainBurgundy"
@@ -2825,51 +2825,6 @@
                         </TextView>
                         <TextView 
                             android:id="@+id/seven60"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                    </TableRow>
-                    <TableRow>
-                        <TextView 
-                            android:id="@+id/quarter61"
-                            android:text="23:00"
-                            android:background="@color/mainBurgundy"
-                            android:textColor="@color/white"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                        <TextView 
-                            android:id="@+id/one61"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                        <TextView 
-                            android:id="@+id/two61"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                        <TextView 
-                            android:id="@+id/three61"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                        <TextView 
-                            android:id="@+id/four61"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                        <TextView 
-                            android:id="@+id/five61"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                        <TextView 
-                            android:id="@+id/six61"
-                            android:textAlignment="center"
-                            android:gravity="center">
-                        </TextView>
-                        <TextView 
-                            android:id="@+id/seven61"
                             android:textAlignment="center"
                             android:gravity="center">
                         </TextView>

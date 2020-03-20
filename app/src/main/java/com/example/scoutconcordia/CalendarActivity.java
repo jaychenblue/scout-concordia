@@ -1,34 +1,24 @@
 package com.example.scoutconcordia;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
@@ -42,30 +32,25 @@ import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
-
-import java.sql.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class CalendarActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInAccount account;
     private GoogleSignInOptions gso;
-    private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult request code
-    private String email = null;    // email address of user
+    private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult)
     private Calendar service = null;    // Google Calendar Api service
     private ArrayList<String> calendarNames = new ArrayList<>();    // user's google calendars' name list
-    private ArrayList<String> calendarIds = new ArrayList<>();    // user's google calendars' name list
+    private ArrayList<String> calendarIds = new ArrayList<>();    // user's google calendars' Ids list
     private List<Event> eventsList = new ArrayList<>(); // List of calendar events from the selected calendar
-    private String selectedCalendarId = null;   // holds the id of the google calendar that the user has chosen to import
-    private java.util.Calendar calendar = java.util.Calendar.getInstance(); // calendar object for creating mutating (set time, add days) Date objects
-    private int[][] tableIds = null; // holds ids of textviews making up the tabel layout, [x][y], x os row , y is column
+    private String selectedCalendarId = null;   // holds the id of the google calendar that the user selects in single choice dialog
+    private java.util.Calendar calendar = java.util.Calendar.getInstance(); // calendar object for creating, mutating (set time, add days) Date objects
+    private int[][] tableIds = null; // holds ids of text views (columns)  making up the table layout, [x][y], x is row , y is column
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +66,15 @@ public class CalendarActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
-        // if user has signed out, sign in. Else read calendar.
+        // if user has signed out, sign in. Else read calendar. (Only works when user has signed out from the app).
+        /* Does not work if user removes account from device, without signing out from the app, as getLastSignedInAccount(Context ctx) continues
+           to return the account and not null. Although this does not seem to be a problem at first as it seems not having the account logged in
+           on the device does not matter. But when request to read the calendar is made, an exception is thrown saying invalid credentials.
+           This is handled in the catch block, where exception is thrown, by calling signOut and asking the user to sign in again. */
+        /* Checking for granted scopes on the api client continues to return true even when permission has been revoked by the user. This is also handled
+           inside the catch block by calling revokeAccess on the googleSignInClient, signing out and asking user to sign in again. */
         if(lastSignedInAccount == null || lastSignedInAccount.getAccount() == null) {
-            signIn();
+            signIn(); // sign in, create a RetrieveCalendar object in handleSignInResult
         }
         else{
             account = lastSignedInAccount;
@@ -117,44 +108,58 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     // dialog to display a selection list with all calendar entry names
-    // single selection is allowed, and first value is selected by default
+    // single choice dialog, and first value is selected by default
     // dialog is not cancellable
     // user either has to select an option, or go back to MapsActivity by pressing cancel or back button
     public Dialog onCreateDialogSingleChoice() {
-        final CharSequence[] cs = calendarNames.toArray(new CharSequence[calendarNames.size()]);    // char sequence holds the names of all calendars of the user
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MaterialThemeDialog);
-        selectedCalendarId = calendarIds.get(0); // there is at least one item available, as the default google calendar is not deletable
         builder.setTitle("Select schedule calendar")
-                .setCancelable(false)
-                .setSingleChoiceItems(cs, 0, new DialogInterface.OnClickListener() {    //creates the selection list
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        selectedCalendarId = calendarIds.get(which);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {    // cancel button
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
-                        startActivity(mapIntent);
-                        CalendarActivity.this.overridePendingTransition(0, 0);
-                    }
-                })
-                .setPositiveButton("Select", new DialogInterface.OnClickListener() {    // select button
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        new RetrieveEvents().execute();
-                    }
-                });
+                .setCancelable(false);
 
-
+        // if calendars found
+        if(!calendarNames.isEmpty()){
+            // char sequence holds the names of all calendars of the user
+            final CharSequence[] cs = calendarNames.toArray(new CharSequence[calendarNames.size()]);
+            selectedCalendarId = calendarIds.get(0);
+            builder.setSingleChoiceItems(cs, 0, new DialogInterface.OnClickListener() {    //creates the selection list
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            selectedCalendarId = calendarIds.get(which);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {    // cancel button
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
+                            startActivity(mapIntent);
+                            CalendarActivity.this.overridePendingTransition(0, 0);
+                        }
+                    })
+                    .setPositiveButton("Select", new DialogInterface.OnClickListener() {    // select button
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            new RetrieveEvents().execute();
+                        }
+                    });
+        }
+        else{
+            builder.setMessage("No calendars found for the signed in Google account!");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
+                            startActivity(mapIntent);
+                            CalendarActivity.this.overridePendingTransition(0, 0);
+                         }
+            });
+        }
         return builder.create();
     }
 
-    // for every event in the events list of the google calendar
-    // verifies the day of the event, start time, and duration
-    // fills the table columns (textView) in the table layout overlapping the event timing
-    // Table structure is in TableLayout in activity_calendar.xml
+    // - loops through every event in the events list
+    // - verifies the day of the event, start time, and duration
+    // - fills the table columns (textView) in the table layout overlapping the event timing
+    // - Table structure is in TableLayout in activity_calendar.xml
     //      - first column is representing time, second column is current day, the column after is the day after and so on
     //          -> each column contains a textview
     //      -first row is date, second row is day
@@ -162,7 +167,7 @@ public class CalendarActivity extends AppCompatActivity {
     private void displayTable() {
         tableIds = tableLayoutIds(); // ids of columns (text views) in the table table layout
         String[][] dateInfoObj = dateInfoObj(); // see method description
-        fillDayDateRows(dateInfoObj);   // set date and day labels
+        fillDayDateRows(dateInfoObj);   // set date and day labels in table layout
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd"); // date formatter to compare Date object dates
         SimpleDateFormat sdfTime = new SimpleDateFormat("h:mm"); // time formatter
 
@@ -182,31 +187,31 @@ public class CalendarActivity extends AppCompatActivity {
                 Date startDate = new Date(event.getStart().getDateTime().getValue());   // start date of the event
                 Date endDate = new Date(event.getEnd().getDateTime().getValue());   // end date of the event
 
-                // even starts or ends outside school hours, continue without displaying
-                if(getTimeHour(startDate) < 8 || getTimeHour(endDate) >= 23){
+                // event starts or ends outside school hours, continue without displaying
+                if(getTimeHour(startDate) < 8 || getTimeHour(startDate) == 23 || getTimeHour(endDate) > 23){
                     continue;
                 }
                 // time difference between start and end of event in milliseconds
                 long length = endDate.getTime() - startDate.getTime();
 
-                // (length of event)/15 to get the number of rows the event covers
+                // (length of event in mins)/15 mins to get the number of rows the event covers
                 // each row is 15 mins
                 int totalRows = (int)(length / 1000 / 60) / 15;
 
-                // convert date to "yyyy-MM-dd" format to compare with date from
-                // datInfoObj as dates in dateInfoObj are stored in "yyyy-MM-dd"
+                /* convert date to "yyyy-MM-dd" string format to compare with date from
+                   datInfoObj as dates in dateInfoObj are stored in "yyyy-MM-dd" */
                 String date = sdfDate.format(startDate);
 
                 int startRow = eventStartRow(startDate, endDate);
                 String start = sdfTime.format(startDate); // start time "h:mm"
-                String end = sdfTime.format(endDate); // // start time "h:mm"
+                String end = sdfTime.format(endDate);     // end time "h:mm"
                 String classHours = start + " - " + end;
 
-                if (date.equals(dateInfoObj[0][1])) {   // today
+                if (date.equals(dateInfoObj[0][1])) {   // event is today
                     fillEvent(0, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
-                } else if (date.equals(dateInfoObj[1][1])) { //tomorrow
+                } else if (date.equals(dateInfoObj[1][1])) { //event is tomorrow
                     fillEvent(1, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
-                } else if (date.equals(dateInfoObj[2][1])) { // day after
+                } else if (date.equals(dateInfoObj[2][1])) { // event is the day after
                     fillEvent(2, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
                 } else if (date.equals(dateInfoObj[3][1])) {
                     fillEvent(3, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
@@ -226,7 +231,7 @@ public class CalendarActivity extends AppCompatActivity {
 
     // sets the values for the date's row (first row) and day's row (second row) for all 7 columns
     // first column are set to today's date and day respectively, next column is next day
-    // uses the dateInfoObj created with String[][] dateInfoObj() method to get date and day value for each of the days
+    // uses the dateInfoObj created with dateInfoObj() method to get date and days value for each of the 7 days starting current day
     private void fillDayDateRows(String[][] dateInfoObj){
         Resources r = getResources();
         String name = getPackageName();
@@ -241,10 +246,10 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     // returns a multidimensional array containing string values for the day and date from current day up to the 7th day
-    //String[][] dateInfoObj= new String[7][3]; // [x][0] = date (dd), [x][1] = date (yyyy-MM-dd), [x][2] = name of day, where x = 0 is today, x =1 is tomorrow and so on
+    //String[][] dateInfoObj= new String[7][3]; // [x][0] = date (dd), [x][1] = date (yyyy-MM-dd), [x][2] = name of day
+    // where x = 0 is today, x = 1 is tomorrow and so on.  0 <= x < 7
     private String[][] dateInfoObj(){
         String[][] dateInfoObj= new String[7][3];
-        // 0 <= x < 7
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String today = sdf.format(new Date());
 
@@ -263,10 +268,9 @@ public class CalendarActivity extends AppCompatActivity {
         return dateInfoObj;
     }
 
-    // sets text, text color, background for the text views overlapping the event timing
+    // set text, text color, background for the text views overlapping the event timing
+    // attach onClickListener to texteviews
     private void fillEvent(int eventDayColumn, int startRow, int totalRows, String summary, String location, String classHours, int colorId){
-       // exception is thrown if textview does not exist, likely cause evant start or end date out of school hours
-        // no idea matching textview representing time interval
         try {
           for (int j = startRow; j < totalRows + startRow; ++j) {
               TextView textView = (TextView) findViewById(tableIds[eventDayColumn][j]);
@@ -300,6 +304,7 @@ public class CalendarActivity extends AppCompatActivity {
         }
     }
 
+    // displays directionsDailog created by calling directionsDialog(...)
     private void attachOnClickListener(TextView textView, final String location, final String summary, final String classHours){
         textView.setClickable(true);
         textView.setOnClickListener(new View.OnClickListener() {
@@ -313,6 +318,10 @@ public class CalendarActivity extends AppCompatActivity {
         });
     }
 
+    // create a dialong displaying location, title, and hours of the event
+    // Go button to get directions to the location
+    // Cancel button to cancel dialog
+    // dialog is also cancellable by pressing anywhere on the screen
     private Dialog directionsDialog(String[] items){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Go to Location")
@@ -332,7 +341,7 @@ public class CalendarActivity extends AppCompatActivity {
         return builder.create();
     }
 
-    // returns the row number that the event begins at (e.g. if event start at 9, 5 will be returned, (9-8)*4 +(0/15)+1
+    // returns the row number that the event begins at (e.g. if event starts at 9, 5 will be returned, (9-8)*4 +(0/15)+1
     // begins at 8:00 = row 1, at 8:15 = row 2, and so on
     private int eventStartRow(Date start, Date end){
         java.util.Calendar c = java.util.Calendar.getInstance();
@@ -346,10 +355,11 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
 
-    // returns a multidimensional array that holds ids of all text views for each column in the table Layout in activity_calendar.xml for displaying schedule
+    // returns a multidimensional array that holds ids of all text views for each column in the table Layout in activity_calendar.xml
+    // [x][y], x = 0 is the first row
+    // y = 1 (0 is not assigned) is the first column (from 8:00 to 8:15)
     private int[][] tableLayoutIds(){
-        int[][] tableIds = new int[7][61];  // [x][y], x = 0 is the first row from the left in the table
-        // y = 1 (0 is not assigned) is the first column (from 8:00 to 8:15)
+        int[][] tableIds = new int[7][61];
         Resources r = getResources();
         String name = getPackageName();
 
@@ -365,7 +375,7 @@ public class CalendarActivity extends AppCompatActivity {
         return tableIds;
     }
 
-    // returns the name of the day for the value returned by Calendar.DAY_OF_WEEK
+    // return the day of the name for a given date
     private String getDayOfWeek(int value){
         switch (value) {
             case java.util.Calendar.SUNDAY:
@@ -395,26 +405,32 @@ public class CalendarActivity extends AppCompatActivity {
         return calendar.getTime();
     }
 
+    // returns the hour value of time in Date object
     private int getTimeHour(Date date){
         calendar.setTime(date);
         return calendar.get(java.util.Calendar.HOUR_OF_DAY);
     }
 
-    // creates a new sign in intent
     protected void signIn() {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    // result of the starActivityForResult for the singInIntent in signIn()
+    protected void signOut(){
+        googleSignInClient.signOut();
+    }
+
+    // result of the startActivityForResult
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // if the request code equals that of the signInIntent
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInresult(task);
+        if(resultCode == RESULT_OK) {
+            // if the request code equals that of the signInIntent
+            if (requestCode == RC_SIGN_IN) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleSignInresult(task);
+            }
         }
     }
 
@@ -431,14 +447,15 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(0, 0);    // removes the exit adn enter animations when changing activities
+        overridePendingTransition(0, 0);    // removes the exit and enter animations when changing activities
     }
 
     // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
-    // - build a global google api calendar service to be then used to retrieve events from a calendar
-    //      (get an access token using the user's email and set this token to the credentials used)
+    // - build a global google api calendar service
+    //      (get an access token using the user's email and set this token to the credentials)
     // - retrieves a list of google calendars
     private class RetrieveCalendars extends AsyncTask<Void, Void, Void> {
+        private boolean isSuccesful = true; // true when query is successful, set to false when an exception is thrown
         @Override
         protected Void doInBackground(Void... params) {
             String scopes = "oauth2:https://www.googleapis.com/auth/calendar.readonly";
@@ -459,6 +476,7 @@ public class CalendarActivity extends AppCompatActivity {
 
                 String pageToken = null;
                 do {
+                    // retrieve calendars where user is the owner
                     CalendarList calendarList = service.calendarList().list().setMinAccessRole("owner").setPageToken(pageToken).execute();
                     List<CalendarListEntry> calendars = calendarList.getItems();
 
@@ -468,11 +486,12 @@ public class CalendarActivity extends AppCompatActivity {
                         calendarNames.add(name);
                         calendarIds.add(id);
                     }
-                    pageToken = calendarList.getNextPageToken();    // if there is no next page token will be null
+                    pageToken = calendarList.getNextPageToken();    // if there is no next page, token will be null
                 }
                 while (pageToken != null);
             } catch (Throwable t) {
-                Log.e("TAG", t.getMessage());
+                Log.e(TAG, t.getMessage());
+                isSuccesful = false;
             }
             return null;
         }
@@ -480,29 +499,43 @@ public class CalendarActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void v){
             super.onPostExecute(v);
-            onCreateDialogSingleChoice().show();
+            // if query is successful, show selection dialog
+            if(isSuccesful) {
+                onCreateDialogSingleChoice().show();
+            }
+            // if not, exception was due to user revoking permission or removing account fromm device
+            // revoke access, sign out, and sign in again.
+            // this will make sure that user is logged in on the device and that they grant permission again.
+            else{
+                googleSignInClient.revokeAccess();
+                signOut();
+                signIn();
+            }
         }
     }
 
     // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
-    // - uses the global google calendar api servive
-    // - retrieves a list of a google calendar events (within the interval today - today + 7)
+    // - uses the global google calendar api service created in RetrieveCalendars
+    // - retrieves events of a google calendar  (within the interval today - today + 7)
+    // - fill the global List<Event> eventsList to be then used to display the events
     private class RetrieveEvents extends AsyncTask<Void, Void, Void> {
         Date test = null;
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                Date dateMin =  setTime(new Date());   // current date with time set to 00:00:00:00 (H:M:S:MS), lower limit for events search query
-                /**
-                 * 8 days are added to the date as time is set to 00:00:00:00 (H:M:S:MS)
-                 * at time 00:00:00:00 (H:M:S:MS) date would change to the next date
-                 */
+                // current date with time set to 00:00:00:00 (H:M:S:MS)
+                // lower limit for events search query
+                Date dateMin =  setTime(new Date());
+
+                //  add 8 days to the lower limits
                 calendar.add(java.util.Calendar.DATE, 8);
-                Date dateMax = calendar.getTime(); // upper limit for events search query, upper limit is 7 days from current day
+
+                // upper limit for events search query
+                Date dateMax = calendar.getTime();
                 test = dateMax;
                 String pageToken = null;
                 do {
-                    // returns events within the data interval from today to next 7 days
+                    // returns events within the date interval
                     Events events = service.events().list(selectedCalendarId)
                             .setTimeMin(new DateTime(dateMin))
                             .setTimeMax(new DateTime(dateMax))
