@@ -162,8 +162,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = new Graph(1);
         createGraph(hall_8_floor, "encrypted_hall8.txt");
-
-
     }
 
     // If button pushed change Campus
@@ -461,6 +459,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             stylePolygon(justAddedPolygon);
             currentBuilding = currentBuilding.getNext();
         }
+    }
+
+    private void createFloorGraphs()
+    {
+        // Lets try creating a graph for Hall 8th Floor
+        InputStream fis = null;
+        try
+        {
+            fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
+            Graph hall_8_floor = new Graph(10);
+            hall_8_floor.addNodesToGraph(fis);
+            LatLng[] tempArray = hall_8_floor.vertices();
+            for (int i = 0; i < tempArray.length; i++)
+            {
+                System.out.println(tempArray[i]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
