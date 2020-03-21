@@ -198,7 +198,7 @@ public class CalendarActivity extends AppCompatActivity {
                 // each row is 15 mins
                 int totalRows = (int)(length / 1000 / 60) / 15;
 
-                /* convert date to "yyyy-MM-dd" string format to compare with date from
+                /* convert date to "yyyy-MM-dd" string format to compare with date fit rom
                    datInfoObj as dates in dateInfoObj are stored in "yyyy-MM-dd" */
                 String date = sdfDate.format(startDate);
 
@@ -539,6 +539,7 @@ public class CalendarActivity extends AppCompatActivity {
                     Events events = service.events().list(selectedCalendarId)
                             .setTimeMin(new DateTime(dateMin))
                             .setTimeMax(new DateTime(dateMax))
+                            .setSingleEvents(true)
                             .setPageToken(pageToken)
                             .execute();
                     List<Event> eventItems= events.getItems();
