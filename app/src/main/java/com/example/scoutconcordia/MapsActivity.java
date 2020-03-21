@@ -75,7 +75,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isInfoWindowShown = false;
     private Marker searchMarker;
     private String activeInfoWindow = null;
-    private List<Polygon> polygon_buildings = new ArrayList<>();
+    private List<Polygon> polygonBuildings = new ArrayList<>();
+    private List<Marker> markerBuildings = new ArrayList<>();
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -194,18 +195,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (activeInfoWindow != null)
                 {
                     // we want to remove the building outline from the map so we can see the indoor floor plan
-                    // need to check if the marker is within the polygon. Then we want to hide whichever polygon it is within.
-                    // CHECK OUT THE POLYUTIL THIng
-                    System.out.println(polygon_buildings.size());  // we have a list of all the buildings. Now we want to see if the marker is within a building
-
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
                     // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
-                    for (Polygon poly : polygon_buildings) {
+                    for (Polygon poly : polygonBuildings) {
                         if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
                         {
-                            poly.setVisible(false);
-                            searchMarker.setVisible(false);
+                            poly.setVisible(false);  // hide the polygon
+                            searchMarker.setVisible(false);  // hide the marker
                         }
                     }
 
@@ -216,16 +213,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    // method fpr hiding all of the polygons on the map
+    // method for hiding all of the polygons on the map
     public void hideAllPolygons()
     {
-
+        for (Polygon poly : polygonBuildings) {
+            poly.setVisible(false);
+        }
     }
 
     // method for showing all of the polygons on the map
     public void showAllPolygons()
     {
-
+        for (Polygon poly : polygonBuildings) {
+            poly.setVisible(true);
+        }
     }
 
     // this is the listener for the pop up bar at the bottom of the screen.
@@ -233,6 +234,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         popUpBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
         // can add functionality here if we click on the pop up bar
+    }
+
+    // method for hiding all of the markers on the map
+    public void hideAllMarkers()
+    {
+        for (Marker mar : markerBuildings) {
+            mar.setVisible(false);
+        }
+    }
+
+    // method for showing all of the markers on the map
+    public void showAllMarkers()
+    {
+        for (Marker mar : markerBuildings) {
+            mar.setVisible(true);
+        }
     }
 
 
@@ -379,13 +396,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     isInfoWindowShown = false;
                     activeInfoWindow = null;
                 }
-
-                // change the icon of the marker (this was for testing purposes)
-                //marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.smiling)));
                 return true;
             }
         });
 
+        // when we click on the map, we want to reset back to all the defaults
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -393,6 +408,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 exploreInsideButton.setVisibility(View.INVISIBLE);
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
+                showAllPolygons();
+                showAllMarkers();  
             }
         });
     }
@@ -441,7 +458,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentCoordinate = currentCoordinate.getNext();
             }
             Polygon justAddedPolygon = mMap.addPolygon(po);
-            polygon_buildings.add(justAddedPolygon); // add the polygon to the list of polygons
+            polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
             int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
@@ -453,6 +470,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //.snippet("This is a test piece of text to see how it will look like in the window")
                     //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .zIndex(44));
+            markerBuildings.add(polyMarker); // add the marker to the list of markers
 
             if (resID != 0)
             {
