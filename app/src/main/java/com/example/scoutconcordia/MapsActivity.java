@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,11 +41,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import com.google.maps.android.PolyUtil;
+
 import java.io.InputStream;
 
 import com.google.android.gms.common.api.Status;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -67,6 +73,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+    private Marker searchMarker;
+    private String activeInfoWindow = null;
+    private List<Polygon> polygon_buildings = new ArrayList<>();
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -179,7 +188,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addExploreInsideButtonListener()
     {
         exploreInsideButton = (Button) findViewById(R.id.exploreInsideButton);
-        // can add a functionality here that gives us the directions when we press on the button
+
+        exploreInsideButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (activeInfoWindow != null)
+                {
+                    // we want to remove the building outline from the map so we can see the indoor floor plan
+                    // need to check if the marker is within the polygon. Then we want to hide whichever polygon it is within.
+                    // CHECK OUT THE POLYUTIL THIng
+                    System.out.println(polygon_buildings.size());  // we have a list of all the buildings. Now we want to see if the marker is within a building
+
+                    LatLng loc = searchMarker.getPosition();  // this is the location of the marker
+
+                    // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
+                    for (Polygon poly : polygon_buildings) {
+                        if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
+                        {
+                            poly.setVisible(false);
+                            searchMarker.setVisible(false);
+                        }
+                    }
+
+                    // we want to zoom in onto the center of the building.
+                    animateCamera(loc, 19.0f);
+                }
+            };
+        });
+    }
+
+    // method fpr hiding all of the polygons on the map
+    public void hideAllPolygons()
+    {
+
+    }
+
+    // method for showing all of the polygons on the map
+    public void showAllPolygons()
+    {
+
     }
 
     // this is the listener for the pop up bar at the bottom of the screen.
@@ -225,7 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
-        mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
+        searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
         // Refresh to fix Map not displaying properly
@@ -296,12 +342,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 isInfoWindowShown = false;
+                searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
 
                 // move the camera to the marker location
                 animateCamera(marker.getPosition(), zoomLevel);
 
                 if (!isInfoWindowShown) {
                     marker.showInfoWindow();
+
+                    activeInfoWindow = marker.getTitle();
 
                     // this sets the parameters for the button that appears on click. (The direction button)
                     directionButton.setVisibility(View.VISIBLE);
@@ -328,6 +377,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     exploreInsideButton.setVisibility(View.INVISIBLE);
                     popUpBar.setVisibility(View.INVISIBLE);
                     isInfoWindowShown = false;
+                    activeInfoWindow = null;
                 }
 
                 // change the icon of the marker (this was for testing purposes)
@@ -377,7 +427,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addLocationsToMap(InputStream location)
     {
-
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
         //BuildingInfo.encryptFile();
         LinkedList.Node currentBuilding = buildings.getHead();
@@ -392,6 +441,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentCoordinate = currentCoordinate.getNext();
             }
             Polygon justAddedPolygon = mMap.addPolygon(po);
+            polygon_buildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
             int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()

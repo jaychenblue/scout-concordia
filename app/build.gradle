@@ -42,4 +42,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
+    implementation 'com.google.maps.android:android-maps-utils:1.0.2'
 }
