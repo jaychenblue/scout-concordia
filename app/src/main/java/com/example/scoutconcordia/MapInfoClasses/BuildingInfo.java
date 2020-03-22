@@ -1,4 +1,4 @@
-package MapInfoClasses;
+package com.example.scoutconcordia.MapInfoClasses;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import DataStructures.LinkedList;
+import com.example.scoutconcordia.DataStructures.LinkedList;
 
 
 public class BuildingInfo

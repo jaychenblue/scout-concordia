@@ -1,4 +1,4 @@
-package MapInfoClasses;
+package com.example.scoutconcordia.MapInfoClasses;
 
 import android.app.Activity;
 import android.text.Html;
@@ -9,7 +9,7 @@ import com.example.scoutconcordia.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-import MapInfoClasses.BuildingInfo;
+import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 
 public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     private Activity context;

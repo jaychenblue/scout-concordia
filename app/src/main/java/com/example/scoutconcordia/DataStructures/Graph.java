@@ -1,4 +1,4 @@
-package DataStructures;
+package com.example.scoutconcordia.DataStructures;
 
 import com.google.android.gms.maps.model.LatLng;
 

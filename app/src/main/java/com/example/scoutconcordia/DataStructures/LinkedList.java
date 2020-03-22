@@ -1,4 +1,4 @@
-package DataStructures;
+package com.example.scoutconcordia.DataStructures;
 
 import java.io.File;
 
