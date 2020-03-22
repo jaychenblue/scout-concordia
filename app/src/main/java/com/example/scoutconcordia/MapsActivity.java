@@ -101,6 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+    private Marker searchMarker;
 
 
 
@@ -248,8 +249,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+                searchMarker.remove();
+                searchMarker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), zoomLevel));
                 mMap.setOnMyLocationChangeListener(null);
@@ -357,7 +358,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
         addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
-        mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
+        searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
         // Refresh to fix Map not displaying properly

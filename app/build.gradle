@@ -11,12 +11,16 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
     }
 }
 
@@ -49,6 +53,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.android.gms:play-services-plus:16.0.0'
+    implementation 'com.google.apis:google-api-services-calendar:v3-rev20191117-1.30.8'
     implementation 'com.google.maps:google-maps-services:0.2.5'
 
 }
