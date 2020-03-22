@@ -1,0 +1,112 @@
+{
+  "project_info": {
+    "project_number": "219414920184",
+    "firebase_url": "https://scoutconcordia.firebaseio.com",
+    "project_id": "scoutconcordia",
+    "storage_bucket": "scoutconcordia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219414920184:android:ee5ec83265d14cb923b40d",
+        "android_client_info": {
+          "package_name": "com.example.scoutconcordia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219414920184-a408nmt83i8icld7mitbaphcc90ktqpp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "b5135ec6698db896947e3c22eb34be4c0ac56b9d"
+          }
+        },
+        {
+          "client_id": "219414920184-5aad0jispjb4o7nika8oeapd54pvdih7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "c62d2a43df6f5ff7bddef97ae6d7c5f2b1905da3"
+          }
+        },
+        {
+          "client_id": "219414920184-d12qhapom0re8d8c9daij33u3q4dgbdm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "dc5cb0802e9a28ebd41eed23ec1562eed39539df"
+          }
+        },
+        {
+          "client_id": "219414920184-to0dfihdc3m1cf13jhisgdou20s0s4ij.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "43cc741631f4d01179422f38fe79e3896b964f23"
+          }
+        },
+        {
+          "client_id": "219414920184-td572pgbprt8s8mkj9ovuhll8a33chir.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "6815c39f47b9940defb253d5c853621716a785ea"
+          }
+        },
+        {
+          "client_id": "219414920184-u1urdetc9rnbs2qngbobuhqg0url2kq6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "0dbe2c9eb8bedad83fe2db30d10154dc382ffb55"
+          }
+        },
+        {
+          "client_id": "219414920184-v34fojp2n4698e6oqpskssfebq69tppd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "9b973778609b3d0e26b4603a298ffeb7a1e12878"
+          }
+        },
+        {
+          "client_id": "219414920184-ge3esn7qq5e1gb6jehjorj9cmmmj1m4r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "a28cb6ab1230495ee6d6a644909d8eb6c45048c5"
+          }
+        },
+        {
+          "client_id": "219414920184-pehbk3ko4uo1nq7l7dtf1j7in5caue8a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.scoutconcordia",
+            "certificate_hash": "06ff70de5ffbc0acff5f4bffb8214a16d6f5544d"
+          }
+        },
+        {
+          "client_id": "219414920184-vo13n4ghkndsilo4t3b8dc88oqj5i1n7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAapApnZugfUEFDmnqjVeiWIzre3wvGHNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219414920184-vo13n4ghkndsilo4t3b8dc88oqj5i1n7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
