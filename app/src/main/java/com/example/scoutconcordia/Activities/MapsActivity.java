@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -165,8 +166,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         encryptAllInputFiles();
 
         // Lets try creating a graph for Hall 8th Floor
-        Graph hall_8_floor = new Graph(1);
-        createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
+        Graph hall_8_floor = createGraph("encrypted_hall8nodes");
+        //System.out.println(hall_8_floor.vertices().length);
     }
 
     // If button pushed change Campus
@@ -302,11 +303,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
-    public void createGraph(Graph graphName, String encryptedFileName)
+    public Graph createGraph(String encryptedFileName)
     {
         String tempDecryptedFile = "tempDecryptedFile.txt";
         InputStream fis = null;
         OutputStream fos = null;
+        Graph graphName = null;
         try
         {
             // First we need to decrypt the file to have access to the locations
@@ -327,6 +329,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // delete the temp file which was decrypted
             File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
             deleteMe.delete();
+            return graphName;
         }
     }
 
