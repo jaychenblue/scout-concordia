@@ -4,13 +4,11 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.io.*;
-import java.security.InvalidKeyException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import DataStructures.LinkedList;
 
 
 public class BuildingInfo
