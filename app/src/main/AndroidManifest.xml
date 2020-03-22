@@ -34,7 +34,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".Activities.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -44,12 +44,12 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".Activities.MapsActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -59,12 +59,12 @@
         </activity>
 
         <activity
-            android:name=".CalendarActivity"
+            android:name=".Activities.CalendarActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"></activity>
 
         <activity
-            android:name=".ShuttleScheduleActivity"
+            android:name=".Activities.ShuttleScheduleActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"></activity>
 
