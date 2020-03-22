@@ -304,6 +304,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+
+
+        // THis code handles the map overlay of the floor plans.
         // Map overlay of the Hall image over the building
         BitmapFactory.Options dimensions = new BitmapFactory.Options();
         dimensions.inJustDecodeBounds = true;
