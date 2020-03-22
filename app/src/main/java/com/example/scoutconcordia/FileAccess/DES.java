@@ -1,4 +1,4 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.FileAccess;
 
 import android.util.Log;
 

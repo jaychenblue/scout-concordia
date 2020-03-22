@@ -1,4 +1,4 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.DataStructures;
 
 import android.renderscript.ScriptGroup;
 import android.util.Log;
