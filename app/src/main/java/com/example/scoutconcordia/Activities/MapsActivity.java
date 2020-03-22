@@ -1,11 +1,10 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -13,15 +12,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.icu.util.Output;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
+
+import com.example.scoutconcordia.DataStructures.Graph;
+import com.example.scoutconcordia.FileAccess.DES;
+import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,7 +44,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,9 +54,6 @@ import java.io.InputStream;
 import com.google.android.gms.common.api.Status;
 
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -63,6 +63,10 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+
+import com.example.scoutconcordia.DataStructures.LinkedList;
+import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
+import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
@@ -79,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
     private Marker searchMarker;
+    DES encrypter = new DES();
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -155,6 +160,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addDirectionButtonListener();
         addExploreInsideButtonListener();
         addPopUpBarListener();
+
+        // lets encrypt all of the files before using them
+        encryptAllInputFiles();
+
+        // Lets try creating a graph for Hall 8th Floor
+        Graph hall_8_floor = new Graph(1);
+        createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
     }
 
     // If button pushed change Campus
@@ -235,11 +247,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
-
-
-
-
-
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -262,6 +269,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // logic here
         } else if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION) { // app moved the camera
             // logic here
+        }
+    }
+
+    // This is the method that will be used to encrypt all of the input files during the app startup.
+    // This method encrypts all of the files that are in the "filestoencrypt" file
+    public void encryptAllInputFiles()
+    {
+        InputStream fis = null;
+        OutputStream fos = null;
+        String filename = "";
+        String encryptedFilename = "";
+        try {
+            InputStream readMe = getResources().openRawResource(getResources().getIdentifier("filestoencrypt", "raw", getPackageName()));
+            Scanner reader = new Scanner(readMe);
+            while (reader.hasNext())
+            {
+                filename = reader.nextLine();
+                encryptedFilename = "encrypted_" + filename;
+                fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
+                fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
+                encrypter.encryptFile(fis, fos);
+            }
+            // close the input and the output streams
+            fis.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // this method will be used for creating the floor graphs by reading form a node encrypted text file.
+    public void createGraph(Graph graphName, String encryptedFileName)
+    {
+        String tempDecryptedFile = "tempDecryptedFile.txt";
+        InputStream fis = null;
+        OutputStream fos = null;
+        try
+        {
+            // First we need to decrypt the file to have access to the locations
+            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
+            fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
+            encrypter.decryptFile(fis, fos);
+
+            // with the decrypted file, we can add the nodes to the graph
+            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
+            graphName = Graph.addNodesToGraph(fis);
+
+            // close the input and the output streams
+            fis.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // delete the temp file which was decrypted
+            File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
+            deleteMe.delete();
         }
     }
 
@@ -358,7 +423,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addLocationsToMap(InputStream location)
     {
-
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
         //BuildingInfo.encryptFile();
         LinkedList.Node currentBuilding = buildings.getHead();
@@ -400,6 +464,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             stylePolygon(justAddedPolygon);
             currentBuilding = currentBuilding.getNext();
         }
+    }
+
+    private void createFloorGraphs()
+    {
+        // Lets try creating a graph for Hall 8th Floor
+        InputStream fis = null;
+        try
+        {
+            fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
+            Graph hall_8_floor = new Graph(10);
+            hall_8_floor.addNodesToGraph(fis);
+            LatLng[] tempArray = hall_8_floor.vertices();
+            for (int i = 0; i < tempArray.length; i++)
+            {
+                System.out.println(tempArray[i]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 

@@ -1,16 +1,14 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.MapInfoClasses;
 
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.io.*;
-import java.security.InvalidKeyException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import com.example.scoutconcordia.DataStructures.LinkedList;
 
 
 public class BuildingInfo
@@ -141,10 +139,6 @@ public class BuildingInfo
         catch (InputMismatchException ime)
         {
             Log.println(Log.WARN, "printing", ime.getMessage());
-        }
-        catch (Exception e)
-        {
-            Log.println(Log.WARN, "printing", "An error occurred with the stream");
         }
         finally
         {
