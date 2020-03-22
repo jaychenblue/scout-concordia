@@ -1,9 +1,11 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.example.scoutconcordia.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
