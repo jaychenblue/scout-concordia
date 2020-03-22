@@ -1,4 +1,4 @@
-package com.example.scoutconcordia;
+package MapInfoClasses;
 
 import android.util.Log;
 
