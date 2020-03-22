@@ -15,7 +15,9 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.icu.util.Output;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -161,7 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = new Graph(1);
-        createGraph(hall_8_floor, "encrypted_hall8.txt");
+        createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
     }
 
     // If button pushed change Campus
@@ -268,24 +270,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // This is the method that will be used to encrypt all of the input files during the app startup.
+    // This method encrypts all of the files that are in the "filestoencrypt" file
     public void encryptAllInputFiles()
     {
         InputStream fis = null;
         OutputStream fos = null;
         String filename = "";
-        String encrypted_filename = "";
-
+        String encryptedFilename = "";
         try {
-            // encrypt hall 8th floor
-            filename = "hall8nodes";
-            encrypted_filename = "encrypted_hall8.txt";
-            fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
-            fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encrypted_filename));
-            encrypter.encryptFile(fis, fos);
-
-            // encrypt any other floor map here...
-
-
+            InputStream readMe = getResources().openRawResource(getResources().getIdentifier("filestoencrypt", "raw", getPackageName()));
+            Scanner reader = new Scanner(readMe);
+            while (reader.hasNext())
+            {
+                filename = reader.nextLine();
+                encryptedFilename = "encrypted_" + filename;
+                fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
+                fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
+                encrypter.encryptFile(fis, fos);
+            }
             // close the input and the output streams
             fis.close();
             fos.close();
