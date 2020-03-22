@@ -1,6 +1,15 @@
 package com.example.scoutconcordia.DataStructures;
 
+import android.renderscript.ScriptGroup;
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 // Assumption is no two points are equivalent
 public class Graph
@@ -103,7 +112,7 @@ public class Graph
                 return true;
         return false;
     }
-    
+
     public boolean replace(LatLng oldCoordinate, LatLng newCoordinate)
     {
         int id = getID(oldCoordinate);
@@ -169,6 +178,80 @@ public class Graph
             {
                 returnMe[placeMe] = new LatLng(nodes[i].getElement().latitude, nodes[i].getElement().longitude);
                 placeMe++;
+            }
+        }
+        return returnMe;
+    }
+
+    // reads from a node file to add nodes to a graph
+    public static Graph addNodesToGraph(InputStream readFromMe)
+    {
+        int currentPos = 0;
+        Scanner reader = null;
+        String currentLine = null;
+        String floorName = null;
+        Graph returnMe = null;
+        LatLng currentCoordinate = null;
+
+        LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
+        try
+        {
+            reader = new Scanner(readFromMe);
+            while(reader.hasNext())
+            {
+                currentLine = reader.nextLine();
+                Log.println(Log.WARN, "printing", currentLine);
+                currentPos = currentLine.indexOf("Name of Image: ");
+                if (currentPos < 0)
+                    throw new InputMismatchException("Expected a name but didn't find one");
+                floorName = (currentLine.substring(currentPos + 13));
+                reader.nextLine();
+
+                currentLine = reader.nextLine();
+
+                // read the file searching for coordinates
+                currentPos = currentLine.indexOf("Coordinates:");
+                currentLine = reader.nextLine();
+
+                while (currentLine.charAt(currentLine.length() - 1) != '}')
+                {
+                    int posOfHalfway = 0;
+                    double x_coordinate = 0, y_coordinate = 0;
+                    currentPos = currentLine.indexOf("{");
+                    posOfHalfway = currentLine.indexOf(",");
+                    x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
+                    y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-2));
+                    currentCoordinate = new LatLng(x_coordinate, y_coordinate);
+                    
+                    coordinatesToInsert.add(currentCoordinate);
+                    currentLine = reader.nextLine();
+                }
+                int posOfHalfway = 0;
+                double x_coordinate = 0, y_coordinate = 0;
+                currentPos = currentLine.indexOf("{");
+                posOfHalfway = currentLine.indexOf(",");
+                x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
+                y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-1));
+                currentCoordinate = new LatLng(x_coordinate, y_coordinate);
+                
+                coordinatesToInsert.add(currentCoordinate);
+            }
+        } catch (InputMismatchException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        finally
+        {
+            LinkedList.Node current = null;
+            returnMe = new Graph(coordinatesToInsert.size());
+            for (int i = 0; i < coordinatesToInsert.size(); i++)
+            {
+                if (i == 0)
+                    current = coordinatesToInsert.getHead();
+                if (current != null)
+                    returnMe.insertVertex((LatLng)current.getEle());
+                current = current.getNext();
             }
         }
         return returnMe;

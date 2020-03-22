@@ -140,10 +140,6 @@ public class BuildingInfo
         {
             Log.println(Log.WARN, "printing", ime.getMessage());
         }
-        catch (Exception e)
-        {
-            Log.println(Log.WARN, "printing", "An error occurred with the stream");
-        }
         finally
         {
             if (reader != null)
