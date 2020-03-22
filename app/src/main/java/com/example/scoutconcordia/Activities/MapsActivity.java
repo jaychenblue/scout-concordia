@@ -52,9 +52,9 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import DataStructures.LinkedList;
-import MapInfoClasses.BuildingInfo;
-import MapInfoClasses.CustomInfoWindow;
+import com.example.scoutconcordia.DataStructures.LinkedList;
+import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
+import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
