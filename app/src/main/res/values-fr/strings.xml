@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><string name="app_name">ScoutConcordia</string>
-    <string name="title_activity_maps">la carte</string>
+<resources>
+    <string name="app_name">ScoutConcordia</string>
+    <string name="title_activity_maps">Map</string>
     <string name="toggle_on">Loyola</string>
     <string name="toggle_off">SGW</string>
+    <string name="nav_schedule">Horaire</string>
+    <string name="nav_map">Carte</string>
+    <string name="nav_shuttle">Navette</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
 </resources>
