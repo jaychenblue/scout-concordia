@@ -3,12 +3,15 @@ package com.example.scoutconcordia.FileAccess;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.example.scoutconcordia.DataStructures.LinkedList;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Scanner;
 
 public class FileAccessor
 {
@@ -46,6 +49,26 @@ public class FileAccessor
         {
             Log.println(Log.WARN, "FileAccessor", "The input file could not be located");
         }
+    }
+    
+    // returns an array with every line as a string from the file
+    public Object[] obtainContents()
+    {
+        LinkedList<String> contents = new LinkedList<String>("");
+        Scanner reader = null;
+        try
+        {
+            reader = new Scanner(new File(encryptionAccesser.getFilesDir().getAbsoluteFile(), fileName));
+            while (reader.hasNextLine())
+            {
+                contents.add(reader.nextLine());
+            }
+        }
+        catch (FileNotFoundException fnf)
+        {
+            Log.println(Log.WARN, "FileAccessor", "The file has not yet been decrypted");
+        }
+        return contents.toArray();
     }
     
     // used when done to make sure no information is potentially leaked
