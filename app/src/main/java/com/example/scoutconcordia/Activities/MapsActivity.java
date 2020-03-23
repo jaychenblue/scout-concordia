@@ -77,6 +77,8 @@ import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
 
+import static android.location.Location.distanceBetween;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
@@ -357,14 +359,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             mMap.addMarker(new MarkerOptions().position(vertices));
         }
-        hall_8_floor.addAjacentNodes();
 
 
-        for (LatLng vertices : hall_8_floor.vertices())
-        {
-            LatLng[] arrayToPrint = hall_8_floor.incidentVerticies(vertices);
-            System.out.println(Arrays.toString(arrayToPrint));
-        }
+        //for (LatLng vertices : hall_8_floor.vertices())
+        //{
+        //    LatLng[] arrayToPrint = hall_8_floor.incidentVerticies(vertices);
+        //    System.out.println(vertices + ": " + Arrays.toString(arrayToPrint) + " " + arrayToPrint.length);
+//
+ //           for (int i = 0; i < arrayToPrint.length; i++)
+  //          {
+   //             float[] distance = new float[1];
+    //            distanceBetween(vertices.latitude, vertices.longitude, arrayToPrint[i].latitude, arrayToPrint[i].longitude, distance);
+     //           System.out.println(distance[0]);
+      //      }
+       // }
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -436,6 +444,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // with the decrypted file, we can add the nodes to the graph
             fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
             graphName = Graph.addNodesToGraph(fis);
+            graphName.addAjacentNodes();
 
             // close the input and the output streams
             fis.close();

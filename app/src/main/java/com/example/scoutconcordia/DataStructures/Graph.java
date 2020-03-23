@@ -286,10 +286,11 @@ public class Graph
     public void addAjacentNodes()
     {
         // we want to insert an edge between all of the nodes that are adjacent. i.e the nodes that are closest to eachother
-        //insertEdge
+        // if a node is closest to 2 nodes then it will have 2 nodes in its adjacency list.
         float smallestDistance = 0;
         float distance = 0;
-        Node closestNode = null;
+        Node[] closestNodes = new Node[1]; // create an array of length 1
+        int nmbClosestNodes = 1;
 
         for (Node node: this.nodes)
         {
@@ -303,13 +304,41 @@ public class Graph
                     distance = calculateNodeDistance(myCoordinate, otherNode.element);
                     if (distance < smallestDistance)
                     {
+                        if (nmbClosestNodes != 1)
+                        {
+                            nmbClosestNodes = 1;
+                            closestNodes = new Node[1];
+                            closestNodes[0] = otherNode;
+                        }
+                        else {
+                            closestNodes[0] = otherNode;
+                        }
                         smallestDistance = distance;
-                        closestNode = otherNode;
+                    }
+                    else if (distance == smallestDistance)
+                    {
+                        nmbClosestNodes+=1;
+                        closestNodes = addNode(closestNodes, otherNode); // if there are 2 nodes of equal distance we add them both.
                     }
                 }
             }
-            this.insertEdge(node.element, closestNode.element);
+            for (Node closestNode : closestNodes)
+            {
+                this.insertEdge(node.element, closestNode.element);
+            }
         }
+    }
+
+    public static Node[] addNode(Node arr[], Node x)
+    {
+        Node newarr[] = new Node[arr.length + 1];
+
+        for (int i = 0; i < arr.length; i++)
+        {
+            newarr[i] = arr[i];
+        }
+        newarr[arr.length] = x;
+        return newarr;
     }
 
     // calculates the distance between 2 nodes in meters
