@@ -25,6 +25,7 @@ public class SplashScreenActivityTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void splashScreenActivityTest() {
+    public void splashScreenActivityTest() throws InterruptedException {
+        Thread.sleep(5000);
     }
 }
