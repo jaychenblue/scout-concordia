@@ -96,4 +96,14 @@ tools:context=".Activities.MapsActivity">
             android:padding="5dp"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/floor8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="66dp"
+        android:text="Floor 8"
+        android:visibility="invisible"
+        />
+
 </RelativeLayout>
