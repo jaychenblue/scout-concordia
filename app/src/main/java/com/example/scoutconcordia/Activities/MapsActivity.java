@@ -170,9 +170,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
         
         // Playing with the Tree
-        //N_aryTree tree = new N_aryTree();
-        //N_aryTree.Node n = tree.getHead();
-        
+        N_aryTree tree = new N_aryTree();
+        N_aryTree.TreeNode n = tree.getHead();
+        n.setElement(new LatLng(0,0));
+        n.addToChildren(new LatLng(1,1));
+        n.addToChildren(new LatLng(2,2));
+        n.addToChildren(new LatLng(3,3));
+        N_aryTree.TreeNode n2 = tree.findSpecifiedNode(tree.getHead(), new LatLng(2,2));
+        n2.addToChildren(new LatLng(4,4));
+        n2.addToChildren(new LatLng(5,5));
+        N_aryTree.TreeNode n1 = tree.findSpecifiedNode(tree.getHead(), new LatLng(1,1));
+        n1.addToChildren(new LatLng(6,6));
+        n1.addToChildren(new LatLng(7,7));
+        N_aryTree.TreeNode n3 = tree.findSpecifiedNode(tree.getHead(), new LatLng(3,3));
+        n3.addToChildren(new LatLng(8,8));
+        n3.addToChildren(new LatLng(9,9));
+        N_aryTree.TreeNode n4 = tree.findSpecifiedNode(n3, new LatLng(4,4));
+        if (n4 != null)
+        {
+            Log.println(Log.WARN, "Tree", n4.getElement().toString());
+            Log.println(Log.WARN, "Tree", n4.getParent().getElement().toString());
+        }
     }
 
     // If button pushed change Campus
