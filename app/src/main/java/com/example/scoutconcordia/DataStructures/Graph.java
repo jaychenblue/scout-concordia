@@ -1,5 +1,6 @@
 package com.example.scoutconcordia.DataStructures;
 
+import android.location.Location;
 import android.renderscript.ScriptGroup;
 import android.util.Log;
 
@@ -10,6 +11,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import static android.location.Location.distanceBetween;
+
 
 // Assumption is no two points are equivalent
 public class Graph
@@ -277,5 +281,43 @@ public class Graph
         double y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-2));
         LatLng currentCoordinate = new LatLng(x_coordinate, y_coordinate);
         return currentCoordinate;
+    }
+
+    public void addAjacentNodes()
+    {
+        // we want to insert an edge between all of the nodes that are adjacent. i.e the nodes that are closest to eachother
+        //insertEdge
+        float smallestDistance = 0;
+        float distance = 0;
+        Node closestNode = null;
+
+        for (Node node: this.nodes)
+        {
+            smallestDistance = 1000000;
+            distance = 1000000;
+            LatLng myCoordinate = node.element;
+            for (Node otherNode: this.nodes)
+            {
+                if (otherNode != node)  // we only want to get the distance if the nodes are not equal
+                {
+                    distance = calculateNodeDistance(myCoordinate, otherNode.element);
+                    if (distance < smallestDistance)
+                    {
+                        smallestDistance = distance;
+                        closestNode = otherNode;
+                    }
+                }
+            }
+            this.insertEdge(node.element, closestNode.element);
+        }
+    }
+
+    // calculates the distance between 2 nodes in meters
+    public float calculateNodeDistance(LatLng node1, LatLng node2)
+    {
+        float[] distance = new float[1];
+        distanceBetween(node1.latitude, node1.longitude, node2.latitude, node2.longitude, distance);
+
+        return distance[0];
     }
 }

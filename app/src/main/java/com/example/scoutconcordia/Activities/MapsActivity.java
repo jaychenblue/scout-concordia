@@ -357,7 +357,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             mMap.addMarker(new MarkerOptions().position(vertices));
         }
+        hall_8_floor.addAjacentNodes();
 
+
+        for (LatLng vertices : hall_8_floor.vertices())
+        {
+            LatLng[] arrayToPrint = hall_8_floor.incidentVerticies(vertices);
+            System.out.println(Arrays.toString(arrayToPrint));
+        }
     }
 
     // moves the camera to keep on user's location on any change in its location
