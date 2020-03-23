@@ -4,16 +4,16 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class N_aryTree
 {
-    Node head;
+    TreeNode head;
     
-    public class Node
+    public class TreeNode
     {
-        public Node getParent()
+        public TreeNode getParent()
         {
             return parent;
         }
     
-        public LinkedList<Node> getChildren()
+        public LinkedList<TreeNode> getChildren()
         {
             return children;
         }
@@ -23,14 +23,14 @@ public class N_aryTree
             return element;
         }
     
-        Node parent;
+        TreeNode parent;
     
-        public void setParent(Node parent)
+        public void setParent(TreeNode parent)
         {
             this.parent = parent;
         }
     
-        public void setChildren(LinkedList<Node> children)
+        public void setChildren(LinkedList<TreeNode> children)
         {
             this.children = children;
         }
@@ -40,21 +40,21 @@ public class N_aryTree
             this.element = element;
         }
     
-        LinkedList<Node> children;
+        LinkedList<TreeNode> children;
         LatLng element;
     
-        public Node(Node parent, LatLng element)
+        public TreeNode(TreeNode parent, LatLng element)
         {
             this.parent = parent;
             this.element = element;
-            children = new LinkedList<Node>(this);
+            children = new LinkedList<TreeNode>(this);
         }
     
         public boolean addToChildren(LatLng pointToAdd)
         {
             if (children == null)
                 return false;
-            Node addMe = new Node(this, pointToAdd);
+            TreeNode addMe = new TreeNode(this, pointToAdd);
             children.add(addMe);
             return true;
         }
