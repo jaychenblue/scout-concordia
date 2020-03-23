@@ -211,12 +211,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 float imgHeightInPixels;
                 float imgRotation = -56;
-                float overlaySize = 65;
+                float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
 
                 GroundOverlayOptions goo = new GroundOverlayOptions()
                         .image(floorPlan)
-                        .position(hallOverlaySouthWest, 75)
+                        .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
                 GroundOverlay hall8 = mMap.addGroundOverlay(goo);
@@ -265,7 +265,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 GroundOverlayOptions goo = new GroundOverlayOptions()
                         .image(floorPlan)
-                        .position(hallOverlaySouthWest, 75)
+                        .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
 //                mMap.addGroundOverlay(goo);
