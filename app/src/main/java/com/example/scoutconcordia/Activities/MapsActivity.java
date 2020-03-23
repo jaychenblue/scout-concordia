@@ -222,6 +222,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 GroundOverlay hall8 = mMap.addGroundOverlay(goo);
 
 
+                // For future reference, this will be necessary in order to remove the overlay once
+                // the app moves away contextually from the inside of the building.
+
+//                hall8.remove();
 
 
                 // Lets try creating a graph for Hall 8th Floor
