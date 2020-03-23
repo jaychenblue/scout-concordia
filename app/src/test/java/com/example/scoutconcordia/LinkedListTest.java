@@ -1,35 +1,37 @@
 package com.example.scoutconcordia;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.example.scoutconcordia.DataStructures.LinkedList;
 
-import java.lang.Integer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LinkedListTest {
+    
+    static LinkedList<Integer> l;
+    static Integer intTest;
+    static Integer[] numbs;
 
-    LinkedList<Integer> l;
-    Integer[] numbs;
-
-    @Before
-    public void before() throws Exception {
+    @BeforeEach
+    public void beforeEach() throws Exception {
         numbs = new Integer[]{1, 2, 3};
-
-        l = new LinkedList<Integer>(1, numbs);
+        intTest = new Integer(1);
+        l = new LinkedList<Integer>(intTest, numbs);
     }
 
-    @After
-    public void after() throws Exception {
+    @AfterEach
+    public void afterEach() throws Exception {
+        numbs = null;
+        intTest = null;
         l = null;
         assertNull(l);
     }
-
+    
     // test constructors
     @Test
     public void testStandardConstructor() {
@@ -37,21 +39,21 @@ public class LinkedListTest {
 
         assertNull(list.getHead());
         assertEquals(0, list.size());
-
+        
         list = null;
     }
-
+    
     @Test
     public void testCustomConstructor() {
         Integer[] arr = new Integer[]{5, 7, 9, 11, 13000000, -999999};
         LinkedList<Integer> list = new LinkedList<Integer>(1, arr);
-
+        
         assertNotNull(list);
         assertEquals(6, list.size());
-
+        
         list = null;
     }
-
+    
     // test getters
     @Test
     public void testGetters() {
@@ -59,7 +61,7 @@ public class LinkedListTest {
         assertNotNull(l.getHead());
         assertTrue(l.add(77));
     }
-
+    
     // test clear
     @Test
     public void testClear() {
@@ -67,21 +69,21 @@ public class LinkedListTest {
         assertEquals(0, l.size());
         assertNotNull(l);
     }
-
+    
     // test toString
     @Test
     public void testToString() {
         assertEquals("Size: 3\n" +
-                "Entry 0: 1\n" +
-                "Entry 1: 2\n" +
-                "Entry 2: 3\n",
-                l.toString());
+                     "Entry 0: 1\n" +
+                     "Entry 1: 2\n" +
+                     "Entry 2: 3\n",
+                     l.toString());
     }
-
+    
     // test remove object
     @Test
     public void testRemoveOBJ() {
         assertTrue(l.removeOBJ(2));
     }
-
+    
 }
