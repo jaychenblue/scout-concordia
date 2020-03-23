@@ -22,6 +22,7 @@ public class Graph
         private int id;
         private LatLng element;
         private LinkedList<Node> adjacencyList;
+        private boolean traversed;
 
         public Node(LatLng element, int id)
         {
@@ -44,6 +45,8 @@ public class Graph
         public void setId(int id) { this.id = id; }
         public LatLng getElement() { return element; }
         public void setElement(LatLng element) { this.element = element; }
+        public boolean isTraversed() { return traversed; }
+        public void setTraversed(boolean traversed) { this.traversed = traversed; }
     }
 
     public Graph(int size)
