@@ -26,6 +26,7 @@ import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.FileAccess.DES;
+import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -168,6 +169,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = createGraph("encrypted_hall8nodes");
         //System.out.println(hall_8_floor.vertices().length);
+
+
+
+
     }
 
     // If button pushed change Campus
@@ -248,6 +253,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
+
+        // THIS IS SOME CODE TO TEST OUT THE FILEACCESSOR METHODS
+        try {
+            FileAccessor downtownLocations = new FileAccessor();
+            downtownLocations.setFileName("encrypteddtown.txt");
+            downtownLocations.decryptFile();
+            Object[] output = downtownLocations.obtainContents();
+            System.out.println(output.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -291,6 +307,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                 encrypter.encryptFile(fis, fos);
+
+                //if (filename.equals("downtownlocations"))
+                //{
+                //    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
+                //    Scanner readEncrypted = new Scanner(fis);
+                //    while (readEncrypted.hasNext())
+                //    {
+                //        System.out.println(readEncrypted.nextLine());
+                //    }
+               // }
+
             }
             // close the input and the output streams
             fis.close();

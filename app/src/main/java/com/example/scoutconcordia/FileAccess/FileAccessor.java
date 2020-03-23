@@ -3,6 +3,8 @@ package com.example.scoutconcordia.FileAccess;
 import android.content.res.Resources;
 import android.util.Log;
 
+import androidx.core.graphics.drawable.IconCompat;
+
 import com.example.scoutconcordia.DataStructures.LinkedList;
 
 import java.io.File;
@@ -36,8 +38,7 @@ public class FileAccessor
         OutputStream writeToMe = null;
         try
         {
-            readme = encryptionAccesser.getResources().openRawResource(
-            encryptionAccesser.getResources().getIdentifier(fileName, "raw", encryptionAccesser.getPackageName()));
+            readme = encryptionAccesser.getResources().openRawResource(encryptionAccesser.getResources().getIdentifier(fileName, "raw", encryptionAccesser.getPackageName()));
             writeToMe = new FileOutputStream(new File(encryptionAccesser.getFilesDir().getAbsoluteFile(), fileName));
             DES.decryptFile(readme, writeToMe);
         }
