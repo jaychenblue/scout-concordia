@@ -265,7 +265,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 GroundOverlayOptions goo = new GroundOverlayOptions()
                         .image(floorPlan)
-                        .position(new LatLng(45.496827, -73.578854), overlaySize)
+                        .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
 //                mMap.addGroundOverlay(goo);
