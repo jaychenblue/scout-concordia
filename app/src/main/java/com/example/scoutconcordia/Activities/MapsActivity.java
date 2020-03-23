@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
+import com.example.scoutconcordia.DataStructures.N_aryTree;
 import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -167,6 +168,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = new Graph(1);
         createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
+        
+        // Playing with the Tree
+        //N_aryTree tree = new N_aryTree();
+        //N_aryTree.Node n = tree.getHead();
+        
     }
 
     // If button pushed change Campus

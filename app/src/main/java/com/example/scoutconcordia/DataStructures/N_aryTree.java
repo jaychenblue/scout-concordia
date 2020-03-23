@@ -6,27 +6,51 @@ public class N_aryTree
 {
     Node head;
     
-    private class Node
+    public class Node
     {
+        public Node getParent()
+        {
+            return parent;
+        }
+    
+        public LinkedList<Node> getChildren()
+        {
+            return children;
+        }
+    
+        public LatLng getElement()
+        {
+            return element;
+        }
+    
         Node parent;
+    
+        public void setParent(Node parent)
+        {
+            this.parent = parent;
+        }
+    
+        public void setChildren(LinkedList<Node> children)
+        {
+            this.children = children;
+        }
+    
+        public void setElement(LatLng element)
+        {
+            this.element = element;
+        }
+    
         LinkedList<Node> children;
         LatLng element;
-        
-        Node()
-        {
-            parent = null;
-            element = null;
-            children = null;
-        }
-        
-        Node(Node parent, LatLng element)
+    
+        public Node(Node parent, LatLng element)
         {
             this.parent = parent;
             this.element = element;
-            children = new LinkedList<Node>(head);
+            children = new LinkedList<Node>(this);
         }
-        
-        boolean addToChildren(LatLng pointToAdd)
+    
+        public boolean addToChildren(LatLng pointToAdd)
         {
             if (children == null)
                 return false;
@@ -35,4 +59,6 @@ public class N_aryTree
             return true;
         }
     }
+    
+    
 }
