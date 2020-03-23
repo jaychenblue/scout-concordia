@@ -105,7 +105,7 @@ class N_aryTree
         if (start == null)
             return null;
         TreeNode end = findSpecifiedNode(start, to);
-        if (to == null)
+        if (end == null)
             return null;
         LinkedList<LatLng> path = new LinkedList<LatLng>(new LatLng(1,1));
         TreeNode current = end;
