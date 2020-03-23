@@ -1,5 +1,9 @@
 package com.example.scoutconcordia;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -667,6 +671,45 @@ public class ShuttleInfo {
         }
         return actualTimes;
     }
+
+
+
+    // These methods will handle the retrieval of times from external encrypted txt files,
+    // And then convert them into a comprehensible String array which can be used by this class for calculations.
+    public String[] retrieveMonToThursLoyola() {
+
+        BufferedReader readDat = null;
+        ArrayList<String> shuttleArrayList = new ArrayList<>();
+
+        try {
+            readDat = new BufferedReader(new FileReader("raw/schedule_monToThurs_Loyola.txt"));
+
+            String thisLine;
+
+            // This while loop goes through the entire file line by line and analyzes it
+            while((thisLine = readDat.readLine()) != null)
+            {
+                // If a line starts with a Digit, that's a queue to analyze it and parse the information
+                shuttleArrayList.add(thisLine);
+            }
+
+            readDat.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String[] givenTimes = new String[shuttleArrayList.size()];
+
+        for (int i = 0; i < givenTimes.length; i++){
+            givenTimes[i] = shuttleArrayList.get(i);
+        }
+
+        return givenTimes;
+
+    }
+
+
+
 
 }
 
