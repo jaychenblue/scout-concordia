@@ -513,7 +513,7 @@ public class ShuttleInfo {
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
         try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_monToThurs_Loyola.txt"));
+            readDat = new BufferedReader(new FileReader("raw/schedule_montothurs_loyola.txt"));
 
             String thisLine;
 
@@ -545,7 +545,7 @@ public class ShuttleInfo {
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
         try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_friday_Loyola.txt"));
+            readDat = new BufferedReader(new FileReader("raw/schedule_friday_loyola.txt"));
 
             String thisLine;
 
@@ -577,7 +577,7 @@ public class ShuttleInfo {
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
         try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_MonToThurs_SGW.txt"));
+            readDat = new BufferedReader(new FileReader("raw/schedule_montothurs_sgw.txt"));
 
             String thisLine;
 
@@ -609,7 +609,7 @@ public class ShuttleInfo {
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
         try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_friday_SGW.txt"));
+            readDat = new BufferedReader(new FileReader("raw/schedule_friday_sgw.txt"));
 
             String thisLine;
 
