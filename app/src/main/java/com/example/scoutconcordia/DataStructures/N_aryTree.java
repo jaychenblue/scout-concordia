@@ -9,9 +9,9 @@ public class N_aryTree
     
     public class TreeNode
     {
-        TreeNode parent;
-        LinkedList<TreeNode> children;
-        LatLng element;
+        private TreeNode parent;
+        private LinkedList<TreeNode> children;
+        private LatLng element;
         
         public TreeNode getParent()
         {
@@ -86,13 +86,35 @@ public class N_aryTree
             LinkedList.Node current = goFromHere.children.getHead();
             for (int i = 0; i < goFromHere.children.size(); i++)
             {
-                if (findSpecifiedNode((TreeNode)current.getEle(), findThisPoint) != null)
-                    if (findSpecifiedNode((TreeNode)current.getEle(), findThisPoint).element != null)
-                        if (findSpecifiedNode((TreeNode)current.getEle(), findThisPoint).element.equals(findThisPoint))
-                            return findSpecifiedNode((TreeNode)current.getEle(), findThisPoint);
+                TreeNode gotten = findSpecifiedNode((TreeNode)current.getEle(), findThisPoint);
+                if (gotten != null)
+                    if (gotten.element != null)
+                        if (gotten.element.equals(findThisPoint))
+                            return gotten;
                 current = current.getNext();
             }
         }
         return null;
+    }
+    
+    public Object[] getPath(LatLng from, LatLng to)
+    {
+        if (from  == null || to == null)
+            return null;
+        TreeNode start = findSpecifiedNode(getHead(), from);
+        if (start == null)
+            return null;
+        TreeNode end = findSpecifiedNode(start, to);
+        if (to == null)
+            return null;
+        LinkedList<LatLng> path = new LinkedList<LatLng>(new LatLng(1,1));
+        TreeNode current = end;
+        while (!(current.equals(start)))
+        {
+            path.add(0,current.getElement());
+            current = current.parent;
+        }
+        path.add(0,current.getElement());
+        return path.toArray();
     }
 }

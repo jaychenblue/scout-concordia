@@ -166,10 +166,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         encryptAllInputFiles();
 
         // Lets try creating a graph for Hall 8th Floor
-        Graph hall_8_floor = new Graph(1);
-        createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
+        //Graph hall_8_floor = new Graph(1);
+        //createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
         
         // Playing with the Tree
+        /*
         N_aryTree tree = new N_aryTree();
         N_aryTree.TreeNode n = tree.getHead();
         n.setElement(new LatLng(0,0));
@@ -185,12 +186,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         N_aryTree.TreeNode n3 = tree.findSpecifiedNode(tree.getHead(), new LatLng(3,3));
         n3.addToChildren(new LatLng(8,8));
         n3.addToChildren(new LatLng(9,9));
-        N_aryTree.TreeNode n4 = tree.findSpecifiedNode(n3, new LatLng(4,4));
+        N_aryTree.TreeNode n4 = tree.findSpecifiedNode(n2, new LatLng(4,4));
         if (n4 != null)
         {
-            Log.println(Log.WARN, "Tree", n4.getElement().toString());
-            Log.println(Log.WARN, "Tree", n4.getParent().getElement().toString());
+            //Log.println(Log.WARN, "Tree", n4.getElement().toString());
+            //Log.println(Log.WARN, "Tree", n4.getParent().getElement().toString());
         }
+        
+        Object[] path = tree.getPath(new LatLng(0,0), new LatLng(9,9));
+        for (int i = 0; i < path.length; i++)
+        {
+            Log.println(Log.WARN, "Tree", path[i].toString());
+        }
+        */
     }
 
     // If button pushed change Campus
