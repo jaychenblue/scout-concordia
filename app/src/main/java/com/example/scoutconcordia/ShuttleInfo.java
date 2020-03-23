@@ -15,176 +15,6 @@ import java.util.Calendar;
 
 public class ShuttleInfo {
 
-    // These attributes hold the shuttle times form specific campuses on given days
-    private String[] schedule_monToThurs_Loyola = {
-            "07:30",
-            "07:40",
-            "07:55",
-            "08:20",
-            "08:35",
-            "08:55",
-            "09:10",
-            "09:30",
-            "09:45",
-            "10:20",
-            "10:35",
-            "10:55",
-            "11:10",
-            "11:30",
-            "12:00",
-            "12:30",
-            "13:00",
-            "13:30",
-            "14:00",
-            "14:30",
-            "15:00",
-            "15:30",
-            "16:00",
-            "16:30",
-            "17:00",
-            "17:30",
-            "18:00",
-            "18:30",
-            "19:00",
-            "19:30",
-            "20:00",
-            "20:30",
-            "20:45",
-            "21:05",
-            "21:30",
-            "22:00",
-            "22:30",
-            "23:00"};
-
-    private String[] schedule_friday_Loyola = {
-            "07:40",
-            "08:15",
-            "08:55",
-            "09:10",
-            "09:30",
-            "10:20",
-            "10:35",
-            "11:10",
-            "11:30",
-            "11:45",
-            "12:20",
-            "12:40",
-            "12:55",
-            "13:30",
-            "14:05",
-            "14:20",
-            "14:40",
-            "15:15",
-            "15:30",
-            "15:50",
-            "16:25",
-            "16:40",
-            "17:00",
-            "18:05",
-            "18:40",
-            "19:15",
-            "19:50"};
-
-    private String[] schedule_MonToThurs_SGW = {
-            "07:45",
-            "08:05",
-            "08:20",
-            "08:35",
-            "08:55",
-            "09:10",
-            "09:30",
-            "09:45",
-            "10:05",
-            "10:20",
-            "10:55",
-            "11:10",
-            "11:45",
-            "12:00",
-            "12:30",
-            "13:00",
-            "13:30",
-            "14:00",
-            "14:30",
-            "15:00",
-            "15:30",
-            "16:00",
-            "16:30",
-            "17:00",
-            "17:30",
-            "18:00",
-            "18:30",
-            "19:00",
-            "19:30",
-            "20:00",
-            "20:10",
-            "20:30",
-            "21:00",
-            "21:25",
-            "21:45",
-            "22:00",
-            "23:30",
-            "23:00"};
-
-    private String[] schedule_friday_SGW = {
-            "07:45",
-            "08:20",
-            "08:55",
-            "09:30",
-            "09:45",
-            "10:05",
-            "10:55",
-            "11:10",
-            "11:45",
-            "12:05",
-            "12:20",
-            "12:55",
-            "13:30",
-            "13:45",
-            "14:05",
-            "14:40",
-            "14:55",
-            "15:15",
-            "15:50",
-            "16:05",
-            "16:25",
-            "17:15",
-            "18:05",
-            "18:40",
-            "19:15",
-            "19:50"};
-
-    public String[] getSchedule_monToThurs_Loyola() {
-        return schedule_monToThurs_Loyola;
-    }
-
-    public void setSchedule_monToThurs_Loyola(String[] schedule_monToThurs_Loyola) {
-        this.schedule_monToThurs_Loyola = schedule_monToThurs_Loyola;
-    }
-
-    public String[] getSchedule_friday_Loyola() {
-        return schedule_friday_Loyola;
-    }
-
-    public void setSchedule_friday_Loyola(String[] schedule_friday_Loyola) {
-        this.schedule_friday_Loyola = schedule_friday_Loyola;
-    }
-
-    public String[] getSchedule_MonToThurs_SGW() {
-        return schedule_MonToThurs_SGW;
-    }
-
-    public void setSchedule_MonToThurs_SGW(String[] schedule_MonToThurs_SGW) {
-        this.schedule_MonToThurs_SGW = schedule_MonToThurs_SGW;
-    }
-
-    public String[] getSchedule_friday_SGW() {
-        return schedule_friday_SGW;
-    }
-
-    public void setSchedule_friday_SGW(String[] schedule_friday_SGW) {
-        this.schedule_friday_SGW = schedule_friday_SGW;
-    }
-
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
@@ -269,7 +99,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
 
 
                 break;
@@ -287,7 +117,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -302,7 +132,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -317,7 +147,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -333,7 +163,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_friday_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveFridaySGW()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -354,7 +184,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
 
 
                 break;
@@ -462,7 +292,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
 
 
                 break;
@@ -480,7 +310,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -495,7 +325,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -510,7 +340,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_monToThurs_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -526,7 +356,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_friday_Loyola[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveFridayLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
 
                 break;
 
@@ -547,7 +377,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + schedule_MonToThurs_SGW[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
 
 
                 break;
@@ -568,10 +398,11 @@ public class ShuttleInfo {
 
     }
 
-    // This returns a double array, which holds the shuttle time of the requested day and location
+    // This returns a double array, which holds the shuttle time of the requested day and location.
+    // It essentially converts strings into doubles, for calculation purposoes.
     public double[] getLoyolaMondayToThursdayTimes() {
 
-        String[] numRange = getSchedule_monToThurs_Loyola();
+        String[] numRange = retrieveMonToThursLoyola();
 
         int[] hours = new int[numRange.length];
         double[] minutes = new double[numRange.length];
@@ -598,7 +429,7 @@ public class ShuttleInfo {
     // This returns a double array, which holds the shuttle time of the requested day and location
     public double[] getSGWMondayToThursdayTimes() {
 
-        String[] numRange = getSchedule_MonToThurs_SGW();
+        String[] numRange = retrieveMonToThursSGW();
 
         int[] hours = new int[numRange.length];
         double[] minutes = new double[numRange.length];
@@ -624,7 +455,7 @@ public class ShuttleInfo {
     // This returns a double array, which holds the shuttle time of the requested day and location
     public double[] getLoyolaFridayTimes() {
 
-        String[] numRange = getSchedule_friday_Loyola();
+        String[] numRange = retrieveFridayLoyola();
 
         int[] hours = new int[numRange.length];
         double[] minutes = new double[numRange.length];
@@ -650,7 +481,7 @@ public class ShuttleInfo {
     // This returns a double array, which holds the shuttle time of the requested day and location
     public double[] getSGWFridayTimes() {
 
-        String[] numRange = getSchedule_friday_SGW();
+        String[] numRange = retrieveFridaySGW();
 
         int[] hours = new int[numRange.length];
         double[] minutes = new double[numRange.length];
@@ -689,7 +520,6 @@ public class ShuttleInfo {
             // This while loop goes through the entire file line by line and analyzes it
             while((thisLine = readDat.readLine()) != null)
             {
-                // If a line starts with a Digit, that's a queue to analyze it and parse the information
                 shuttleArrayList.add(thisLine);
             }
 
@@ -708,6 +538,101 @@ public class ShuttleInfo {
 
     }
 
+
+    public String[] retrieveFridayLoyola() {
+
+        BufferedReader readDat = null;
+        ArrayList<String> shuttleArrayList = new ArrayList<>();
+
+        try {
+            readDat = new BufferedReader(new FileReader("raw/schedule_friday_Loyola.txt"));
+
+            String thisLine;
+
+            // This while loop goes through the entire file line by line and analyzes it
+            while((thisLine = readDat.readLine()) != null)
+            {
+                shuttleArrayList.add(thisLine);
+            }
+
+            readDat.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String[] givenTimes = new String[shuttleArrayList.size()];
+
+        for (int i = 0; i < givenTimes.length; i++){
+            givenTimes[i] = shuttleArrayList.get(i);
+        }
+
+        return givenTimes;
+
+    }
+
+
+    public String[] retrieveMonToThursSGW() {
+
+        BufferedReader readDat = null;
+        ArrayList<String> shuttleArrayList = new ArrayList<>();
+
+        try {
+            readDat = new BufferedReader(new FileReader("raw/schedule_MonToThurs_SGW.txt"));
+
+            String thisLine;
+
+            // This while loop goes through the entire file line by line and analyzes it
+            while((thisLine = readDat.readLine()) != null)
+            {
+                shuttleArrayList.add(thisLine);
+            }
+
+            readDat.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String[] givenTimes = new String[shuttleArrayList.size()];
+
+        for (int i = 0; i < givenTimes.length; i++){
+            givenTimes[i] = shuttleArrayList.get(i);
+        }
+
+        return givenTimes;
+
+    }
+
+
+    public String[] retrieveFridaySGW() {
+
+        BufferedReader readDat = null;
+        ArrayList<String> shuttleArrayList = new ArrayList<>();
+
+        try {
+            readDat = new BufferedReader(new FileReader("raw/schedule_friday_SGW.txt"));
+
+            String thisLine;
+
+            // This while loop goes through the entire file line by line and analyzes it
+            while((thisLine = readDat.readLine()) != null)
+            {
+                shuttleArrayList.add(thisLine);
+            }
+
+            readDat.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String[] givenTimes = new String[shuttleArrayList.size()];
+
+        for (int i = 0; i < givenTimes.length; i++){
+            givenTimes[i] = shuttleArrayList.get(i);
+        }
+
+        return givenTimes;
+
+    }
 
 
 
