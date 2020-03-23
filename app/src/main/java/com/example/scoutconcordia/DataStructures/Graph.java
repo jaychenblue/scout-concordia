@@ -192,6 +192,10 @@ public class Graph
         String floorName = null;
         Graph returnMe = null;
         LatLng currentCoordinate = null;
+        String roomNumber = null;
+        String[] lineString = null;
+        int posOfHalfway = 0;
+        double x_coordinate = 0, y_coordinate = 0;
 
         LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
         try
@@ -205,36 +209,31 @@ public class Graph
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
                 floorName = (currentLine.substring(currentPos + 13));
+
+                reader.nextLine();  // reads the {
                 reader.nextLine();
 
-                currentLine = reader.nextLine();
-
-                // read the file searching for coordinates
-                currentPos = currentLine.indexOf("Coordinates:");
-                currentLine = reader.nextLine();
+                currentLine = reader.nextLine(); // starts reading the classrooms
 
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
-                    int posOfHalfway = 0;
-                    double x_coordinate = 0, y_coordinate = 0;
-                    currentPos = currentLine.indexOf("{");
-                    posOfHalfway = currentLine.indexOf(",");
-                    x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
-                    y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-2));
-                    currentCoordinate = new LatLng(x_coordinate, y_coordinate);
-                    
-                    coordinatesToInsert.add(currentCoordinate);
+                    coordinatesToInsert.add(readClassCoordinate(currentLine));
                     currentLine = reader.nextLine();
                 }
-                int posOfHalfway = 0;
-                double x_coordinate = 0, y_coordinate = 0;
-                currentPos = currentLine.indexOf("{");
-                posOfHalfway = currentLine.indexOf(",");
-                x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
-                y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-1));
-                currentCoordinate = new LatLng(x_coordinate, y_coordinate);
-                
-                coordinatesToInsert.add(currentCoordinate);
+                // this is for the last classroom coordinate
+                coordinatesToInsert.add(readClassCoordinate(currentLine));
+                currentLine = reader.nextLine();
+
+                // read the file searching for hallway
+                //currentPos = currentLine.indexOf("hallway:");
+                currentLine = reader.nextLine();
+                while (currentLine.charAt(currentLine.length() - 1) != '}')
+                {
+                    coordinatesToInsert.add(readHallCoordinate(currentLine));
+                    currentLine = reader.nextLine();
+                }
+                coordinatesToInsert.add( readHallCoordinate(currentLine));
+                currentLine = reader.nextLine();
             }
         } catch (InputMismatchException e) {
             e.printStackTrace();
@@ -255,5 +254,28 @@ public class Graph
             }
         }
         return returnMe;
+    }
+
+    public static LatLng readClassCoordinate(String currentLine)
+    {
+        String[] lineString = currentLine.split(":");
+        String floorName = lineString[0].trim(); // ex: H-801
+
+        int currentPos = lineString[1].indexOf("{");
+        int posOfHalfway = lineString[1].indexOf(",");
+        double x_coordinate = Double.parseDouble(lineString[1].substring(currentPos+1,posOfHalfway));
+        double y_coordinate = Double.parseDouble(lineString[1].substring(posOfHalfway+2, lineString[1].length()-2));
+        LatLng currentCoordinate = new LatLng(x_coordinate, y_coordinate);
+        return currentCoordinate;
+    }
+
+    public static LatLng readHallCoordinate(String currentLine)
+    {
+        int currentPos = currentLine.indexOf("{");
+        int posOfHalfway = currentLine.indexOf(",");
+        double x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
+        double y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-2));
+        LatLng currentCoordinate = new LatLng(x_coordinate, y_coordinate);
+        return currentCoordinate;
     }
 }

@@ -64,6 +64,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -179,10 +180,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // lets encrypt all of the files before using them
         encryptAllInputFiles();
-
-        // Lets try creating a graph for Hall 8th Floor
-        Graph hall_8_floor = new Graph(1);
-        createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
     }
 
 
@@ -341,14 +338,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         float imgHeightInPixels;
         float imgRotation = -56;
         float overlaySize = 65;
-        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall2p);
+        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
 
         GroundOverlayOptions goo = new GroundOverlayOptions()
                 .image(floorPlan)
-                .position(hallOverlaySouthWest, 63)
+                .position(hallOverlaySouthWest, 75)
                 .anchor(0, 1)
                 .bearing(imgRotation);
         mMap.addGroundOverlay(goo);
+
+
+        // Lets try creating a graph for Hall 8th Floor
+        Graph hall_8_floor = createGraph("encrypted_classrooms");
+        //System.out.println(hall_8_floor.vertices().length);
+
+        // This is temporary to help in placing the markers for each floor
+        for (LatLng vertices : hall_8_floor.vertices())
+        {
+            mMap.addMarker(new MarkerOptions().position(vertices));
+        }
 
     }
 
@@ -405,11 +413,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
-    public void createGraph(Graph graphName, String encryptedFileName)
+    public Graph createGraph(String encryptedFileName)
     {
-        String tempDecryptedFile = "tempDecryptedFile.txt";
+        String tempDecryptedFile = "tempDecryptedFile";
         InputStream fis = null;
         OutputStream fos = null;
+        Graph graphName = null;
         try
         {
             // First we need to decrypt the file to have access to the locations
@@ -430,6 +439,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // delete the temp file which was decrypted
             File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
             deleteMe.delete();
+            return graphName;
         }
     }
 
