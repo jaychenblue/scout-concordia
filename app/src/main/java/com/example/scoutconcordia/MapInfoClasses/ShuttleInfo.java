@@ -1,4 +1,4 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.MapInfoClasses;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
