@@ -90,6 +90,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
     private Button directionButton;
     private Button exploreInsideButton;
+
+    private Button floor8;
+    private Button floor9;
+
+
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
@@ -98,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String activeInfoWindow = null;
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
+
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -179,6 +185,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addDirectionButtonListener();
         addExploreInsideButtonListener();
         addPopUpBarListener();
+        addfloor8ButtonListener();
+        addfloor9ButtonListener();
 
         // lets encrypt all of the files before using them
         encryptAllInputFiles();
@@ -186,7 +194,100 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+    public void addfloor8ButtonListener()
+    {
 
+        floor8 = (Button) findViewById(R.id.floor8);
+        floor8.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+
+                // THis code handles the map overlay of the floor plans.
+                // Map overlay of the Hall image over the building
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
+                int imgHeightPixels = dimensions.outHeight;
+
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
+
+                GroundOverlayOptions goo = new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(hallOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation);
+                GroundOverlay hall8 = mMap.addGroundOverlay(goo);
+
+
+                // For future reference, this will be necessary in order to remove the overlay once
+                // the app moves away contextually from the inside of the building.
+
+//                hall8.remove();
+
+
+                // Lets try creating a graph for Hall 8th Floor
+                Graph hall_8_floor = createGraph("encrypted_classrooms");
+                //System.out.println(hall_8_floor.vertices().length);
+
+                // This is temporary to help in placing the markers for each floor
+                for (LatLng vertices : hall_8_floor.vertices())
+                {
+                    mMap.addMarker(new MarkerOptions().position(vertices));
+                }
+
+            }
+        });
+
+    }
+
+    public void addfloor9ButtonListener()
+    {
+
+        floor9 = (Button) findViewById(R.id.floor9);
+        floor9.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+
+                // THis code handles the map overlay of the floor plans.
+                // Map overlay of the Hall image over the building
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
+                int imgHeightPixels = dimensions.outHeight;
+
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall9p);
+
+                GroundOverlayOptions goo = new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(hallOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation);
+//                mMap.addGroundOverlay(goo);
+
+                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
+
+
+
+//                // Lets try creating a graph for Hall 9th Floor
+//                Graph hall_8_floor = createGraph("encrypted_classrooms");
+//                //System.out.println(hall_8_floor.vertices().length);
+//
+//                // This is temporary to help in placing the markers for each floor
+//                for (LatLng vertices : hall_8_floor.vertices())
+//                {
+//                    mMap.addMarker(new MarkerOptions().position(vertices));
+//                }
+
+            }
+        });
+
+    }
 
 
 
@@ -227,6 +328,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         {
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
+                            floor8.setVisibility(View.VISIBLE);
+                            floor9.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -330,35 +433,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        // THis code handles the map overlay of the floor plans.
-        // Map overlay of the Hall image over the building
-        BitmapFactory.Options dimensions = new BitmapFactory.Options();
-        dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
-        int imgHeightPixels = dimensions.outHeight;
-
-        float imgHeightInPixels;
-        float imgRotation = -56;
-        float overlaySize = 65;
-        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
-
-        GroundOverlayOptions goo = new GroundOverlayOptions()
-                .image(floorPlan)
-                .position(hallOverlaySouthWest, 75)
-                .anchor(0, 1)
-                .bearing(imgRotation);
-        mMap.addGroundOverlay(goo);
 
 
-        // Lets try creating a graph for Hall 8th Floor
-        Graph hall_8_floor = createGraph("encrypted_classrooms");
-        //System.out.println(hall_8_floor.vertices().length);
 
-        // This is temporary to help in placing the markers for each floor
-        for (LatLng vertices : hall_8_floor.vertices())
-        {
-            mMap.addMarker(new MarkerOptions().position(vertices));
-        }
+
 
 
         //for (LatLng vertices : hall_8_floor.vertices())
@@ -498,6 +576,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // this sets the parameters for the pop up bar that appears on click
                     popUpBar.setVisibility(View.VISIBLE);
 
+                    floor8.setVisibility(View.INVISIBLE);
+                    floor9.setVisibility(View.INVISIBLE);
+
 
                     isInfoWindowShown = true;
                 } else {
@@ -505,6 +586,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     directionButton.setVisibility(View.INVISIBLE);
                     exploreInsideButton.setVisibility(View.INVISIBLE);
                     popUpBar.setVisibility(View.INVISIBLE);
+                    floor8.setVisibility(View.INVISIBLE);
+                    floor9.setVisibility(View.INVISIBLE);
+
+
                     isInfoWindowShown = false;
                     activeInfoWindow = null;
                 }
@@ -518,6 +603,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapClick(LatLng latLng) {
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
+
+                floor8.setVisibility(View.INVISIBLE);
+                floor9.setVisibility(View.INVISIBLE);
+
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
                 showAllPolygons();
