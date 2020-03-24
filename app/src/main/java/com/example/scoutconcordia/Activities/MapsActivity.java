@@ -26,7 +26,6 @@ import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.FileAccess.DES;
-import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -255,15 +254,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setInfoWindowAdapter(adapter);
 
         // THIS IS SOME CODE TO TEST OUT THE FILEACCESSOR METHODS
-        try {
-            FileAccessor downtownLocations = new FileAccessor();
-            downtownLocations.setFileName("encrypteddtown.txt");
-            downtownLocations.decryptFile();
-            Object[] output = downtownLocations.obtainContents();
-            System.out.println(output.length);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        FileAccessor downtownLocations = new FileAccessor();
+        downtownLocations.setFileName("downtownlocations");
+        //downtownLocations.decryptFile();
+        Object[] output = downtownLocations.obtainContents(false);
+        Log.w("FileAccessor", Integer.toString(output.length));
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -603,6 +598,76 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    class FileAccessor
+    {
+        String fileName;
+        
+        public FileAccessor()
+        {
+            fileName = null;
+        }
+        
+        public void setFileName(String fileName)
+        {
+            this.fileName = fileName;
+        }
+        
+        // Used first to be able to read the file
+        public void decryptFile()
+        {
+            InputStream readme = null;
+            OutputStream writeToMe = null;
+            try
+            {
+                readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
+                writeToMe = new FileOutputStream(new File(getFilesDir().getAbsoluteFile(), fileName));
+                DES.decryptFile(readme, writeToMe);
+            }
+            catch (FileNotFoundException fnf)
+            {
+                Log.println(Log.WARN, "FileAccessor", "The output file was moved during the transfer");
+            }
+            catch (Resources.NotFoundException e)
+            {
+                Log.println(Log.WARN, "FileAccessor", "The input file could not be located");
+            }
+        }
+        
+        // returns an array with every line as a string from the file
+        public Object[] obtainContents(boolean isEncrypted)
+        {
+            LinkedList<String> contents = new LinkedList<String>("");
+            Scanner reader = null;
+            if (!isEncrypted)
+            {
+                InputStream input = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
+                reader = new Scanner(input);
+            }
+            else
+            {
+                try
+                {
+                    reader = new Scanner(new File(getFilesDir().getAbsoluteFile(), fileName));
+                } catch (FileNotFoundException fnf)
+                {
+                    Log.w("FileAccessor", fnf.getMessage());
+                }
+            }
+            while (reader.hasNextLine())
+            {
+                contents.add(reader.nextLine());
+            }
+            return contents.toArray();
+        }
+        
+        // used when done to make sure no information is potentially leaked
+        public boolean closeFile()
+        {
+            File deleteMe = new File(getFilesDir().getAbsoluteFile(), fileName);
+            return deleteMe.delete();
+        }
     }
 
 }
