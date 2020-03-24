@@ -255,10 +255,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // THIS IS SOME CODE TO TEST OUT THE FILEACCESSOR METHODS
         FileAccessor downtownLocations = new FileAccessor();
-        downtownLocations.setFileName("downtownlocations");
-        //downtownLocations.decryptFile();
-        Object[] output = downtownLocations.obtainContents(false);
+        //The 2 commented lines are an example of reading a file that is not encrypted
+        //downtownLocations.setFileName("downtownlocations");
+        //Object[] output = downtownLocations.obtainContents(false);
+        // reading a file that is encrypted
+        downtownLocations.setFileName("encrypteddtown");
+        Object[] output = downtownLocations.obtainContents(true);
         Log.w("FileAccessor", Integer.toString(output.length));
+        for (int i = 0; i < output.length; i++)
+        {
+            Log.w("FileAcccessor", output[i].toString());
+        }
+
+
+       FileAccessor loyolaLocations = new FileAccessor();
+       loyolaLocations.setFileName("encryptedloyola");
+       output = loyolaLocations.obtainContents(true);
+       Log.w("FileAccessor", Integer.toString(output.length));
+       for (int i = 0; i < output.length; i++)
+       {
+           Log.w("FileAcccessor", output[i].toString());
+       }
+
+
+
+
+
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -286,6 +308,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
+    // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
     public void encryptAllInputFiles()
     {
         InputStream fis = null;
@@ -303,15 +326,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                 encrypter.encryptFile(fis, fos);
 
-                //if (filename.equals("downtownlocations"))
+                // this is some code that we can use to get the text in the encrypted file
+                //if (filename.equals("loyolalocations"))
                 //{
                 //    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                //    Scanner readEncrypted = new Scanner(fis);
+                //   Scanner readEncrypted = new Scanner(fis);
                 //    while (readEncrypted.hasNext())
                 //    {
                 //        System.out.println(readEncrypted.nextLine());
                 //    }
-               // }
+                //}
 
             }
             // close the input and the output streams
@@ -622,8 +646,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             try
             {
                 readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
-                writeToMe = new FileOutputStream(new File(getFilesDir().getAbsoluteFile(), fileName));
-                DES.decryptFile(readme, writeToMe);
+                writeToMe = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName));
+                encrypter.decryptFile(readme, writeToMe);
             }
             catch (FileNotFoundException fnf)
             {
@@ -640,16 +664,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             LinkedList<String> contents = new LinkedList<String>("");
             Scanner reader = null;
-            if (!isEncrypted)
+            if (!isEncrypted)  // if the file is not encrypted
             {
-                InputStream input = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
+                InputStream input = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));  // we can read the file directly
                 reader = new Scanner(input);
             }
-            else
+            else // if the file is encrypted
             {
+                this.decryptFile();  //decrypt the file
                 try
                 {
-                    reader = new Scanner(new File(getFilesDir().getAbsoluteFile(), fileName));
+                    reader = new Scanner(new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName)));  // read the decrypted file
                 } catch (FileNotFoundException fnf)
                 {
                     Log.w("FileAccessor", fnf.getMessage());
@@ -669,5 +694,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return deleteMe.delete();
         }
     }
-
 }

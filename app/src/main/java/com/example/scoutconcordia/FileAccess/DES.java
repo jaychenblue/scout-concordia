@@ -7,29 +7,48 @@ import androidx.fragment.app.FragmentActivity;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Scanner;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 
 public class DES extends FragmentActivity
 {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
-    private static KeyGenerator keygenerator;
-    static {
-        try {
-            keygenerator = KeyGenerator.getInstance("DES");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+    //private static KeyGenerator keygenerator;
+    //static {
+    //    try {
+    //        keygenerator = KeyGenerator.getInstance("DES");
+    //    } catch (NoSuchAlgorithmException e) {
+    //        e.printStackTrace();
+    //    }
+    //}
+    //final private static SecretKey myDesKey = keygenerator.generateKey();
+
+    private static String desKey;
+    private static byte[] keyBytes;
+    private static SecretKeyFactory factory;
+    private static SecretKey myDesKey;
+
+    public DES() {
+        this.desKey = "0123456789abcdef";
+        this.keyBytes = hexToByte(this.desKey);
+        {
+            try {
+                this.factory = SecretKeyFactory.getInstance("DES");
+                this.myDesKey = this.factory.generateSecret(new DESKeySpec(this.keyBytes));
+            } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException e) {
+                e.printStackTrace();
+            }
         }
     }
-    
-    final private static SecretKey myDesKey = keygenerator.generateKey();
-    
-    public DES() { }
 
     /** Method for decrypting a file. Requires an input stream and an output stream **/
     public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
