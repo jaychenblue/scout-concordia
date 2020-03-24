@@ -25,6 +25,7 @@ import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.FileAccess.DES;
+import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -167,6 +168,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = new Graph(1);
         createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
+    
+        // Victor's shi don't work
+        ShuttleInfo si = new ShuttleInfo();
+        String[] results = si.retrieveFridayLoyola();
+        Log.w("ShuttleInfo", Integer.toString(results.length));
     }
 
     // If button pushed change Campus
