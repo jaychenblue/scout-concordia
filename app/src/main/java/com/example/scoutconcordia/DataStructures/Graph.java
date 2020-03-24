@@ -29,22 +29,22 @@ public class Graph
             adjacencyList = new LinkedList<Node>(this);
         }
 
-        public boolean equals(Node n1)
+        private boolean equals(Node n1)
         {
             return this.element.equals(n1.element);
         }
 
-        public boolean equals(LatLng ele)
+        private boolean equals(LatLng ele)
         {
             return this.element.equals(ele);
         }
 
-        public int getId() { return id; }
-        public void setId(int id) { this.id = id; }
-        public LatLng getElement() { return element; }
-        public void setElement(LatLng element) { this.element = element; }
-        public boolean isTraversed() { return traversed; }
-        public void setTraversed(boolean traversed) { this.traversed = traversed; }
+        private int getId() { return id; }
+        private void setId(int id) { this.id = id; }
+        private LatLng getElement() { return element; }
+        private void setElement(LatLng element) { this.element = element; }
+        private boolean isTraversed() { return traversed; }
+        private void setTraversed(boolean traversed) { this.traversed = traversed; }
     }
 
     public Graph(int size)
@@ -56,6 +56,7 @@ public class Graph
         breathFirstSearchResults = new N_aryTree();
     }
 
+    // resets the graph to start from fresh
     public void reset()
     {
         nodes = null;
@@ -63,6 +64,7 @@ public class Graph
         breathFirstSearchResults = null;
     }
 
+    // check the placement in the array of the given point / node
     private int getID(LatLng ele)
     {
         int id = -1;
@@ -116,6 +118,7 @@ public class Graph
         return false;
     }
 
+    // replaces a coordinate in the graph with a new one
     public boolean replace(LatLng oldCoordinate, LatLng newCoordinate)
     {
         int id = getID(oldCoordinate);
@@ -158,6 +161,7 @@ public class Graph
         return 1;
     }
     
+    // returns any vertices next to the coordinate
     public LatLng[] incidentVerticies(LatLng coordinate)
     {
         int id = getID(coordinate);
@@ -186,6 +190,7 @@ public class Graph
         return returnMe;
     }
     
+    // returns an array of points corresponding to the shortest path from --> to
     public Object[] breathFirstSearch(LatLng from, LatLng to)
     {
         // resets the results for each search
