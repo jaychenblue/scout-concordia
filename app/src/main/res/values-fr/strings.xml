@@ -7,5 +7,6 @@
     <string name="nav_schedule">Horaire</string>
     <string name="nav_map">Carte</string>
     <string name="nav_shuttle">Navette</string>
+    <string name="find_your_way_button">Retrouver Votre Chemin</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
 </resources>

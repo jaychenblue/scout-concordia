@@ -9,11 +9,11 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".Activities.MapsActivity">
 
-<fragment android:id="@+id/autocomplete_fragment"
+    <fragment
+        android:id="@+id/autocomplete_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        />
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar_activity_maps"
@@ -27,15 +27,16 @@ tools:context=".Activities.MapsActivity">
         app:itemTextColor="@color/nav_button_color_selector"
         app:menu="@menu/navigation_bar" />
 		
-		<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_below="@id/autocomplete_fragment"
-	tools:context=".Activities.MapsActivity"/>
+    <fragment
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/autocomplete_fragment"
+        tools:context=".Activities.MapsActivity"/>
 
 	<ToggleButton
         android:id="@+id/toggleButton"
@@ -49,6 +50,20 @@ tools:context=".Activities.MapsActivity">
         android:textColor="@color/white"
         android:textFontWeight="500"
         android:checked="true"
+        android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/findYouWayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:paddingHorizontal="10dp"
+        android:text="@string/find_your_way_button"
+        android:textOff="@string/toggle_off"
+        android:textOn="@string/toggle_on"
+        android:layout_below="@id/toggleButton"
+        android:background="@drawable/shadow_toggle"
+        android:textColor="@color/white"
+        android:textFontWeight="500"
         android:layout_centerInParent="true"
         />
 
@@ -61,16 +76,14 @@ tools:context=".Activities.MapsActivity">
         android:layout_gravity="bottom"
         android:backgroundTint="@color/white"
         tools:ignore="BottomAppBar"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_above="@id/nav_bar_activity_maps"
-        android:layout_alignRight="@id/map"
-        >
+        android:layout_alignRight="@id/map">
 
         <Button
             android:id="@+id/directionsButton"
@@ -94,6 +107,7 @@ tools:context=".Activities.MapsActivity">
             android:background="@drawable/shadow_toggle"
             android:layout_marginRight="22pt"
             android:padding="5dp"/>
+
     </LinearLayout>
 
 </RelativeLayout>
