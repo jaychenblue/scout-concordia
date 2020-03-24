@@ -65,6 +65,7 @@ tools:context=".Activities.MapsActivity">
         android:textColor="@color/white"
         android:textFontWeight="500"
         android:layout_centerInParent="true"
+        android:onClick="onFindYourWayButtonClick"
         />
 
     <com.google.android.material.bottomappbar.BottomAppBar

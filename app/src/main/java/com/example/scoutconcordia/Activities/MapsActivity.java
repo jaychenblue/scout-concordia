@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
@@ -256,6 +257,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 toggleCampus();
             }
         });
+    }
+
+    public void onFindYourWayButtonClick(View v){
     }
 
     // this is the listener for the get directions button.
