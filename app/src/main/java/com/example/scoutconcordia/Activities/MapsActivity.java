@@ -87,20 +87,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker searchMarker;
     DES encrypter = new DES();
 
-    public static void setmContext(Context mContext) {
-        MapsActivity.mContext = mContext;
-    }
 
-    public static Context getmContext() {
-        return mContext;
-    }
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        mContext = this;
+        setmContext(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -588,6 +582,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    public static void setmContext(Context mContext) {
+        MapsActivity.mContext = mContext;
+    }
+
+    public static Context getmContext() {
+        return mContext;
     }
 
 }
