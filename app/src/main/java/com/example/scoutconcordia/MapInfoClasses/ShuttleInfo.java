@@ -528,28 +528,11 @@ public class ShuttleInfo {
     // And then convert them into a comprehensible String array which can be used by this class for calculations.
     public String[] retrieveMonToThursLoyola() {
 
-//        BufferedInputStream readDat = null;
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
 
             try {
-//                Resources res = this.getContext().getResources().openRawResource(R.raw.schedule_montothurs_loyola);
-//                InputStream in_s = res.openRawResource(R.raw.schedule_montothurs_loyola);
-//                @SuppressLint("ResourceType") String res = Resources.getSystem().getString( R.raw.schedule_montothurs_loyola );
 
-
-
-//                readDat = new BufferedInputStream(context.getResources().openRawResource(R.raw.schedule_montothurs_loyola));
-
-//                @SuppressLint("ResourceType") String ress = Resources.getSystem().getString(raw.schedule_montothurs_loyola);
-
-
-//                InputStream readDat = (context.getResources().openRawResource(raw.schedule_montothurs_loyola));
-
-//                Resources res = context.getResources();
-//                InputStream in_s = res.openRawResource(R.raw.schedule_montothurs_loyola);
-
-//                LineNumberReader reader = new LineNumberReader(new FileReader(String.valueOf(in_s)));
 
 
                 InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
@@ -562,18 +545,10 @@ public class ShuttleInfo {
 
                 String thisLine;
 
-            // This while loop goes through the entire file line by line and analyzes it
-//            while((thisLine = readDat.read()) != null)
-//            {
-//                shuttleArrayList.add(thisLine);
-//            }
-
+                // This while loop goes through the entire file line by line and analyzes it
                 while ((thisLine = bfr.readLine()) != null) {
-                    // do something with the line you just read, e.g.
-                                    shuttleArrayList.add(thisLine);
-
+                    shuttleArrayList.add(thisLine);
                 }
-
 
                 readInput.close();
                 bfr.close();
