@@ -530,17 +530,11 @@ public class ShuttleInfo {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-
-            try {
-
-
-
+            try
+            {
                 InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
-
                 InputStreamReader readInput = new InputStreamReader(is);
-
                 StringBuilder sb = new StringBuilder();
-
                 BufferedReader bfr = new BufferedReader(readInput);
 
                 String thisLine;
@@ -553,7 +547,6 @@ public class ShuttleInfo {
                 readInput.close();
                 bfr.close();
 
-//            readDat.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -571,21 +564,24 @@ public class ShuttleInfo {
 
     public String[] retrieveFridayLoyola() {
 
-        BufferedReader readDat = null;
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
         try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_friday_loyola.txt"));
+            InputStream is = context.getResources().openRawResource(raw.schedule_friday_loyola);
+            InputStreamReader readInput = new InputStreamReader(is);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader bfr = new BufferedReader(readInput);
 
             String thisLine;
 
             // This while loop goes through the entire file line by line and analyzes it
-            while((thisLine = readDat.readLine()) != null)
-            {
+            while ((thisLine = bfr.readLine()) != null) {
                 shuttleArrayList.add(thisLine);
             }
 
-            readDat.close();
+            readInput.close();
+            bfr.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -603,21 +599,24 @@ public class ShuttleInfo {
 
     public String[] retrieveMonToThursSGW() {
 
-        BufferedReader readDat = null;
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
         try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_montothurs_sgw.txt"));
+            InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
+            InputStreamReader readInput = new InputStreamReader(is);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader bfr = new BufferedReader(readInput);
 
             String thisLine;
 
             // This while loop goes through the entire file line by line and analyzes it
-            while((thisLine = readDat.readLine()) != null)
-            {
+            while ((thisLine = bfr.readLine()) != null) {
                 shuttleArrayList.add(thisLine);
             }
 
-            readDat.close();
+            readInput.close();
+            bfr.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
