@@ -276,7 +276,7 @@ public class Graph
     }
 
     // reads from a node file to add nodes to a graph
-    public static Graph addNodesToGraph(InputStream readFromMe)
+    public static Graph addNodesToGraph(String[] contents)
     {
         int currentPos = 0;
         Scanner reader = null;
@@ -288,22 +288,22 @@ public class Graph
         LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
         try
         {
-            reader = new Scanner(readFromMe);
-            while(reader.hasNext())
+            //reader = new Scanner(readFromMe);
+            for (int i = 0; i < contents.length; i++)
             {
-                currentLine = reader.nextLine();
+                currentLine = contents[i];
                 Log.println(Log.WARN, "printing", currentLine);
                 currentPos = currentLine.indexOf("Name of Image: ");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
                 floorName = (currentLine.substring(currentPos + 13));
-                reader.nextLine();
-
-                currentLine = reader.nextLine();
+                i++; i++;
+                currentLine = contents[i];
 
                 // read the file searching for coordinates
                 currentPos = currentLine.indexOf("Coordinates:");
-                currentLine = reader.nextLine();
+                i++;
+                currentLine = contents[i];
 
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
@@ -316,7 +316,8 @@ public class Graph
                     currentCoordinate = new LatLng(x_coordinate, y_coordinate);
                     
                     coordinatesToInsert.add(currentCoordinate);
-                    currentLine = reader.nextLine();
+                    i++;
+                    currentLine = contents[i];
                 }
                 int posOfHalfway = 0;
                 double x_coordinate = 0, y_coordinate = 0;
