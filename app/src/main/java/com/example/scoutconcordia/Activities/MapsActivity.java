@@ -111,6 +111,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
 
+    private GroundOverlay googoo;
+
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -265,7 +267,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //Log.println(Log.WARN, "Tree", n4.getElement().toString());
             //Log.println(Log.WARN, "Tree", n4.getParent().getElement().toString());
         }
-        
+
         Object[] path = tree.getPath(new LatLng(0,0), new LatLng(12,12));
         for (int i = 0; i < path.length; i++)
         {
@@ -297,7 +299,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
-                GroundOverlay hall8 = mMap.addGroundOverlay(goo);
+
+                googoo = mMap.addGroundOverlay(goo);
 
 
                 // For future reference, this will be necessary in order to remove the overlay once
@@ -326,17 +329,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //LatLng tempLatLng = tempMarker.getPosition();
                 //tempMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // green is the selected node
 
-               //for (LatLng vertice : hall_8_floor.vertices())
-               // {
-               //    if (hall_8_floor.areAdjacent(vertice, tempLatLng))
-               //    {
-               //        for (Marker markers : hall8floorMarkers)
-               //            if (markers.getPosition().equals(vertice))
-               //            {
-               //                markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));  // blue is the closest node
-               //            }
-               //    }
-               // }
+                //for (LatLng vertice : hall_8_floor.vertices())
+                // {
+                //    if (hall_8_floor.areAdjacent(vertice, tempLatLng))
+                //    {
+                //        for (Marker markers : hall8floorMarkers)
+                //            if (markers.getPosition().equals(vertice))
+                //            {
+                //                markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));  // blue is the closest node
+                //            }
+                //    }
+                // }
 
 
                 LatLng point1 = hall_8_floor.vertices()[25];  //start
@@ -347,26 +350,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
 
                 if (path != null) {
-                       Log.w("BFS", "Final Path");
-                       for (int i = 0; i < path.length; i++) {
-                            Log.w("BFS", path[i].toString());
+                    Log.w("BFS", "Final Path");
+                    for (int i = 0; i < path.length; i++) {
+                        Log.w("BFS", path[i].toString());
 
-                          // lets highlight the path.
-                          for (Marker markers : hall8floorMarkers)
-                          {
-                              if (markers.getPosition().equals(path[i]))
-                                       if (path[i].equals(point1))
-                                       {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-                                       } else if (path[i].equals(point2))
-                                       {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-                                       } else {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-                                       }
-                           }
-                       }
-                  }
+                        // lets highlight the path.
+                        for (Marker markers : hall8floorMarkers)
+                        {
+                            if (markers.getPosition().equals(path[i]))
+                                if (path[i].equals(point1))
+                                {
+                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+                                } else if (path[i].equals(point2))
+                                {
+                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+                                } else {
+                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+                                }
+                        }
+                    }
+                }
 
             }
         });
@@ -400,7 +403,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .bearing(imgRotation);
 //                mMap.addGroundOverlay(goo);
 
-                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
+//                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
+                googoo = mMap.addGroundOverlay(goo);
 
 
 
@@ -574,14 +578,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-       FileAccessor loyolaLocations = new FileAccessor();
-       loyolaLocations.setFileName("encryptedloyola");
-       output = loyolaLocations.obtainContents(true);
-       Log.w("FileAccessor", Integer.toString(output.length));
-       for (int i = 0; i < output.length; i++)
-       {
-           Log.w("FileAcccessor", output[i].toString());
-       }
+        FileAccessor loyolaLocations = new FileAccessor();
+        loyolaLocations.setFileName("encryptedloyola");
+        output = loyolaLocations.obtainContents(true);
+        Log.w("FileAccessor", Integer.toString(output.length));
+        for (int i = 0; i < output.length; i++)
+        {
+            Log.w("FileAcccessor", output[i].toString());
+        }
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -724,6 +728,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     floor9.setVisibility(View.INVISIBLE);
 
 
+                    if (googoo != null) {
+                        googoo.remove();
+                    }
+
+
                     isInfoWindowShown = true;
                 } else {
                     marker.hideInfoWindow();
@@ -732,6 +741,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     popUpBar.setVisibility(View.INVISIBLE);
                     floor8.setVisibility(View.INVISIBLE);
                     floor9.setVisibility(View.INVISIBLE);
+
+                    if (googoo != null) {
+                        googoo.remove();
+                    }
 
 
                     isInfoWindowShown = false;
@@ -751,10 +764,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor8.setVisibility(View.INVISIBLE);
                 floor9.setVisibility(View.INVISIBLE);
 
+                if (googoo != null) {
+                    googoo.remove();
+                }
+
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
                 showAllPolygons();
-                showAllMarkers();  
+                showAllMarkers();
             }
         });
     }
@@ -916,7 +933,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         // permission not granted, request for permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
     }
 
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -924,7 +941,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             case ACCESS_FINE_LOCATION:
                 if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
                     // permission granted, move the camera to current location
                     mMap.setMyLocationEnabled(true);
@@ -940,23 +957,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-     super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
-    
+
     class FileAccessor
     {
         String fileName;
-        
+
         public FileAccessor()
         {
             fileName = null;
         }
-        
+
         public void setFileName(String fileName)
         {
             this.fileName = fileName;
         }
-        
+
         // Used first to be able to read the file
         public void decryptFile()
         {
@@ -977,7 +994,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.println(Log.WARN, "FileAccessor", "The input file could not be located");
             }
         }
-        
+
         // returns an array with every line as a string from the file
         public Object[] obtainContents(boolean isEncrypted)
         {
@@ -1005,7 +1022,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return contents.toArray();
         }
-        
+
         // used when done to make sure no information is potentially leaked
         public boolean closeFile()
         {
@@ -1014,3 +1031,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 }
+
