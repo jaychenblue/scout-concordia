@@ -266,20 +266,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Object[] output = downtownLocations.obtainContents(false);
         // reading a file that is encrypted
         downtownLocations.setFileName("encrypteddtown");
-        Object[] output = downtownLocations.obtainContents(true);
+        downtownLocations.decryptFile(true);
+        String[] output = downtownLocations.obtainContents();
         Log.w("FileAccessor", Integer.toString(output.length));
         for (int i = 0; i < output.length; i++)
         {
-            Log.w("FileAcccessor", output[i].toString());
+            Log.w("FileAccessor", output[i].toString());
         }
 
        FileAccessor loyolaLocations = new FileAccessor();
        loyolaLocations.setFileName("encryptedloyola");
-       output = loyolaLocations.obtainContents(true);
+       loyolaLocations.decryptFile(true);
+       output = loyolaLocations.obtainContents();
        Log.w("FileAccessor", Integer.toString(output.length));
        for (int i = 0; i < output.length; i++)
        {
-           Log.w("FileAcccessor", output[i].toString());
+           Log.w("FileAccessor", output[i].toString());
        }
 
     }
@@ -352,7 +354,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
     public Graph createGraph(String encryptedFileName)
     {
-        String tempDecryptedFile = "tempDecryptedFile.txt";
+        //String tempDecryptedFile = "tempDecryptedFile.txt";
         InputStream fis = null;
         OutputStream fos = null;
         FileAccessor useMeToRead = new FileAccessor();
@@ -364,11 +366,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
             //fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
             //encrypter.decryptFile(fis, fos);
-            useMeToRead.decryptFile();
+            useMeToRead.decryptFile(false);
 
             // with the decrypted file, we can add the nodes to the graph
             //fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
-            graphName = Graph.addNodesToGraph(useMeToRead.obtainContents(false));
+            graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
 
             // close the input and the output streams
             if (fis != null)
@@ -379,9 +381,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         } finally {
             // delete the temp file which was decrypted
-            File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
-            if (deleteMe.exists())
-                deleteMe.delete();
+            //File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
+            //if (deleteMe.exists())
+                //deleteMe.delete();
             return graphName;
         }
     }
@@ -634,10 +636,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     class FileAccessor
     {
         String fileName;
+        Object[] contents;
 
         public FileAccessor()
         {
             fileName = null;
+            contents = null;
         }
 
         public void setFileName(String fileName)
@@ -646,19 +650,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Used first to be able to read the file
-        public void decryptFile()
+        public void decryptFile(boolean isEncrypted)
         {
+            Scanner reader = null;
             InputStream readme = null;
-            OutputStream writeToMe = null;
+            LinkedList<String> contents = new LinkedList<String>("");
             try
             {
                 readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
-                writeToMe = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName));
-                encrypter.decryptFile(readme, writeToMe);
-            }
-            catch (FileNotFoundException fnf)
-            {
-                Log.println(Log.WARN, "FileAccessor", "The output file was moved during the transfer");
+                //writeToMe = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName));
+                if (isEncrypted)
+                    this.contents = DES.decryptFile(readme);
+                else
+                {
+                    readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));  // we can read the file directly
+                    reader = new Scanner(readme);
+                    while (reader.hasNextLine())
+                    {
+                        contents.add(reader.nextLine());
+                    }
+                    this.contents = contents.toArray();
+                }
             }
             catch (Resources.NotFoundException e)
             {
@@ -667,38 +679,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // returns an array with every line as a string from the file
-        public Object[] obtainContents(boolean isEncrypted)
+        public String[] obtainContents()
         {
-            LinkedList<String> contents = new LinkedList<String>("");
-            Scanner reader = null;
-            if (!isEncrypted)  // if the file is not encrypted
+            String[] returnMe = new String[contents.length];
+            for (int i = 0; i < returnMe.length; i++)
             {
-                InputStream input = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));  // we can read the file directly
-                reader = new Scanner(input);
+                returnMe[i] = (String)contents[i];
             }
-            else // if the file is encrypted
-            {
-                this.decryptFile();  //decrypt the file
-                try
-                {
-                    reader = new Scanner(new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName)));  // read the decrypted file
-                } catch (FileNotFoundException fnf)
-                {
-                    Log.w("FileAccessor", fnf.getMessage());
-                }
-            }
-            while (reader.hasNextLine())
-            {
-                contents.add(reader.nextLine());
-            }
-            return contents.toArray();
+            return returnMe;
         }
 
         // used when done to make sure no information is potentially leaked
-        public boolean closeFile()
+        public void resetObject()
         {
-            File deleteMe = new File(getFilesDir().getAbsoluteFile(), fileName);
-            return deleteMe.delete();
+            fileName = null;
+            contents = null;
         }
     }
 }
