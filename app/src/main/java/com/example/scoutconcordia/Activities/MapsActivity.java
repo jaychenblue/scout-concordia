@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -281,52 +282,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onFindYourWayButtonClick(searchBar.getText().toString());
             }
         });
     }
     // onClick listener for when "Find your way" button is clicked
-    public void onFindYourWayButtonClick(View v){
+    public void onFindYourWayButtonClick(final String destination){
         AlertDialog.Builder builder = new AlertDialog.Builder(this  );
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
         builder.setView(dialogView);
 
-        Spinner fromSearchBar = dialogView.findViewById(R.id.fromSearchBar);
-        Spinner toSearchBar = dialogView.findViewById(R.id.toSearchBar);
+        final AutoCompleteTextView startingLocation = dialogView.findViewById(R.id.starting_location);
+        RadioButton useCurrentLocationButton = dialogView.findViewById(R.id.useMyLocationButton);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, locations);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        fromSearchBar.setAdapter(adapter);
-        toSearchBar.setAdapter(adapter);
+        startingLocation.setAdapter(adapter);
 
-        fromSearchBar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             }
         });
-
-        toSearchBar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         builder.create().show();
     }
-
 
     // get directions button clicked in dialog for getting directions (in onFindYourWayButtonClick)
     public void onGetDirectionsClick(View v){
