@@ -27,6 +27,7 @@ public class FileAccessor
     // Used first to be able to read the file
     public void decryptFile(boolean isEncrypted)
     {
+        DES decrypter = new DES();
         Scanner reader = null;
         InputStream readme = null;
         LinkedList<String> contents = new LinkedList<String>("");
@@ -34,7 +35,7 @@ public class FileAccessor
         {
             //writeToMe = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName));
             if (isEncrypted)
-                this.contents = DES.decryptFile(fileInput);
+                this.contents = decrypter.decryptFile(fileInput);
             else
             {
                 //readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));  // we can read the file directly

@@ -2,8 +2,6 @@ package com.example.scoutconcordia.FileAccess;
 
 import android.util.Log;
 
-import androidx.fragment.app.FragmentActivity;
-
 import com.example.scoutconcordia.DataStructures.LinkedList;
 
 import java.io.InputStream;
@@ -20,7 +18,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 
-public class DES extends FragmentActivity
+class DES
 {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -53,7 +51,7 @@ public class DES extends FragmentActivity
     }
 
     /** Method for decrypting a file. Requires an input stream and an output stream **/
-    public static Object[] decryptFile(InputStream readFromMe)
+    public Object[] decryptFile(InputStream readFromMe)
     {
         Scanner reader = null;
         LinkedList<String> returnMe = new LinkedList<String>("");
@@ -86,7 +84,7 @@ public class DES extends FragmentActivity
     }
 
     /** Method for encrypting a file. Requires an input stream and an output stream **/
-    public static void encryptFile(InputStream readFromMe, OutputStream writeToMe)
+    public void encryptFile(InputStream readFromMe, OutputStream writeToMe)
     {
         Scanner reader = null;
         PrintWriter writer = null;

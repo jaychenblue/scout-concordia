@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
-import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -81,7 +80,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
     private Marker searchMarker;
-    DES encrypter = new DES();
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -160,7 +158,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addPopUpBarListener();
 
         // lets encrypt all of the files before using them
-        encryptAllInputFiles();
+        //encryptAllInputFiles();
 
         // Lets try creating a graph for Hall 8th Floor
         //Graph hall_8_floor = new Graph(1);
@@ -329,7 +327,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encryptedFilename = "encrypted_" + filename;
                 fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                encrypter.encryptFile(fis, fos);
+                //encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
                 //if (filename.equals("loyolalocations"))
