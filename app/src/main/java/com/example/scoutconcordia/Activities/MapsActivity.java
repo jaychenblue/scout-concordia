@@ -474,29 +474,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentBuilding = currentBuilding.getNext();
         }
     }
-
-    private void createFloorGraphs()
-    {
-        // Lets try creating a graph for Hall 8th Floor
-        InputStream fis = null;
-        try
-        {
-            fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
-            Graph hall_8_floor = new Graph(10);
-            //hall_8_floor.addNodesToGraph(fis);
-            LatLng[] tempArray = hall_8_floor.vertices();
-            for (int i = 0; i < tempArray.length; i++)
-            {
-                System.out.println(tempArray[i]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-
+    
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
     // when user gesture moves the camera). Check onCameraMoveStarted listener method
