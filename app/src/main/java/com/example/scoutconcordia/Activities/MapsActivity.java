@@ -24,8 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
-import com.example.scoutconcordia.FileAccess.DES;
-import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
+import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -46,7 +45,6 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -87,7 +85,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
 
     private Marker searchMarker;
-    DES encrypter = new DES();
 
 
 
@@ -169,93 +166,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addPopUpBarListener();
 
         // lets encrypt all of the files before using them
-        encryptAllInputFiles();
+        //encryptAllInputFiles();
 
         // Lets try creating a graph for Hall 8th Floor
-        Graph hall_8_floor = new Graph(1);
-        createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
+        //Graph hall_8_floor = new Graph(1);
+        Graph hall_8_floor = createGraph("hall8nodes");
 
-        // Victor's log tests
-        ShuttleInfo si = new ShuttleInfo();
-        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + si.getEstimatedRouteTimeFromLoyola() + " minutes");
-
-
-        Graph g1 = new Graph(20);
-        LatLng p0 = new LatLng(0,0);
-        LatLng p1 = new LatLng(1,1);
-        LatLng p2 = new LatLng(2,2);
-        LatLng p3 = new LatLng(3,3);
-        LatLng p4 = new LatLng(4,4);
-        LatLng p5 = new LatLng(5,5);
-        LatLng p6 = new LatLng(6,6);
-        LatLng p7 = new LatLng(7,7);
-        LatLng p8 = new LatLng(8,8);
-        g1.insertVertex(p0);
-        g1.insertVertex(p1);
-        g1.insertVertex(p2);
-        g1.insertVertex(p3);
-        g1.insertVertex(p4);
-        g1.insertVertex(p5);
-        g1.insertVertex(p6);
-        g1.insertVertex(p7);
-        g1.insertVertex(p8);
-        g1.insertEdge(p3, p1);
-        g1.insertEdge(p3, p5);
-        g1.insertEdge(p1, p7);
-        g1.insertEdge(p5, p4);
-        g1.insertEdge(p5, p2);
-        g1.insertEdge(p7, p2);
-        g1.insertEdge(p7, p8);
-        g1.insertEdge(p2, p6);
-        g1.insertEdge(p4, p6);
-        g1.insertEdge(p6, p8);
-        Object[] path = g1.breathFirstSearch(p4,p8);
-        if (path != null)
+        Object[] vertices = hall_8_floor.vertices();
+        if (vertices != null)
         {
-            Log.w("BFS", "Final Path");
-            for (int i = 0; i < path.length; i++)
+            Log.w("BFS", "Nodes");
+            for (int i = 0; i < vertices.length; i++)
             {
-                Log.w("BFS", path[i].toString());
+                Log.w("BFS", vertices[i].toString());
             }
         }
-
-
-        // Playing with the Tree
-        /*
-        N_aryTree tree = new N_aryTree();
-        N_aryTree.TreeNode n = tree.getHead();
-        n.setElement(new LatLng(0,0));
-        n.addToChildren(new LatLng(1,1));
-        n.addToChildren(new LatLng(2,2));
-        n.addToChildren(new LatLng(3,3));
-        N_aryTree.TreeNode n1 = tree.findSpecifiedNode(tree.getHead(), new LatLng(1,1));
-        n1.addToChildren(new LatLng(6,6));
-        n1.addToChildren(new LatLng(5,5));
-        n1.addToChildren(new LatLng(4,4));
-        N_aryTree.TreeNode n2 = tree.findSpecifiedNode(tree.getHead(), new LatLng(2,2));
-        n2.addToChildren(new LatLng(7,7));
-        n2.addToChildren(new LatLng(8,8));
-        n2.addToChildren(new LatLng(9,9));
-        N_aryTree.TreeNode n3 = tree.findSpecifiedNode(tree.getHead(), new LatLng(3,3));
-        n3.addToChildren(new LatLng(10,10));
-        n3.addToChildren(new LatLng(11,11));
-        n3.addToChildren(new LatLng(12,12));
-        N_aryTree.TreeNode n4 = tree.findSpecifiedNode(tree.getHead(), new LatLng(4,4));
-        n4.addToChildren(new LatLng(13,13));
-        n4.addToChildren(new LatLng(14,14));
-        N_aryTree.TreeNode n8 = tree.findSpecifiedNode(n2, new LatLng(4,4));
-        if (n8 != null)
-        {
-            //Log.println(Log.WARN, "Tree", n4.getElement().toString());
-            //Log.println(Log.WARN, "Tree", n4.getParent().getElement().toString());
-        }
-
-        Object[] path = tree.getPath(new LatLng(0,0), new LatLng(12,12));
-        for (int i = 0; i < path.length; i++)
-        {
-            Log.println(Log.WARN, "Tree", path[i].toString());
-        }
-        */
     }
 
     // If button pushed change Campus
@@ -319,9 +244,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-
-        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
-        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
+        FileAccessor locationAccessor = new FileAccessor();
+        locationAccessor.setInputStream(getStreamFromFileName("encrypteddtown"));
+        locationAccessor.decryptFile(true);
+        addLocationsToMap(locationAccessor.obtainContents());  //adds the polygons for the SGW campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("encryptedloyola"));
+        locationAccessor.decryptFile(true);
+        addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
         searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
@@ -363,6 +293,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
+    // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
     public void encryptAllInputFiles()
     {
         InputStream fis = null;
@@ -378,7 +309,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encryptedFilename = "encrypted_" + filename;
                 fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                encrypter.encryptFile(fis, fos);
+                //encrypter.encryptFile(fis, fos);
+
+                // this is some code that we can use to get the text in the encrypted file
+                //if (filename.equals("loyolalocations"))
+                //{
+                //    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
+                //   Scanner readEncrypted = new Scanner(fis);
+                //    while (readEncrypted.hasNext())
+                //    {
+                //        System.out.println(readEncrypted.nextLine());
+                //    }
+                //}
+
             }
             // close the input and the output streams
             fis.close();
@@ -391,32 +334,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
-    public void createGraph(Graph graphName, String encryptedFileName)
+    public Graph createGraph(String encryptedFileName)
     {
-        String tempDecryptedFile = "tempDecryptedFile.txt";
-        InputStream fis = null;
-        OutputStream fos = null;
-        try
-        {
-            // First we need to decrypt the file to have access to the locations
-            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
-            fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
-            encrypter.decryptFile(fis, fos);
+        FileAccessor useMeToRead = new FileAccessor();
+        useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
+        Graph graphName = null;
+        // First we need to decrypt the file to have access to the locations
+        useMeToRead.decryptFile(false);
 
-            // with the decrypted file, we can add the nodes to the graph
-            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
-            graphName = Graph.addNodesToGraph(fis);
-
-            // close the input and the output streams
-            fis.close();
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // delete the temp file which was decrypted
-            File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
-            deleteMe.delete();
-        }
+        // with the decrypted file, we can add the nodes to the graph
+        graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
+        return graphName;
     }
 
     public void setClickListeners() {
@@ -510,7 +438,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polygon.setClickable(true);
     }
 
-    private void addLocationsToMap(InputStream location)
+    private void addLocationsToMap(String[] location)
     {
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
         //BuildingInfo.encryptFile();
@@ -554,28 +482,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentBuilding = currentBuilding.getNext();
         }
     }
-
-    private void createFloorGraphs()
-    {
-        // Lets try creating a graph for Hall 8th Floor
-        InputStream fis = null;
-        try
-        {
-            fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
-            Graph hall_8_floor = new Graph(10);
-            hall_8_floor.addNodesToGraph(fis);
-            LatLng[] tempArray = hall_8_floor.vertices();
-            for (int i = 0; i < tempArray.length; i++)
-            {
-                System.out.println(tempArray[i]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
 
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
@@ -676,4 +582,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return mContext;
     }
 
+
+    public InputStream getStreamFromFileName(String fileName)
+    {
+        return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
+    }
 }
