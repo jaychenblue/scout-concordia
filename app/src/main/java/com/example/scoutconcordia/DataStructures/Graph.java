@@ -380,38 +380,38 @@ public class Graph
     {
         // we want to insert an edge between all of the nodes that are adjacent. i.e the nodes that are closest to eachother
         // if a node is closest to 2 nodes then it will have 2 nodes in its adjacency list.
+
+        // we want each node to have 2 closest nodes. They will be stored in an array [closest_node, second_closest_node]
+
         float smallestDistance = 0;
+        float secondSmallestDistance = 0;
         float distance = 0;
-        Node[] closestNodes = new Node[1]; // create an array of length 1
-        int nmbClosestNodes = 1;
+        Node[] closestNodes = new Node[2]; // create an array of length 1
+        int nmbClosestNodes = 2;
 
         for (Node node: this.nodes)
         {
             smallestDistance = 1000000;
+            secondSmallestDistance = 1000000;
             distance = 1000000;
             LatLng myCoordinate = node.element;
+
             for (Node otherNode: this.nodes)
             {
                 if (otherNode != node)  // we only want to get the distance if the nodes are not equal
                 {
                     distance = calculateNodeDistance(myCoordinate, otherNode.element);
+
                     if (distance < smallestDistance)
                     {
-                        if (nmbClosestNodes != 1)
-                        {
-                            nmbClosestNodes = 1;
-                            closestNodes = new Node[1];
-                            closestNodes[0] = otherNode;
-                        }
-                        else {
-                            closestNodes[0] = otherNode;
-                        }
+                        closestNodes[1] = closestNodes[0];
+                        closestNodes[0] = otherNode;
+                        secondSmallestDistance = smallestDistance;
                         smallestDistance = distance;
-                    }
-                    else if (distance == smallestDistance)
+                    } else if (distance > smallestDistance && distance < secondSmallestDistance)
                     {
-                        nmbClosestNodes+=1;
-                        closestNodes = addNode(closestNodes, otherNode); // if there are 2 nodes of equal distance we add them both.
+                        closestNodes[1] = otherNode;
+                        secondSmallestDistance = distance;
                     }
                 }
             }

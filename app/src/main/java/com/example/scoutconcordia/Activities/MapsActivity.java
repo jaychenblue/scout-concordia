@@ -322,25 +322,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
                 }
 
-               // Marker tempMarker = hall8floorMarkers.get(13);
-               // LatLng tempLatLng = tempMarker.getPosition();
-               // tempMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // green is the selected node
+                //Marker tempMarker = hall8floorMarkers.get(10);
+                //LatLng tempLatLng = tempMarker.getPosition();
+                //tempMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // green is the selected node
 
-                //for (LatLng vertice : hall_8_floor.vertices())
-                //{
-                //   if (hall_8_floor.areAdjacent(vertice, tempLatLng))
-                //   {
-                //       for (Marker markers : hall8floorMarkers)
-                //           if (markers.getPosition().equals(vertice))
-                //           {
-                //               markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));  // blue is the closest node
-                //           }
-                //   }
+               //for (LatLng vertice : hall_8_floor.vertices())
+               // {
+               //    if (hall_8_floor.areAdjacent(vertice, tempLatLng))
+               //    {
+               //        for (Marker markers : hall8floorMarkers)
+               //            if (markers.getPosition().equals(vertice))
+               //            {
+               //                markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));  // blue is the closest node
+               //            }
+               //    }
                // }
 
 
-                LatLng point1 = hall_8_floor.vertices()[11];  //start
-                LatLng point2 = hall_8_floor.vertices()[13];  //end
+                LatLng point1 = hall_8_floor.vertices()[25];  //start
+                LatLng point2 = hall_8_floor.vertices()[45];  //end
                 Log.w("Point 1:", point1.toString());
                 Log.w("Point 2:", point2.toString());
 
@@ -351,12 +351,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                        for (int i = 0; i < path.length; i++) {
                             Log.w("BFS", path[i].toString());
 
-                            // lets highlight the path.
-                           for (Marker markers : hall8floorMarkers)
-                           {
-                               if (markers.getPosition().equals(path[i]))
+                          // lets highlight the path.
+                          for (Marker markers : hall8floorMarkers)
+                          {
+                              if (markers.getPosition().equals(path[i]))
+                                       if (path[i].equals(point1))
                                        {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+                                       } else if (path[i].equals(point2))
+                                       {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+                                       } else {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
                                        }
                            }
                        }
