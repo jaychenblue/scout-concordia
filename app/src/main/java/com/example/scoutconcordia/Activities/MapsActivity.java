@@ -258,32 +258,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
-
-        // THIS IS SOME CODE TO TEST OUT THE FILEACCESSOR METHODS
-        FileAccessor downtownLocations = new FileAccessor();
-        //The 2 commented lines are an example of reading a file that is not encrypted
-        //downtownLocations.setFileName("downtownlocations");
-        //Object[] output = downtownLocations.obtainContents(false);
-        // reading a file that is encrypted
-        downtownLocations.setInputStream(getStreamFromFileName("encrypteddtown"));
-        downtownLocations.decryptFile(true);
-        String[] output = downtownLocations.obtainContents();
-        Log.w("FileAccessor", Integer.toString(output.length));
-        for (int i = 0; i < output.length; i++)
-        {
-            Log.w("FileAccessor", output[i].toString());
-        }
-
-       FileAccessor loyolaLocations = new FileAccessor();
-       loyolaLocations.setInputStream(getStreamFromFileName("encryptedloyola"));
-       loyolaLocations.decryptFile(true);
-       output = loyolaLocations.obtainContents();
-       Log.w("FileAccessor", Integer.toString(output.length));
-       for (int i = 0; i < output.length; i++)
-       {
-           Log.w("FileAccessor", output[i].toString());
-       }
-
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -354,38 +328,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
     public Graph createGraph(String encryptedFileName)
     {
-        //String tempDecryptedFile = "tempDecryptedFile.txt";
-        InputStream fis = null;
-        OutputStream fos = null;
         FileAccessor useMeToRead = new FileAccessor();
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
-        try
-        {
-            // First we need to decrypt the file to have access to the locations
-            //fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
-            //fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
-            //encrypter.decryptFile(fis, fos);
-            useMeToRead.decryptFile(false);
-
-            // with the decrypted file, we can add the nodes to the graph
-            //fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
-            graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
-
-            // close the input and the output streams
-            if (fis != null)
-                fis.close();
-            if (fos != null)
-                fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            // delete the temp file which was decrypted
-            //File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
-            //if (deleteMe.exists())
-                //deleteMe.delete();
-            return graphName;
-        }
+        // First we need to decrypt the file to have access to the locations
+        useMeToRead.decryptFile(false);
+    
+        // with the decrypted file, we can add the nodes to the graph
+        graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
+        return graphName;
     }
 
     public void setClickListeners() {
