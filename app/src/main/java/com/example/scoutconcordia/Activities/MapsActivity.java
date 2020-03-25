@@ -587,10 +587,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    // This sets the context and is called during the onCreate method.
     public static void setmContext(Context mContext) {
         MapsActivity.mContext = mContext;
     }
 
+    // THis is for non-activity or non-fragment classes to use in order to pull the context of this class, which will
+    // then allow them to access resource files, this cannot be done otherwise.
     public static Context getmContext() {
         return mContext;
     }
