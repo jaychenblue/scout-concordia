@@ -5,7 +5,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -14,9 +13,7 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +23,7 @@ import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.FileAccess.DES;
+import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -46,7 +44,6 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -265,7 +262,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //downtownLocations.setFileName("downtownlocations");
         //Object[] output = downtownLocations.obtainContents(false);
         // reading a file that is encrypted
-        downtownLocations.setFileName("encrypteddtown");
+        downtownLocations.setInputStream(getStreamFromFileName("encrypteddtown"));
         downtownLocations.decryptFile(true);
         String[] output = downtownLocations.obtainContents();
         Log.w("FileAccessor", Integer.toString(output.length));
@@ -275,7 +272,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
        FileAccessor loyolaLocations = new FileAccessor();
-       loyolaLocations.setFileName("encryptedloyola");
+       loyolaLocations.setInputStream(getStreamFromFileName("encryptedloyola"));
        loyolaLocations.decryptFile(true);
        output = loyolaLocations.obtainContents();
        Log.w("FileAccessor", Integer.toString(output.length));
@@ -358,7 +355,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         InputStream fis = null;
         OutputStream fos = null;
         FileAccessor useMeToRead = new FileAccessor();
-        useMeToRead.setFileName(encryptedFileName);
+        useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
         try
         {
@@ -632,68 +629,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
     }
-
-    class FileAccessor
+    
+    public InputStream getStreamFromFileName(String fileName)
     {
-        String fileName;
-        Object[] contents;
-
-        public FileAccessor()
-        {
-            fileName = null;
-            contents = null;
-        }
-
-        public void setFileName(String fileName)
-        {
-            this.fileName = fileName;
-        }
-
-        // Used first to be able to read the file
-        public void decryptFile(boolean isEncrypted)
-        {
-            Scanner reader = null;
-            InputStream readme = null;
-            LinkedList<String> contents = new LinkedList<String>("");
-            try
-            {
-                readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
-                //writeToMe = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName));
-                if (isEncrypted)
-                    this.contents = DES.decryptFile(readme);
-                else
-                {
-                    readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));  // we can read the file directly
-                    reader = new Scanner(readme);
-                    while (reader.hasNextLine())
-                    {
-                        contents.add(reader.nextLine());
-                    }
-                    this.contents = contents.toArray();
-                }
-            }
-            catch (Resources.NotFoundException e)
-            {
-                Log.println(Log.WARN, "FileAccessor", "The input file could not be located");
-            }
-        }
-
-        // returns an array with every line as a string from the file
-        public String[] obtainContents()
-        {
-            String[] returnMe = new String[contents.length];
-            for (int i = 0; i < returnMe.length; i++)
-            {
-                returnMe[i] = (String)contents[i];
-            }
-            return returnMe;
-        }
-
-        // used when done to make sure no information is potentially leaked
-        public void resetObject()
-        {
-            fileName = null;
-            contents = null;
-        }
+        return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
     }
 }
