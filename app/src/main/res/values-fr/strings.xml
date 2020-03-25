@@ -12,5 +12,8 @@
     <string name="car">Voiture</string>
     <string name="transit">Transit</string>
     <string name="shuttle">Navette</string>
+    <string name="search_hint">Rechercher une salle de classe ou un bâtiment</string>
+    <string name="search_starting_location_hint">Rechercher un lieu de départ</string>
+    <string name="use_my_location">Utilise Ma Location</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
 </resources>

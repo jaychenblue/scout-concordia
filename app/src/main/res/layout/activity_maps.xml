@@ -9,11 +9,34 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".Activities.MapsActivity">
 
-    <fragment
+<!--    <fragment
         android:id="@+id/autocomplete_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />-->
+    <LinearLayout
+        android:id="@+id/search"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/ic_search_black_24dp"/>
+
+        <AutoCompleteTextView
+            android:id="@+id/search_bar"
+            android:backgroundTint="@android:color/transparent"
+            android:hint="Find a classroom or building"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"
+            android:completionThreshold="1" />
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar_activity_maps"
@@ -26,7 +49,7 @@ tools:context=".Activities.MapsActivity">
         app:itemTextAppearanceInactive="@style/BottomNavigationViewStyle"
         app:itemTextColor="@color/nav_button_color_selector"
         app:menu="@menu/navigation_bar" />
-		
+
     <fragment
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -35,7 +58,7 @@ tools:context=".Activities.MapsActivity">
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/autocomplete_fragment"
+        android:layout_below="@id/search"
         tools:context=".Activities.MapsActivity"/>
 
 	<ToggleButton
@@ -45,14 +68,14 @@ tools:context=".Activities.MapsActivity">
         android:text="ToggleButton"
         android:textOff="@string/toggle_off"
         android:textOn="@string/toggle_on"
-        android:layout_below="@id/autocomplete_fragment"
+        android:layout_below="@id/search"
         android:background="@drawable/shadow_toggle"
         android:textColor="@color/white"
         android:textFontWeight="500"
         android:checked="true"
         android:layout_centerInParent="true" />
 
-    <Button
+    <!--<Button
         android:id="@+id/findYouWayButton"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
@@ -67,7 +90,7 @@ tools:context=".Activities.MapsActivity">
         android:layout_centerInParent="true"
         android:onClick="onFindYourWayButtonClick"
         />
-
+-->
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"

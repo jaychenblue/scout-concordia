@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -95,7 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isInfoWindowShown = false;
     private Marker searchMarker;
     DES encrypter = new DES();
-    //concordia building names
+
+    // Concordia buildings list
     public static final List<String> locations = new ArrayList<>();
 
     // Displays the Map
@@ -107,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Places.initialize(this, getString(R.string.google_maps_key));
+/**        Places.initialize(this, getString(R.string.google_maps_key));
         PlacesClient placesClient = Places.createClient(this);
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -143,7 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("STATUS CODE: "+ status.getStatusMessage());
             }
         });
-
+*/
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_maps);
@@ -220,8 +222,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.w("BFS", path[i].toString());
             }
         }
-        
-        
         // Playing with the Tree
         /*
         N_aryTree tree = new N_aryTree();
@@ -271,6 +271,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
+    public void initializeSearchBar(){
+        final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, locations);
+        searchBar.setAdapter(adapter);
+
+        searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
+    }
     // onClick listener for when "Find your way" button is clicked
     public void onFindYourWayButtonClick(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(this  );
@@ -313,6 +326,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         builder.create().show();
     }
+
 
     // get directions button clicked in dialog for getting directions (in onFindYourWayButtonClick)
     public void onGetDirectionsClick(View v){
@@ -405,6 +419,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
+        initializeSearchBar();
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -592,7 +607,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             // add building name to list
             locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
-            
+
+
             for (int j = 0; j < coordinates.size(); j++)
             {
                 po.add((LatLng)currentCoordinate.getEle());

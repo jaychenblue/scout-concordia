@@ -11,6 +11,9 @@
     <string name="car">Car</string>
     <string name="transit">Transit</string>
     <string name="shuttle">Shuttle</string>
+    <string name="search_hint">Search a classroom or building</string>
+    <string name="search_starting_location_hint">Search a starting location</string>
+    <string name="use_my_location">Use My Location</string>
     <string name="default_web_client_id">219414920184-vo13n4ghkndsilo4t3b8dc88oqj5i1n7.apps.googleusercontent.com</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
 </resources>
