@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -83,6 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+    public static Context mContext;
+
     private Marker searchMarker;
     DES encrypter = new DES();
 
@@ -91,6 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        mContext = this;
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -171,8 +175,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     
         // Victor's shi don't work
         ShuttleInfo si = new ShuttleInfo();
-        String[] results = si.retrieveFridayLoyola();
-        Log.w("ShuttleInfo", Integer.toString(results.length));
+//        String[] results = si.retrieveMonToThursLoyola();
+        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + si.getNextEarliestTimeFromLoyola() + " minutes");
     }
 
     // If button pushed change Campus

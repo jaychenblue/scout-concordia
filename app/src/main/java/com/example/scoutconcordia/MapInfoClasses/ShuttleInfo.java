@@ -1,10 +1,28 @@
 package com.example.scoutconcordia.MapInfoClasses;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.Resources;
+
+import com.example.scoutconcordia.Activities.MainActivity;
+import com.example.scoutconcordia.Activities.MapsActivity;
+import com.example.scoutconcordia.R;
+import com.example.scoutconcordia.R.*;
+import com.google.api.client.util.IOUtils;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+
 
 
 // To use this class, the app has to essentially create an object of 'ShuttleInfo'.
@@ -15,6 +33,7 @@ import java.util.Calendar;
 
 public class ShuttleInfo {
 
+    private Context context = MapsActivity.mContext;
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
@@ -509,21 +528,57 @@ public class ShuttleInfo {
     // And then convert them into a comprehensible String array which can be used by this class for calculations.
     public String[] retrieveMonToThursLoyola() {
 
-        BufferedReader readDat = null;
+//        BufferedInputStream readDat = null;
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-        try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_montothurs_loyola.txt"));
 
-            String thisLine;
+            try {
+//                Resources res = this.getContext().getResources().openRawResource(R.raw.schedule_montothurs_loyola);
+//                InputStream in_s = res.openRawResource(R.raw.schedule_montothurs_loyola);
+//                @SuppressLint("ResourceType") String res = Resources.getSystem().getString( R.raw.schedule_montothurs_loyola );
+
+
+
+//                readDat = new BufferedInputStream(context.getResources().openRawResource(R.raw.schedule_montothurs_loyola));
+
+//                @SuppressLint("ResourceType") String ress = Resources.getSystem().getString(raw.schedule_montothurs_loyola);
+
+
+//                InputStream readDat = (context.getResources().openRawResource(raw.schedule_montothurs_loyola));
+
+//                Resources res = context.getResources();
+//                InputStream in_s = res.openRawResource(R.raw.schedule_montothurs_loyola);
+
+//                LineNumberReader reader = new LineNumberReader(new FileReader(String.valueOf(in_s)));
+
+
+                InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
+
+                InputStreamReader readInput = new InputStreamReader(is);
+
+                StringBuilder sb = new StringBuilder();
+
+                BufferedReader bfr = new BufferedReader(readInput);
+
+                String thisLine;
 
             // This while loop goes through the entire file line by line and analyzes it
-            while((thisLine = readDat.readLine()) != null)
-            {
-                shuttleArrayList.add(thisLine);
-            }
+//            while((thisLine = readDat.read()) != null)
+//            {
+//                shuttleArrayList.add(thisLine);
+//            }
 
-            readDat.close();
+                while ((thisLine = bfr.readLine()) != null) {
+                    // do something with the line you just read, e.g.
+                                    shuttleArrayList.add(thisLine);
+
+                }
+
+
+                readInput.close();
+                bfr.close();
+
+//            readDat.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
