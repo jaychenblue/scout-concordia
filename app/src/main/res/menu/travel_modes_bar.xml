@@ -4,20 +4,24 @@
     <item
         android:id="@+id/walking"
         android:icon="@drawable/ic_directions_walk_black_24dp"
-        android:title="@string/walking" />
+        android:title="@string/walking"
+        android:onClick="onWalkingSelected"/>
 
     <item
         android:id="@+id/car"
         android:icon="@drawable/ic_directions_car_black_24dp"
-        android:title="@string/car" />
+        android:title="@string/car"
+        android:onClick="onCarSelected"/>
 
     <item
         android:id="@+id/transit"
         android:icon="@drawable/ic_directions_transit_black_24dp"
-        android:title="@string/transit"/>
+        android:title="@string/transit"
+        android:onClick="onTransitSelected"/>
 
     <item
         android:id="@+id/shuttle"
         android:icon="@drawable/ic_directions_bus_black_24dp"
-        android:title="@string/shuttle"/>
+        android:title="@string/shuttle"
+        android:onClick="onShuttleSelected"/>
 </menu>

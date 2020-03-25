@@ -73,7 +73,8 @@
             android:elevation="10dp"
             android:src="@drawable/ic_directions_black_24dp"
             android:tint="@color/white"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:onClick="onGetDirectionsClick"/>
 
     </RelativeLayout>
 </LinearLayout>

@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -282,6 +283,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    // onClick listener for when "Find your way" button is clicked
     public void onFindYourWayButtonClick(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(this  );
         LayoutInflater inflater = this.getLayoutInflater();
@@ -297,7 +299,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fromSearchBar.setAdapter(adapter);
         toSearchBar.setAdapter(adapter);
 
+        fromSearchBar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        toSearchBar.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         builder.create().show();
+    }
+
+    // get directions button clicked in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onGetDirectionsClick(View v){
+    }
+
+    // walking option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onWalkingSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // car option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onCarSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // transit option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onTransitSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // shuttle option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onShuttleSelected(MenuItem m){
+        m.setChecked(true);
     }
 
     // this is the listener for the get directions button.
