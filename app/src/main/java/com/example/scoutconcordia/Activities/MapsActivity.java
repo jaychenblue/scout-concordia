@@ -174,10 +174,88 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = new Graph(1);
         createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
-    
+
         // Victor's log tests
         ShuttleInfo si = new ShuttleInfo();
         Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + si.getEstimatedRouteTimeFromLoyola() + " minutes");
+
+
+        Graph g1 = new Graph(20);
+        LatLng p0 = new LatLng(0,0);
+        LatLng p1 = new LatLng(1,1);
+        LatLng p2 = new LatLng(2,2);
+        LatLng p3 = new LatLng(3,3);
+        LatLng p4 = new LatLng(4,4);
+        LatLng p5 = new LatLng(5,5);
+        LatLng p6 = new LatLng(6,6);
+        LatLng p7 = new LatLng(7,7);
+        LatLng p8 = new LatLng(8,8);
+        g1.insertVertex(p0);
+        g1.insertVertex(p1);
+        g1.insertVertex(p2);
+        g1.insertVertex(p3);
+        g1.insertVertex(p4);
+        g1.insertVertex(p5);
+        g1.insertVertex(p6);
+        g1.insertVertex(p7);
+        g1.insertVertex(p8);
+        g1.insertEdge(p3, p1);
+        g1.insertEdge(p3, p5);
+        g1.insertEdge(p1, p7);
+        g1.insertEdge(p5, p4);
+        g1.insertEdge(p5, p2);
+        g1.insertEdge(p7, p2);
+        g1.insertEdge(p7, p8);
+        g1.insertEdge(p2, p6);
+        g1.insertEdge(p4, p6);
+        g1.insertEdge(p6, p8);
+        Object[] path = g1.breathFirstSearch(p4,p8);
+        if (path != null)
+        {
+            Log.w("BFS", "Final Path");
+            for (int i = 0; i < path.length; i++)
+            {
+                Log.w("BFS", path[i].toString());
+            }
+        }
+
+
+        // Playing with the Tree
+        /*
+        N_aryTree tree = new N_aryTree();
+        N_aryTree.TreeNode n = tree.getHead();
+        n.setElement(new LatLng(0,0));
+        n.addToChildren(new LatLng(1,1));
+        n.addToChildren(new LatLng(2,2));
+        n.addToChildren(new LatLng(3,3));
+        N_aryTree.TreeNode n1 = tree.findSpecifiedNode(tree.getHead(), new LatLng(1,1));
+        n1.addToChildren(new LatLng(6,6));
+        n1.addToChildren(new LatLng(5,5));
+        n1.addToChildren(new LatLng(4,4));
+        N_aryTree.TreeNode n2 = tree.findSpecifiedNode(tree.getHead(), new LatLng(2,2));
+        n2.addToChildren(new LatLng(7,7));
+        n2.addToChildren(new LatLng(8,8));
+        n2.addToChildren(new LatLng(9,9));
+        N_aryTree.TreeNode n3 = tree.findSpecifiedNode(tree.getHead(), new LatLng(3,3));
+        n3.addToChildren(new LatLng(10,10));
+        n3.addToChildren(new LatLng(11,11));
+        n3.addToChildren(new LatLng(12,12));
+        N_aryTree.TreeNode n4 = tree.findSpecifiedNode(tree.getHead(), new LatLng(4,4));
+        n4.addToChildren(new LatLng(13,13));
+        n4.addToChildren(new LatLng(14,14));
+        N_aryTree.TreeNode n8 = tree.findSpecifiedNode(n2, new LatLng(4,4));
+        if (n8 != null)
+        {
+            //Log.println(Log.WARN, "Tree", n4.getElement().toString());
+            //Log.println(Log.WARN, "Tree", n4.getParent().getElement().toString());
+        }
+
+        Object[] path = tree.getPath(new LatLng(0,0), new LatLng(12,12));
+        for (int i = 0; i < path.length; i++)
+        {
+            Log.println(Log.WARN, "Tree", path[i].toString());
+        }
+        */
     }
 
     // If button pushed change Campus
