@@ -20,7 +20,7 @@ public class Graph
     private Node[] nodes;
     private N_aryTree breathFirstSearchResults;
 
-    private class Node
+    public class Node
     {
         private int id;
         private LatLng element;

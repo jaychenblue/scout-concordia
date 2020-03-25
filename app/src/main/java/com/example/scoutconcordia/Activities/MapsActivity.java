@@ -104,6 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String activeInfoWindow = null;
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
+    private List<Marker> hall8floorMarkers = new ArrayList<>();
 
 
     // We use this for image overlay of Hall building
@@ -112,8 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     // Displays the Map
-    @Override protected void onCreate(Bundle savedInstanceState)
-    {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -153,18 +153,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onError(@NonNull Status status) {
-                    System.out.println("STATUS CODE: "+ status.getStatusMessage());
+                System.out.println("STATUS CODE: " + status.getStatusMessage());
             }
         });
 
         addListenerOnToggle();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_maps);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.nav_map:
                         break;
 
@@ -191,53 +191,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // lets encrypt all of the files before using them
         encryptAllInputFiles();
-    }
+
 
         // Lets try creating a graph for Hall 8th Floor
-        Graph hall_8_floor = new Graph(1);
-        createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
-        
-        
-        Graph g1 = new Graph(20);
-        LatLng p0 = new LatLng(0,0);
-        LatLng p1 = new LatLng(1,1);
-        LatLng p2 = new LatLng(2,2);
-        LatLng p3 = new LatLng(3,3);
-        LatLng p4 = new LatLng(4,4);
-        LatLng p5 = new LatLng(5,5);
-        LatLng p6 = new LatLng(6,6);
-        LatLng p7 = new LatLng(7,7);
-        LatLng p8 = new LatLng(8,8);
-        g1.insertVertex(p0);
-        g1.insertVertex(p1);
-        g1.insertVertex(p2);
-        g1.insertVertex(p3);
-        g1.insertVertex(p4);
-        g1.insertVertex(p5);
-        g1.insertVertex(p6);
-        g1.insertVertex(p7);
-        g1.insertVertex(p8);
-        g1.insertEdge(p3, p1);
-        g1.insertEdge(p3, p5);
-        g1.insertEdge(p1, p7);
-        g1.insertEdge(p5, p4);
-        g1.insertEdge(p5, p2);
-        g1.insertEdge(p7, p2);
-        g1.insertEdge(p7, p8);
-        g1.insertEdge(p2, p6);
-        g1.insertEdge(p4, p6);
-        g1.insertEdge(p6, p8);
-        Object[] path = g1.breathFirstSearch(p4,p8);
-        if (path != null)
-        {
-            Log.w("BFS", "Final Path");
-            for (int i = 0; i < path.length; i++)
-            {
-                Log.w("BFS", path[i].toString());
-            }
-        }
-        
-        
+        //Graph hall_8_floor = new Graph(1);
+        //createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
+
+
+        //Graph g1 = new Graph(20);
+        //LatLng p0 = new LatLng(0, 0);
+        //LatLng p1 = new LatLng(1, 1);
+        //LatLng p2 = new LatLng(2, 2);
+        //LatLng p3 = new LatLng(3, 3);
+        //LatLng p4 = new LatLng(4, 4);
+        //LatLng p5 = new LatLng(5, 5);
+        //LatLng p6 = new LatLng(6, 6);
+        //LatLng p7 = new LatLng(7, 7);
+        //LatLng p8 = new LatLng(8, 8);
+        //g1.insertVertex(p0);
+        //g1.insertVertex(p1);
+        //g1.insertVertex(p2);
+        //g1.insertVertex(p3);
+        //g1.insertVertex(p4);
+        //g1.insertVertex(p5);
+        //g1.insertVertex(p6);
+        //g1.insertVertex(p7);
+        //g1.insertVertex(p8);
+        //g1.insertEdge(p3, p1);
+        //g1.insertEdge(p3, p5);
+        //g1.insertEdge(p1, p7);
+        //g1.insertEdge(p5, p4);
+        //g1.insertEdge(p5, p2);
+        //g1.insertEdge(p7, p2);
+        //g1.insertEdge(p7, p8);
+        //g1.insertEdge(p2, p6);
+        //g1.insertEdge(p4, p6);
+        //g1.insertEdge(p6, p8);
+        //Object[] path = g1.breathFirstSearch(p4, p8);
+        //if (path != null) {
+        //   Log.w("BFS", "Final Path");
+        //   for (int i = 0; i < path.length; i++) {
+        //        Log.w("BFS", path[i].toString());
+        ///    }
+        //}
+
+
         // Playing with the Tree
         /*
         N_aryTree tree = new N_aryTree();
@@ -274,15 +272,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.println(Log.WARN, "Tree", path[i].toString());
         }
         */
-
+    }
 
     public void addfloor8ButtonListener()
     {
-
         floor8 = (Button) findViewById(R.id.floor8);
         floor8.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
 
                 // THis code handles the map overlay of the floor plans.
                 // Map overlay of the Hall image over the building
@@ -317,8 +313,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // This is temporary to help in placing the markers for each floor
                 for (LatLng vertices : hall_8_floor.vertices())
                 {
-                    mMap.addMarker(new MarkerOptions().position(vertices));
+                    Marker polyMarker = mMap.addMarker(new MarkerOptions().position(vertices));
+                    hall8floorMarkers.add(polyMarker); // add the marker to the list of markers
                 }
+
+                for (LatLng vertices : hall_8_floor.vertices())
+                {
+                    Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
+                }
+
+               // Marker tempMarker = hall8floorMarkers.get(13);
+               // LatLng tempLatLng = tempMarker.getPosition();
+               // tempMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // green is the selected node
+
+                //for (LatLng vertice : hall_8_floor.vertices())
+                //{
+                //   if (hall_8_floor.areAdjacent(vertice, tempLatLng))
+                //   {
+                //       for (Marker markers : hall8floorMarkers)
+                //           if (markers.getPosition().equals(vertice))
+                //           {
+                //               markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));  // blue is the closest node
+                //           }
+                //   }
+               // }
+
+
+                LatLng point1 = hall_8_floor.vertices()[11];  //start
+                LatLng point2 = hall_8_floor.vertices()[13];  //end
+                Log.w("Point 1:", point1.toString());
+                Log.w("Point 2:", point2.toString());
+
+                Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
+
+                if (path != null) {
+                       Log.w("BFS", "Final Path");
+                       for (int i = 0; i < path.length; i++) {
+                            Log.w("BFS", path[i].toString());
+
+                            // lets highlight the path.
+                           for (Marker markers : hall8floorMarkers)
+                           {
+                               if (markers.getPosition().equals(path[i]))
+                                       {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                       }
+                           }
+                       }
+                  }
 
             }
         });
@@ -534,11 +576,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        {
            Log.w("FileAcccessor", output[i].toString());
        }
-
-
-
-
-
     }
 
     // moves the camera to keep on user's location on any change in its location
