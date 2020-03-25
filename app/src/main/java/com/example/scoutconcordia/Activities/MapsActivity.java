@@ -84,7 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
     @SuppressLint("StaticFieldLeak")
-    private static Context mContext;
+    private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
 
     private Marker searchMarker;
     DES encrypter = new DES();
