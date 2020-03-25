@@ -634,21 +634,23 @@ public class ShuttleInfo {
 
     public String[] retrieveFridaySGW() {
 
-        BufferedReader readDat = null;
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
         try {
-            readDat = new BufferedReader(new FileReader("raw/schedule_friday_sgw.txt"));
+            InputStream is = context.getResources().openRawResource(raw.schedule_friday_sgw);
+            InputStreamReader readInput = new InputStreamReader(is);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader bfr = new BufferedReader(readInput);
 
             String thisLine;
 
             // This while loop goes through the entire file line by line and analyzes it
-            while((thisLine = readDat.readLine()) != null)
-            {
+            while ((thisLine = bfr.readLine()) != null) {
                 shuttleArrayList.add(thisLine);
             }
 
-            readDat.close();
+            readInput.close();
+            bfr.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
