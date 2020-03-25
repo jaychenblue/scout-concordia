@@ -167,12 +167,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Lets try creating a graph for Hall 8th Floor
         //Graph hall_8_floor = new Graph(1);
-        Graph hall_8_floor = createGraph("encrypted_hall8nodes");
+        Graph hall_8_floor = createGraph("hall8nodes");
         
         Object[] vertices = hall_8_floor.vertices();
         if (vertices != null)
         {
-            Log.w("BFS", "Final Path");
+            Log.w("BFS", "Nodes");
             for (int i = 0; i < vertices.length; i++)
             {
                 Log.w("BFS", vertices[i].toString());
@@ -273,7 +273,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.w("FileAcccessor", output[i].toString());
         }
 
-
        FileAccessor loyolaLocations = new FileAccessor();
        loyolaLocations.setFileName("encryptedloyola");
        output = loyolaLocations.obtainContents(true);
@@ -282,10 +281,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        {
            Log.w("FileAcccessor", output[i].toString());
        }
-
-
-
-
 
     }
 
@@ -360,27 +355,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String tempDecryptedFile = "tempDecryptedFile.txt";
         InputStream fis = null;
         OutputStream fos = null;
+        FileAccessor useMeToRead = new FileAccessor();
+        useMeToRead.setFileName(encryptedFileName);
         Graph graphName = null;
         try
         {
             // First we need to decrypt the file to have access to the locations
-            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
-            fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
-            encrypter.decryptFile(fis, fos);
+            //fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
+            //fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
+            //encrypter.decryptFile(fis, fos);
+            useMeToRead.decryptFile();
 
             // with the decrypted file, we can add the nodes to the graph
-            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
-            graphName = Graph.addNodesToGraph(fis);
+            //fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
+            graphName = Graph.addNodesToGraph(useMeToRead.obtainContents(false));
 
             // close the input and the output streams
-            fis.close();
-            fos.close();
-        } catch (Exception e) {
+            if (fis != null)
+                fis.close();
+            if (fos != null)
+                fos.close();
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             // delete the temp file which was decrypted
             File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
-            deleteMe.delete();
+            if (deleteMe.exists())
+                deleteMe.delete();
             return graphName;
         }
     }
@@ -529,7 +530,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
             Graph hall_8_floor = new Graph(10);
-            hall_8_floor.addNodesToGraph(fis);
+            //hall_8_floor.addNodesToGraph(fis);
             LatLng[] tempArray = hall_8_floor.vertices();
             for (int i = 0; i < tempArray.length; i++)
             {
