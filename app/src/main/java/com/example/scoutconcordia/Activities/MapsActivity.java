@@ -342,8 +342,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // }
 
 
-                LatLng point1 = hall_8_floor.vertices()[25];  //start
-                LatLng point2 = hall_8_floor.vertices()[45];  //end
+                LatLng point1 = hall_8_floor.vertices()[20];  //start
+                LatLng point2 = hall_8_floor.vertices()[27];  //end
                 Log.w("Point 1:", point1.toString());
                 Log.w("Point 2:", point2.toString());
 
@@ -354,23 +354,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (int i = 0; i < path.length; i++) {
                         Log.w("BFS", path[i].toString());
 
-                        // lets highlight the path.
-                        for (Marker markers : hall8floorMarkers)
-                        {
-                            if (markers.getPosition().equals(path[i]))
-                                if (path[i].equals(point1))
-                                {
-                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-                                } else if (path[i].equals(point2))
-                                {
-                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-                                } else {
-                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-                                }
-                        }
-                    }
-                }
-
+                          // lets highlight the path.
+                          for (Marker markers : hall8floorMarkers)
+                          {
+                              if (markers.getPosition().equals(path[i]))
+                                       if (path[i].equals(point1))
+                                       {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+                                       } else if (path[i].equals(point2))
+                                       {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+                                       } else {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+                                       }
+                           }
+                       }
+                  }
             }
         });
 

@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import io.opencensus.trace.Link;
+
 import static android.location.Location.distanceBetween;
 
 
@@ -26,11 +28,13 @@ public class Graph
         private LatLng element;
         private LinkedList<Node> adjacencyList;
         private boolean traversed;
+        private int type;  // 0 is a class node, 1 is a hall node.
 
-        public Node(LatLng element, int id)
+        public Node(LatLng element, int id, int type)
         {
             this.element = element;
             this.id = id;
+            this.type = type;
             adjacencyList = new LinkedList<Node>(this);
         }
 
@@ -46,6 +50,7 @@ public class Graph
 
         private int getId() { return id; }
         private void setId(int id) { this.id = id; }
+        private int getType() { return type; }
         private LatLng getElement() { return element; }
         private void setElement(LatLng element) { this.element = element; }
         private boolean isTraversed() { return traversed; }
@@ -83,7 +88,8 @@ public class Graph
     }
 
     // returns true if element can be inserted false otherwise
-    public boolean insertVertex(LatLng element)
+    // type indicates whether the node is a class room node or a hall node
+    public boolean insertVertex(LatLng element, int type)
     {
         int placeMe = -1;
         for (int i = 0; i < nodes.length; i++)
@@ -94,7 +100,7 @@ public class Graph
         }
         if (placeMe == -1)
             return false;
-        nodes[placeMe] = new Node(element, placeMe);
+        nodes[placeMe] = new Node(element, placeMe, type);
         numberOfNodes++;
         return true;
     }
@@ -229,21 +235,54 @@ public class Graph
         {
             currentPoint = currentPointsToCycle.getHead();
             currentTreeNode = breathFirstSearchResults.findSpecifiedNode(breathFirstSearchResults.getHead(), (LatLng) currentPoint.getEle());
-            for (int i = 0; i < currentPointsToCycle.size(); i++)
-            {
+            for (int i = 0; i < currentPointsToCycle.size(); i++) {
                 id1 = getID((LatLng) currentPoint.getEle());
-                if (id1 >= 0)
-                {
+                if (id1 >= 0) {
                     currentTreeNode = breathFirstSearchResults.findSpecifiedNode(breathFirstSearchResults.getHead(), (LatLng) currentPoint.getEle());
                     LinkedList.Node currentAdjacentNode = nodes[id1].adjacencyList.getHead(); // LinkList of Graph Nodes
-                    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null)
+                    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null)  // while the currentAdjacentNode is already traversed, go next.
                     {
                         currentAdjacentNode = currentAdjacentNode.getNext();
                     }
-                    for (int j = 0; j < nodes[id1].adjacencyList.size(); j++)
-                    {
-                        if (currentAdjacentNode != null)
-                        {
+                    for (int j = 0; j < nodes[id1].adjacencyList.size(); j++) {
+                        if (currentAdjacentNode != null) {
+                            //if (((Node) currentAdjacentNode.getEle()).getType() == 0)  //if it is a class node
+                            //{
+                            //    if (((Node) currentAdjacentNode.getEle()).getElement().equals(to)) // we found the point in this breath
+                            //    {
+                            //        currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
+                            //        return breathFirstSearchResults.getPath(from, to);
+                            //    }
+                            //    if (!(((Node) currentAdjacentNode.getEle()).isTraversed()))        // Adding New element to the breath
+                            //    {
+                            //        currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
+                            //        ((Node) currentAdjacentNode.getEle()).setTraversed(true);
+                            //        newCurrentPointsToCycle.add(((Node) currentAdjacentNode.getEle()).getElement());
+                            //    }
+                            //    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null) {
+                            //        currentAdjacentNode = currentAdjacentNode.getNext();
+                            //    }
+                            //    if (((Node) currentAdjacentNode.getEle()).isTraversed())
+                            //        currentAdjacentNode = currentAdjacentNode.getNext();
+                            //} else {  // if it is a hallway node
+                            //    //if (((Node) currentAdjacentNode.getEle()).getElement().equals(to)) // we found the point in this breath
+                            //    //{
+                            //    //    currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
+                            //    //    return breathFirstSearchResults.getPath(from, to);
+                            //    //}
+                            //    if (!(((Node) currentAdjacentNode.getEle()).isTraversed()))        // Adding New element to the breath
+                            //    {
+                            //        currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
+                            //        ((Node) currentAdjacentNode.getEle()).setTraversed(true);
+                            //        newCurrentPointsToCycle.add(((Node) currentAdjacentNode.getEle()).getElement());
+                            //    }
+                            //    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null) {
+                            //        currentAdjacentNode = currentAdjacentNode.getNext();
+                            //    }
+                            //    if (((Node) currentAdjacentNode.getEle()).isTraversed())
+                            //        currentAdjacentNode = currentAdjacentNode.getNext();
+                            //}
+
                             if (((Node) currentAdjacentNode.getEle()).getElement().equals(to)) // we found the point in this breath
                             {
                                 currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
@@ -263,8 +302,7 @@ public class Graph
                                 currentAdjacentNode = currentAdjacentNode.getNext();
                         }
                     }
-                    if (currentPoint != null)
-                    {
+                    if (currentPoint != null) {
                         currentPoint = currentPoint.getNext();
                     }
                 }
@@ -293,8 +331,13 @@ public class Graph
         String[] lineString = null;
         int posOfHalfway = 0;
         double x_coordinate = 0, y_coordinate = 0;
+        int nodeType = 0;  //0 is for a classroom node, 1 is for a hall node
+        int nmbClassNodes = 0;
+        int nmbHallNodes = 0;
 
         LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
+        LinkedList<String> namesToInsert = new LinkedList<String>("");
+
         try
         {
             reader = new Scanner(readFromMe);
@@ -315,10 +358,12 @@ public class Graph
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
                     coordinatesToInsert.add(readClassCoordinate(currentLine));
+                    nmbClassNodes += 1;
                     currentLine = reader.nextLine();
                 }
                 // this is for the last classroom coordinate
                 coordinatesToInsert.add(readClassCoordinate(currentLine));
+                nmbClassNodes += 1;
                 currentLine = reader.nextLine();
 
                 // read the file searching for hallway
@@ -327,9 +372,11 @@ public class Graph
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
                     coordinatesToInsert.add(readHallCoordinate(currentLine));
+                    nmbHallNodes += 1;
                     currentLine = reader.nextLine();
                 }
                 coordinatesToInsert.add( readHallCoordinate(currentLine));
+                nmbHallNodes += 1;
                 currentLine = reader.nextLine();
             }
         } catch (InputMismatchException e) {
@@ -346,7 +393,13 @@ public class Graph
                 if (i == 0)
                     current = coordinatesToInsert.getHead();
                 if (current != null)
-                    returnMe.insertVertex((LatLng)current.getEle());
+                    if (i < nmbClassNodes)
+                    {
+                        returnMe.insertVertex((LatLng)current.getEle(), 0); //insert a class node
+                    } else {
+                        returnMe.insertVertex((LatLng)current.getEle(), 1); //insert a hall node
+                    }
+
                 current = current.getNext();
             }
         }
@@ -385,8 +438,9 @@ public class Graph
 
         float smallestDistance = 0;
         float secondSmallestDistance = 0;
+        float thirdSmallestDistance = 0;
         float distance = 0;
-        Node[] closestNodes = new Node[2]; // create an array of length 1
+        Node[] closestNodes = new Node[3]; // create an array of length 1
         int nmbClosestNodes = 2;
 
         for (Node node: this.nodes)
@@ -404,14 +458,22 @@ public class Graph
 
                     if (distance < smallestDistance)
                     {
+                        closestNodes[2] = closestNodes[1];
                         closestNodes[1] = closestNodes[0];
                         closestNodes[0] = otherNode;
+                        thirdSmallestDistance = secondSmallestDistance;
                         secondSmallestDistance = smallestDistance;
                         smallestDistance = distance;
                     } else if (distance > smallestDistance && distance < secondSmallestDistance)
                     {
+                        closestNodes[2] = closestNodes[1];
                         closestNodes[1] = otherNode;
+                        thirdSmallestDistance = secondSmallestDistance;
                         secondSmallestDistance = distance;
+                    } else if (distance > secondSmallestDistance && distance < thirdSmallestDistance)
+                    {
+                        closestNodes[2] = otherNode;
+                        thirdSmallestDistance = distance;
                     }
                 }
             }
