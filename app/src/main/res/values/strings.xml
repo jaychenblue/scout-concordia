@@ -7,6 +7,10 @@
     <string name="nav_map">Map</string>
     <string name="nav_shuttle">Shuttle</string>
     <string name="find_your_way_button">Find Your Way</string>
+    <string name="walking">Walking</string>
+    <string name="car">Car</string>
+    <string name="transit">Transit</string>
+    <string name="shuttle">Shuttle</string>
     <string name="default_web_client_id">219414920184-vo13n4ghkndsilo4t3b8dc88oqj5i1n7.apps.googleusercontent.com</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
 </resources>

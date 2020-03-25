@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -17,10 +18,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -68,6 +72,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
+import com.google.android.material.button.MaterialButton;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
@@ -85,6 +90,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isInfoWindowShown = false;
     private Marker searchMarker;
     DES encrypter = new DES();
+
+    // All Concordia building names, used to create drop down list or selecting
+    // starting building and destination building for directions
+    public static final String[] locations = new String[]{
+            "B Building", "CI Building", "CL Building", "D Building", "EN Building",
+            "ER Building", "EV Building", "FA Building", "FB Building", "FG Building",
+            "GA Building", "GM Building", "GN Building", "GS Building", "H Building",
+            "K Building", "LB Building", "LD Building", "LS Building", "M Building",
+            "MB Building", "MI Building", "MU Building", "P Building", "PR Building",
+            "Q Building", "R Building", "RR Building", "S Building", "SB Building",
+            "T Building", "TD Building", "V Building", "VA Building", "X Building",
+            "Z Building", "AD Building", "BB Building", "BH Building", "CC Building",
+            "CJ Building", "DO Building", "FC Building", "GE Building", "HA Building",
+            "HB Building", "HC Building", "HU Building", "JR Building", "PC Building",
+            "PS Building", "PT Building", "PY Building", "RA Building", "RF Building",
+            "SC Building", "SH Building", "SI Building", "SP Building", "TA Building",
+            "TB Building", "VE Building", "VL Building"};
+
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -260,6 +283,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onFindYourWayButtonClick(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this  );
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
+        builder.setView(dialogView);
+
+        Spinner fromSearchBar = dialogView.findViewById(R.id.fromSearchBar);
+        Spinner toSearchBar = dialogView.findViewById(R.id.toSearchBar);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, locations);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        fromSearchBar.setAdapter(adapter);
+        toSearchBar.setAdapter(adapter);
+
+        builder.create().show();
     }
 
     // this is the listener for the get directions button.

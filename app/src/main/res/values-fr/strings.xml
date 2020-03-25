@@ -8,5 +8,9 @@
     <string name="nav_map">Carte</string>
     <string name="nav_shuttle">Navette</string>
     <string name="find_your_way_button">Retrouver Votre Chemin</string>
+    <string name="walking">Marcher</string>
+    <string name="car">Voiture</string>
+    <string name="transit">Transit</string>
+    <string name="shuttle">Navette</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
 </resources>
