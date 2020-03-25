@@ -82,10 +82,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
-    public static Context mContext;
+    private static Context mContext;
 
     private Marker searchMarker;
     DES encrypter = new DES();
+
+    public static void setmContext(Context mContext) {
+        MapsActivity.mContext = mContext;
+    }
+
+    public static Context getmContext() {
+        return mContext;
+    }
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)

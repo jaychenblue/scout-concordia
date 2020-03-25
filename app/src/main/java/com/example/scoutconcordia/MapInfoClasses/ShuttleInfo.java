@@ -30,11 +30,10 @@ import java.util.Calendar;
 // If the user is at SGW, the object should call 'getNextEarliestTimeFromSGW()'.
 // If the user is at Loyola, the object should call 'getNextEarliestTimeFromLoyola()'.
 
-
 public class ShuttleInfo {
 
 
-    private Context context = MapsActivity.mContext;
+    private Context context = MapsActivity.getmContext();
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
