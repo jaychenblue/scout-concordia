@@ -238,9 +238,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-
-        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
-        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
+        FileAccessor locationAccessor = new FileAccessor();
+        locationAccessor.setInputStream(getStreamFromFileName("encrypteddtown"));
+        locationAccessor.decryptFile(true);
+        addLocationsToMap(locationAccessor.obtainContents());  //adds the polygons for the SGW campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("encryptedloyola"));
+        locationAccessor.decryptFile(true);
+        addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
         searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
@@ -476,7 +481,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polygon.setClickable(true);
     }
 
-    private void addLocationsToMap(InputStream location)
+    private void addLocationsToMap(String[] location)
     {
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
         //BuildingInfo.encryptFile();
