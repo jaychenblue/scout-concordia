@@ -60,8 +60,12 @@ import java.io.InputStream;
 import com.google.android.gms.common.api.Status;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -91,24 +95,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isInfoWindowShown = false;
     private Marker searchMarker;
     DES encrypter = new DES();
-
-    // All Concordia building names, used to create drop down list or selecting
-    // starting building and destination building for directions
-    public static final String[] locations = new String[]{
-            "B Building", "CI Building", "CL Building", "D Building", "EN Building",
-            "ER Building", "EV Building", "FA Building", "FB Building", "FG Building",
-            "GA Building", "GM Building", "GN Building", "GS Building", "H Building",
-            "K Building", "LB Building", "LD Building", "LS Building", "M Building",
-            "MB Building", "MI Building", "MU Building", "P Building", "PR Building",
-            "Q Building", "R Building", "RR Building", "S Building", "SB Building",
-            "T Building", "TD Building", "V Building", "VA Building", "X Building",
-            "Z Building", "AD Building", "BB Building", "BH Building", "CC Building",
-            "CJ Building", "DO Building", "FC Building", "GE Building", "HA Building",
-            "HB Building", "HC Building", "HU Building", "JR Building", "PC Building",
-            "PS Building", "PT Building", "PY Building", "RA Building", "RF Building",
-            "SC Building", "SH Building", "SI Building", "SP Building", "TA Building",
-            "TB Building", "VE Building", "VL Building"};
-
+    //concordia building names
+    public static final List<String> locations = new ArrayList<>();
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -601,6 +589,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             PolygonOptions po = new PolygonOptions();
             LinkedList<LatLng> coordinates = ((BuildingInfo)currentBuilding.getEle()).getCoordinates();
             LinkedList.Node currentCoordinate = coordinates.getHead();
+
+            // add building name to list
+            locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
+            
             for (int j = 0; j < coordinates.size(); j++)
             {
                 po.add((LatLng)currentCoordinate.getEle());
