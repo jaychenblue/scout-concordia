@@ -14,9 +14,7 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -173,10 +171,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Graph hall_8_floor = new Graph(1);
         createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
     
-        // Victor's shi don't work
+        // Victor's log tests
         ShuttleInfo si = new ShuttleInfo();
-//        String[] results = si.retrieveMonToThursLoyola();
-        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + si.getNextEarliestTimeFromLoyola() + " minutes");
+        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + si.getEstimatedRouteTimeFromLoyola() + " minutes");
     }
 
     // If button pushed change Campus

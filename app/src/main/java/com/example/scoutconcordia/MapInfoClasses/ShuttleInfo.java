@@ -33,12 +33,13 @@ import java.util.Calendar;
 
 public class ShuttleInfo {
 
+
     private Context context = MapsActivity.mContext;
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
 
-    public double getNextEarliestTimeFromSGW() {
+    public double getEstimatedRouteTimeFromSGW() {
 
 
         Calendar cal = Calendar.getInstance();
@@ -227,7 +228,7 @@ public class ShuttleInfo {
     // This method checks the time and day and finds the next relevant shuttle bus time, from Loyola.
     // From there, it builds an estimate of how long it would take for the entire trip.
 
-    public double getNextEarliestTimeFromLoyola() {
+    public double getEstimatedRouteTimeFromLoyola() {
 
 
         Calendar cal = Calendar.getInstance();
