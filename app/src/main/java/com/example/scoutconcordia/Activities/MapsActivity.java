@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -429,28 +430,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
 
+        // THIS IS SOME CODE TO TEST OUT THE FILEACCESSOR METHODS
+        FileAccessor downtownLocations = new FileAccessor();
+        //The 2 commented lines are an example of reading a file that is not encrypted
+        //downtownLocations.setFileName("downtownlocations");
+        //Object[] output = downtownLocations.obtainContents(false);
+        // reading a file that is encrypted
+        downtownLocations.setFileName("encrypteddtown");
+        Object[] output = downtownLocations.obtainContents(true);
+        Log.w("FileAccessor", Integer.toString(output.length));
+        for (int i = 0; i < output.length; i++)
+        {
+            Log.w("FileAcccessor", output[i].toString());
+        }
+
+
+       FileAccessor loyolaLocations = new FileAccessor();
+       loyolaLocations.setFileName("encryptedloyola");
+       output = loyolaLocations.obtainContents(true);
+       Log.w("FileAccessor", Integer.toString(output.length));
+       for (int i = 0; i < output.length; i++)
+       {
+           Log.w("FileAcccessor", output[i].toString());
+       }
 
 
 
 
 
-
-
-
-
-
-        //for (LatLng vertices : hall_8_floor.vertices())
-        //{
-        //    LatLng[] arrayToPrint = hall_8_floor.incidentVerticies(vertices);
-        //    System.out.println(vertices + ": " + Arrays.toString(arrayToPrint) + " " + arrayToPrint.length);
-//
- //           for (int i = 0; i < arrayToPrint.length; i++)
-  //          {
-   //             float[] distance = new float[1];
-    //            distanceBetween(vertices.latitude, vertices.longitude, arrayToPrint[i].latitude, arrayToPrint[i].longitude, distance);
-     //           System.out.println(distance[0]);
-      //      }
-       // }
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -478,6 +485,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
+    // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
     public void encryptAllInputFiles()
     {
         InputStream fis = null;
@@ -494,6 +502,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                 encrypter.encryptFile(fis, fos);
+
+                // this is some code that we can use to get the text in the encrypted file
+                //if (filename.equals("loyolalocations"))
+                //{
+                //    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
+                //   Scanner readEncrypted = new Scanner(fis);
+                //    while (readEncrypted.hasNext())
+                //    {
+                //        System.out.println(readEncrypted.nextLine());
+                //    }
+                //}
+
             }
             // close the input and the output streams
             fis.close();
@@ -798,5 +818,75 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
     }
-
+    
+    class FileAccessor
+    {
+        String fileName;
+        
+        public FileAccessor()
+        {
+            fileName = null;
+        }
+        
+        public void setFileName(String fileName)
+        {
+            this.fileName = fileName;
+        }
+        
+        // Used first to be able to read the file
+        public void decryptFile()
+        {
+            InputStream readme = null;
+            OutputStream writeToMe = null;
+            try
+            {
+                readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
+                writeToMe = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName));
+                encrypter.decryptFile(readme, writeToMe);
+            }
+            catch (FileNotFoundException fnf)
+            {
+                Log.println(Log.WARN, "FileAccessor", "The output file was moved during the transfer");
+            }
+            catch (Resources.NotFoundException e)
+            {
+                Log.println(Log.WARN, "FileAccessor", "The input file could not be located");
+            }
+        }
+        
+        // returns an array with every line as a string from the file
+        public Object[] obtainContents(boolean isEncrypted)
+        {
+            LinkedList<String> contents = new LinkedList<String>("");
+            Scanner reader = null;
+            if (!isEncrypted)  // if the file is not encrypted
+            {
+                InputStream input = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));  // we can read the file directly
+                reader = new Scanner(input);
+            }
+            else // if the file is encrypted
+            {
+                this.decryptFile();  //decrypt the file
+                try
+                {
+                    reader = new Scanner(new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName)));  // read the decrypted file
+                } catch (FileNotFoundException fnf)
+                {
+                    Log.w("FileAccessor", fnf.getMessage());
+                }
+            }
+            while (reader.hasNextLine())
+            {
+                contents.add(reader.nextLine());
+            }
+            return contents.toArray();
+        }
+        
+        // used when done to make sure no information is potentially leaked
+        public boolean closeFile()
+        {
+            File deleteMe = new File(getFilesDir().getAbsoluteFile(), fileName);
+            return deleteMe.delete();
+        }
+    }
 }
