@@ -75,6 +75,7 @@ tools:context=".Activities.MapsActivity">
         android:checked="true"
         android:layout_centerInParent="true" />
 
+    <!--We are keeping this in case we need it for the Google Search bar later  -->
     <!--<Button
         android:id="@+id/findYouWayButton"
         android:layout_width="wrap_content"
