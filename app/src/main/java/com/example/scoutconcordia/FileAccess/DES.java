@@ -2,7 +2,7 @@ package com.example.scoutconcordia.FileAccess;
 
 import android.util.Log;
 
-import androidx.fragment.app.FragmentActivity;
+import com.example.scoutconcordia.DataStructures.LinkedList;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,7 +18,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 
-public class DES extends FragmentActivity
+class DES
 {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -51,15 +51,14 @@ public class DES extends FragmentActivity
     }
 
     /** Method for decrypting a file. Requires an input stream and an output stream **/
-    public static void decryptFile(InputStream readFromMe, OutputStream writeToMe)
+    public Object[] decryptFile(InputStream readFromMe)
     {
         Scanner reader = null;
-        PrintWriter writer = null;
+        LinkedList<String> returnMe = new LinkedList<String>("");
         try
         {
             Cipher desCipher = Cipher.getInstance("DES");
             reader = new Scanner(readFromMe);
-            writer = new PrintWriter(writeToMe);
 
             // reads from the input file and outputs decrypted text to the output file
             while (reader.hasNextLine())
@@ -68,7 +67,7 @@ public class DES extends FragmentActivity
                 String decryptMe = reader.nextLine();
 
                 byte[] textDecrypted = desCipher.doFinal(hexToByte(decryptMe));
-                writer.println(new String(textDecrypted));
+                returnMe.add(new String(textDecrypted));
             }
         }
         catch(Exception e)
@@ -80,13 +79,12 @@ public class DES extends FragmentActivity
         {
             if (reader != null)
                 reader.close();
-            if (writer != null)
-                writer.close();
+            return returnMe.toArray();
         }
     }
 
     /** Method for encrypting a file. Requires an input stream and an output stream **/
-    public static void encryptFile(InputStream readFromMe, OutputStream writeToMe)
+    public void encryptFile(InputStream readFromMe, OutputStream writeToMe)
     {
         Scanner reader = null;
         PrintWriter writer = null;

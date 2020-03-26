@@ -5,7 +5,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -17,16 +19,22 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
-import com.example.scoutconcordia.FileAccess.DES;
+import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -52,7 +60,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.PolyUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -61,11 +68,14 @@ import java.io.InputStream;
 import com.google.android.gms.common.api.Status;
 
 import java.io.OutputStream;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -77,6 +87,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
+import com.google.android.material.button.MaterialButton;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
@@ -96,6 +107,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+    @SuppressLint("StaticFieldLeak")
+    private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
+
     private Marker searchMarker;
     DES encrypter = new DES();
     private String activeInfoWindow = null;
@@ -103,13 +117,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Marker> markerBuildings = new ArrayList<>();
     private List<Marker> hall8floorMarkers = new ArrayList<>();
 
-
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
-
     private GroundOverlay googoo;
 
+    // Concordia buildings list
+    public static final List<String> locations = new ArrayList<>();
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Places.initialize(this, getString(R.string.google_maps_key));
+/**        Places.initialize(this, getString(R.string.google_maps_key));
         PlacesClient placesClient = Places.createClient(this);
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -155,7 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("STATUS CODE: " + status.getStatusMessage());
             }
         });
-
+*/
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
@@ -189,44 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor9ButtonListener();
 
         // lets encrypt all of the files before using them
-        encryptAllInputFiles();
-
-        // Playing with the Tree
-        /*
-        N_aryTree tree = new N_aryTree();
-        N_aryTree.TreeNode n = tree.getHead();
-        n.setElement(new LatLng(0,0));
-        n.addToChildren(new LatLng(1,1));
-        n.addToChildren(new LatLng(2,2));
-        n.addToChildren(new LatLng(3,3));
-        N_aryTree.TreeNode n1 = tree.findSpecifiedNode(tree.getHead(), new LatLng(1,1));
-        n1.addToChildren(new LatLng(6,6));
-        n1.addToChildren(new LatLng(5,5));
-        n1.addToChildren(new LatLng(4,4));
-        N_aryTree.TreeNode n2 = tree.findSpecifiedNode(tree.getHead(), new LatLng(2,2));
-        n2.addToChildren(new LatLng(7,7));
-        n2.addToChildren(new LatLng(8,8));
-        n2.addToChildren(new LatLng(9,9));
-        N_aryTree.TreeNode n3 = tree.findSpecifiedNode(tree.getHead(), new LatLng(3,3));
-        n3.addToChildren(new LatLng(10,10));
-        n3.addToChildren(new LatLng(11,11));
-        n3.addToChildren(new LatLng(12,12));
-        N_aryTree.TreeNode n4 = tree.findSpecifiedNode(tree.getHead(), new LatLng(4,4));
-        n4.addToChildren(new LatLng(13,13));
-        n4.addToChildren(new LatLng(14,14));
-        N_aryTree.TreeNode n8 = tree.findSpecifiedNode(n2, new LatLng(4,4));
-        if (n8 != null)
-        {
-            //Log.println(Log.WARN, "Tree", n4.getElement().toString());
-            //Log.println(Log.WARN, "Tree", n4.getParent().getElement().toString());
-        }
-
-        Object[] path = tree.getPath(new LatLng(0,0), new LatLng(12,12));
-        for (int i = 0; i < path.length; i++)
-        {
-            Log.println(Log.WARN, "Tree", path[i].toString());
-        }
-        */
+        //encryptAllInputFiles();
     }
 
     public void addfloor8ButtonListener()
@@ -263,7 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 // Lets try creating a graph for Hall 8th Floor
-                Graph hall_8_floor = createGraph("encrypted_hall8nodes");
+                Graph hall_8_floor = createGraph("hall8nodes");
                 //System.out.println(hall_8_floor.vertices().length);
 
                 // This is temporary to help in placing the markers for each floor
@@ -369,6 +346,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        Object[] vertices = hall_8_floor.vertices();
+        if (vertices != null)
+        {
+            Log.w("BFS", "Nodes");
+            for (int i = 0; i < vertices.length; i++)
+            {
+                Log.w("BFS", vertices[i].toString());
+            }
+        }
     }
 
 
@@ -382,6 +368,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 toggleCampus();
             }
         });
+    }
+
+
+    public void initializeSearchBar(){
+        final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, locations);
+        searchBar.setAdapter(adapter);
+
+        searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onFindYourWayButtonClick(searchBar.getText().toString());
+            }
+        });
+    }
+    // onClick listener for when "Find your way" button is clicked
+    public void onFindYourWayButtonClick(final String destination){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this  );
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
+        builder.setView(dialogView);
+
+        final AutoCompleteTextView startingLocation = dialogView.findViewById(R.id.starting_location);
+        RadioButton useCurrentLocationButton = dialogView.findViewById(R.id.useMyLocationButton);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, locations);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        startingLocation.setAdapter(adapter);
+
+        startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+        builder.create().show();
+    }
+
+    // get directions button clicked in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onGetDirectionsClick(View v){
+    }
+
+    // walking option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onWalkingSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // car option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onCarSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // transit option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onTransitSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // shuttle option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onShuttleSelected(MenuItem m){
+        m.setChecked(true);
     }
 
     // this is the listener for the get directions button.
@@ -491,11 +539,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
 
+        FileAccessor locationAccessor = new FileAccessor();
+        locationAccessor.setInputStream(getStreamFromFileName("encrypteddtown"));
+        locationAccessor.decryptFile(true);
+        addLocationsToMap(locationAccessor.obtainContents());  //adds the polygons for the SGW campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("encryptedloyola"));
+        locationAccessor.decryptFile(true);
+        addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
 
-
-
-        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("downtownlocations", "raw", getPackageName())));  //adds the polygons for the SGW campus
-        addLocationsToMap(getResources().openRawResource(getResources().getIdentifier("loyolalocations", "raw", getPackageName()))); //adds the polygons for the Loyola campus
         // Add a marker in Concordia and move the camera
         searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
@@ -511,29 +563,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
 
-        // THIS IS SOME CODE TO TEST OUT THE FILEACCESSOR METHODS
-        FileAccessor downtownLocations = new FileAccessor();
-        //The 2 commented lines are an example of reading a file that is not encrypted
-        //downtownLocations.setFileName("downtownlocations");
-        //Object[] output = downtownLocations.obtainContents(false);
-        // reading a file that is encrypted
-        downtownLocations.setFileName("encrypteddtown");
-        Object[] output = downtownLocations.obtainContents(true);
-        Log.w("FileAccessor", Integer.toString(output.length));
-        for (int i = 0; i < output.length; i++)
-        {
-            Log.w("FileAcccessor", output[i].toString());
-        }
-
-
-        FileAccessor loyolaLocations = new FileAccessor();
-        loyolaLocations.setFileName("encryptedloyola");
-        output = loyolaLocations.obtainContents(true);
-        Log.w("FileAccessor", Integer.toString(output.length));
-        for (int i = 0; i < output.length; i++)
-        {
-            Log.w("FileAcccessor", output[i].toString());
-        }
+        initializeSearchBar();
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -577,7 +607,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encryptedFilename = "encrypted_" + filename;
                 fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                encrypter.encryptFile(fis, fos);
+                //encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
                 //if (filename.equals("loyolalocations"))
@@ -604,33 +634,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
     public Graph createGraph(String encryptedFileName)
     {
-        String tempDecryptedFile = "tempDecryptedFile";
-        InputStream fis = null;
-        OutputStream fos = null;
+        FileAccessor useMeToRead = new FileAccessor();
+        useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
-        try
-        {
-            // First we need to decrypt the file to have access to the locations
-            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFileName));  // input the encrypted file
-            fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile)); // output the decrypted file
-            encrypter.decryptFile(fis, fos);
+        // First we need to decrypt the file to have access to the locations
+        useMeToRead.decryptFile(false);
 
-            // with the decrypted file, we can add the nodes to the graph
-            fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile));  // input the encrypted file
-            graphName = Graph.addNodesToGraph(fis);
-            graphName.addAjacentNodes();
-
-            // close the input and the output streams
-            fis.close();
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            // delete the temp file which was decrypted
-            File deleteMe = new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), tempDecryptedFile);
-            deleteMe.delete();
-            return graphName;
-        }
+        // with the decrypted file, we can add the nodes to the graph
+        graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
+        graphName.addAdjacentNodes();
+        return graphName;
     }
 
     public void setClickListeners() {
@@ -752,7 +765,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         polygon.setClickable(true);
     }
 
-    private void addLocationsToMap(InputStream location)
+    private void addLocationsToMap(String[] location)
     {
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
         //BuildingInfo.encryptFile();
@@ -762,6 +775,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             PolygonOptions po = new PolygonOptions();
             LinkedList<LatLng> coordinates = ((BuildingInfo)currentBuilding.getEle()).getCoordinates();
             LinkedList.Node currentCoordinate = coordinates.getHead();
+
+            // add building name to list
+            locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
+
+
             for (int j = 0; j < coordinates.size(); j++)
             {
                 po.add((LatLng)currentCoordinate.getEle());
@@ -798,28 +816,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentBuilding = currentBuilding.getNext();
         }
     }
-
-    private void createFloorGraphs()
-    {
-        // Lets try creating a graph for Hall 8th Floor
-        InputStream fis = null;
-        try
-        {
-            fis = getResources().openRawResource(getResources().getIdentifier("hall8nodes", "raw", getPackageName()));
-            Graph hall_8_floor = new Graph(10);
-            hall_8_floor.addNodesToGraph(fis);
-            LatLng[] tempArray = hall_8_floor.vertices();
-            for (int i = 0; i < tempArray.length; i++)
-            {
-                System.out.println(tempArray[i]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
 
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
@@ -908,75 +904,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    class FileAccessor
+    // This sets the context and is called during the onCreate method.
+    public static void setmContext(Context mContext) {
+        MapsActivity.mContext = mContext;
+    }
+
+    // THis is for non-activity or non-fragment classes to use in order to pull the context of this class, which will
+    // then allow them to access resource files, this cannot be done otherwise.
+    public static Context getmContext() {
+        return mContext;
+    }
+
+    public InputStream getStreamFromFileName(String fileName)
     {
-        String fileName;
-
-        public FileAccessor()
-        {
-            fileName = null;
-        }
-
-        public void setFileName(String fileName)
-        {
-            this.fileName = fileName;
-        }
-
-        // Used first to be able to read the file
-        public void decryptFile()
-        {
-            InputStream readme = null;
-            OutputStream writeToMe = null;
-            try
-            {
-                readme = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
-                writeToMe = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName));
-                encrypter.decryptFile(readme, writeToMe);
-            }
-            catch (FileNotFoundException fnf)
-            {
-                Log.println(Log.WARN, "FileAccessor", "The output file was moved during the transfer");
-            }
-            catch (Resources.NotFoundException e)
-            {
-                Log.println(Log.WARN, "FileAccessor", "The input file could not be located");
-            }
-        }
-
-        // returns an array with every line as a string from the file
-        public Object[] obtainContents(boolean isEncrypted)
-        {
-            LinkedList<String> contents = new LinkedList<String>("");
-            Scanner reader = null;
-            if (!isEncrypted)  // if the file is not encrypted
-            {
-                InputStream input = getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));  // we can read the file directly
-                reader = new Scanner(input);
-            }
-            else // if the file is encrypted
-            {
-                this.decryptFile();  //decrypt the file
-                try
-                {
-                    reader = new Scanner(new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), fileName)));  // read the decrypted file
-                } catch (FileNotFoundException fnf)
-                {
-                    Log.w("FileAccessor", fnf.getMessage());
-                }
-            }
-            while (reader.hasNextLine())
-            {
-                contents.add(reader.nextLine());
-            }
-            return contents.toArray();
-        }
-
-        // used when done to make sure no information is potentially leaked
-        public boolean closeFile()
-        {
-            File deleteMe = new File(getFilesDir().getAbsoluteFile(), fileName);
-            return deleteMe.delete();
-        }
+        return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
     }
 }
 

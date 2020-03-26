@@ -17,6 +17,11 @@
         <item name="android:textSize">10dp</item>
 	</style>
 
+    <style name="TravelModesBarStyle">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
     <style name="SplashScreenTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowBackground">@drawable/splash_screen_background</item>
     </style>

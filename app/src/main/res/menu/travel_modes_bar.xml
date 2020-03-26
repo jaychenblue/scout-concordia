@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/walking"
+        android:icon="@drawable/ic_directions_walk_black_24dp"
+        android:title="@string/walking"
+        android:onClick="onWalkingSelected"/>
+
+    <item
+        android:id="@+id/car"
+        android:icon="@drawable/ic_directions_car_black_24dp"
+        android:title="@string/car"
+        android:onClick="onCarSelected"/>
+
+    <item
+        android:id="@+id/transit"
+        android:icon="@drawable/ic_directions_transit_black_24dp"
+        android:title="@string/transit"
+        android:onClick="onTransitSelected"/>
+
+    <item
+        android:id="@+id/shuttle"
+        android:icon="@drawable/ic_directions_bus_black_24dp"
+        android:title="@string/shuttle"
+        android:onClick="onShuttleSelected"/>
+</menu>
