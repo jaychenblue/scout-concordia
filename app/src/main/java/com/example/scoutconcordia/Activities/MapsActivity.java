@@ -60,6 +60,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.PolyUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -111,7 +112,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
 
     private Marker searchMarker;
-    DES encrypter = new DES();
     private String activeInfoWindow = null;
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
@@ -240,7 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 // Lets try creating a graph for Hall 8th Floor
-                Graph hall_8_floor = createGraph("hall8nodes");
+                Graph hall_8_floor = createGraph("encryptedhall8nodes");
                 //System.out.println(hall_8_floor.vertices().length);
 
                 // This is temporary to help in placing the markers for each floor
@@ -303,11 +303,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor9ButtonListener()
     {
-
         floor9 = (Button) findViewById(R.id.floor9);
         floor9.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
 
                 // THis code handles the map overlay of the floor plans.
                 // Map overlay of the Hall image over the building
@@ -330,34 +328,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
                 googoo = mMap.addGroundOverlay(goo);
-
-
-
-//                // Lets try creating a graph for Hall 9th Floor
-//                Graph hall_8_floor = createGraph("encrypted_classrooms");
-//                //System.out.println(hall_8_floor.vertices().length);
-//
-//                // This is temporary to help in placing the markers for each floor
-//                for (LatLng vertices : hall_8_floor.vertices())
-//                {
-//                    mMap.addMarker(new MarkerOptions().position(vertices));
-//                }
-
             }
         });
-
-        Object[] vertices = hall_8_floor.vertices();
-        if (vertices != null)
-        {
-            Log.w("BFS", "Nodes");
-            for (int i = 0; i < vertices.length; i++)
-            {
-                Log.w("BFS", vertices[i].toString());
-            }
-        }
     }
-
-
 
     // If button pushed change Campus
     public void addListenerOnToggle()
@@ -594,6 +567,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
     public void encryptAllInputFiles()
     {
+        //DES encrypter = new DES();
         InputStream fis = null;
         OutputStream fos = null;
         String filename = "";
@@ -610,16 +584,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                //if (filename.equals("loyolalocations"))
-                //{
-                //    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                //   Scanner readEncrypted = new Scanner(fis);
-                //    while (readEncrypted.hasNext())
-                //    {
-                //        System.out.println(readEncrypted.nextLine());
-                //    }
-                //}
-
+                if (filename.equals("hall8nodes"))
+                {
+                    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
+                   Scanner readEncrypted = new Scanner(fis);
+                    while (readEncrypted.hasNext())
+                    {
+                        System.out.println(readEncrypted.nextLine());
+                    }
+                    System.out.println("DONE");
+                }
             }
             // close the input and the output streams
             fis.close();
@@ -638,7 +612,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
         // First we need to decrypt the file to have access to the locations
-        useMeToRead.decryptFile(false);
+        useMeToRead.decryptFile(true);
 
         // with the decrypted file, we can add the nodes to the graph
         graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
