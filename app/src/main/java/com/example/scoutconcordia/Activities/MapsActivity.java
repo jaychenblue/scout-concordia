@@ -350,7 +350,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.w("Adjacency List", "Failed!");
                 }
 
-                LatLng point1 = hall_9_floor.searchByClassName("H-810");  // NEED TO CHANGE THIS WHEN YOU PUT IN THE NEW DATA
+                LatLng point1 = hall_9_floor.searchByClassName("H-967");
                 LatLng point2 = hall_9_floor.searchByClassName("ELEVATOR");
 
                 Log.w("Point 1:", point1.toString());
