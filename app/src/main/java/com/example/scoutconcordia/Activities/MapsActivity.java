@@ -240,13 +240,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall1p);
 
-                GroundOverlayOptions goo = new GroundOverlayOptions()
+                GroundOverlayOptions goo1 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
 
-                googoo = mMap.addGroundOverlay(goo);
+                googoo = mMap.addGroundOverlay(goo1);
 
 
 
@@ -341,13 +341,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall2floor);
 
-                GroundOverlayOptions goo = new GroundOverlayOptions()
+                GroundOverlayOptions goo2 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
 
-                googoo = mMap.addGroundOverlay(goo);
+                googoo = mMap.addGroundOverlay(goo2);
 
 
 //                // Lets try creating a graph for Hall 8th Floor
@@ -440,13 +440,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
 
-                GroundOverlayOptions goo = new GroundOverlayOptions()
+                GroundOverlayOptions goo8 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
 
-                googoo = mMap.addGroundOverlay(goo);
+                googoo = mMap.addGroundOverlay(goo8);
 
 
                 // For future reference, this will be necessary in order to remove the overlay once
@@ -537,7 +537,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall9p);
 
-                GroundOverlayOptions goo = new GroundOverlayOptions()
+                GroundOverlayOptions goo9 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
@@ -545,7 +545,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                mMap.addGroundOverlay(goo);
 
 //                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
-                googoo = mMap.addGroundOverlay(goo);
+                googoo = mMap.addGroundOverlay(goo9);
 
                 // Lets try creating a graph for Hall 8th Floor
                 Graph hall_9_floor = createGraph("encryptedhall9nodes");
