@@ -18,7 +18,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 
-class DES
+public class DES
 {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -37,7 +37,7 @@ class DES
     private static SecretKeyFactory factory;
     private static SecretKey myDesKey;
 
-    public DES() {
+    DES() {
         this.desKey = "0123456789abcdef";
         this.keyBytes = hexToByte(this.desKey);
         {
