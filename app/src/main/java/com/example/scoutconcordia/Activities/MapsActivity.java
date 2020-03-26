@@ -5,6 +5,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.content.Intent;
@@ -79,13 +81,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
+    @SuppressLint("StaticFieldLeak")
+    private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
+
     private Marker searchMarker;
+
+
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        setmContext(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -163,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Lets try creating a graph for Hall 8th Floor
         //Graph hall_8_floor = new Graph(1);
         Graph hall_8_floor = createGraph("hall8nodes");
-        
+
         Object[] vertices = hall_8_floor.vertices();
         if (vertices != null)
         {
@@ -333,7 +341,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Graph graphName = null;
         // First we need to decrypt the file to have access to the locations
         useMeToRead.decryptFile(false);
-    
+
         // with the decrypted file, we can add the nodes to the graph
         graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
         return graphName;
@@ -474,7 +482,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentBuilding = currentBuilding.getNext();
         }
     }
-    
+
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
     // when user gesture moves the camera). Check onCameraMoveStarted listener method
@@ -561,7 +569,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
     }
-    
+
+
+    // This sets the context and is called during the onCreate method.
+    public static void setmContext(Context mContext) {
+        MapsActivity.mContext = mContext;
+    }
+
+    // THis is for non-activity or non-fragment classes to use in order to pull the context of this class, which will
+    // then allow them to access resource files, this cannot be done otherwise.
+    public static Context getmContext() {
+        return mContext;
+    }
+
+
     public InputStream getStreamFromFileName(String fileName)
     {
         return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
