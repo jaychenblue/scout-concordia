@@ -52,6 +52,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -73,6 +75,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -240,8 +243,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                hall8.remove();
 
                 // Lets try creating a graph for Hall 8th Floor
-                //Graph hall_8_floor = createGraph("encryptedhall8nodes");
-                Graph hall_8_floor = createGraph("hall8nodes");
+                Graph hall_8_floor = createGraph("encryptedhall8nodes");
+                //Graph hall_8_floor = createGraph("hall8nodes");
 
                 for (Graph.Node node : hall_8_floor.nodes())
                 {
@@ -269,13 +272,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
 
+                LatLng[] dest = new LatLng[path.length];
+                System.arraycopy(path, 0, dest, 0, path.length);
+
+
+                Polyline searchPath = mMap.addPolyline(new PolylineOptions());
+                List<LatLng> listOfPoints = new ArrayList<>();
+                searchPath.setPoints(Arrays.asList(dest));
+
                 if (path != null)
                 {
                     Log.w("BFS", "Final Path");
                     for (int i = 0; i < path.length; i++)
                     {
                         Log.w("BFS", path[i].toString());
-
+                        
                           // lets highlight the path.
                           for (Marker markers : hall8floorMarkers)
                           {
@@ -667,7 +678,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
         // First we need to decrypt the file to have access to the locations
-        useMeToRead.decryptFile(false);
+        useMeToRead.decryptFile(true);
 
         // with the decrypted file, we can add the nodes to the graph
         graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
