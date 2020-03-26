@@ -135,4 +135,24 @@ tools:context=".Activities.MapsActivity">
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/floor8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="66dp"
+        android:text="8th Floor"
+        android:visibility="invisible"
+        />
+
+    <Button
+        android:id="@+id/floor9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="123dp"
+        android:text="9th Floor"
+        android:visibility="invisible"
+        />
+
 </RelativeLayout>
