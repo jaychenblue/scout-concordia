@@ -208,6 +208,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addPopUpBarListener();
         addfloor8ButtonListener();
         addfloor9ButtonListener();
+        addfloor1ButtonListener();
+        addfloor2ButtonListener();
 
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
@@ -696,6 +698,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         {
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
+
+                            floor1.setVisibility(View.VISIBLE);
+                            floor2.setVisibility(View.VISIBLE);
                             floor8.setVisibility(View.VISIBLE);
                             floor9.setVisibility(View.VISIBLE);
                         }
@@ -927,21 +932,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // this sets the parameters for the pop up bar that appears on click
                         popUpBar.setVisibility(View.VISIBLE);
 
-                        floor8.setVisibility(View.INVISIBLE);
-                        floor9.setVisibility(View.INVISIBLE);
+                    floor1.setVisibility(View.INVISIBLE);
+                    floor2.setVisibility(View.INVISIBLE);
+                    floor8.setVisibility(View.INVISIBLE);
+                    floor9.setVisibility(View.INVISIBLE);
 
                         if (googoo != null) {
                             googoo.remove();
                         }
 
-                        isInfoWindowShown = true;
-                    } else {
-                        marker.hideInfoWindow();
-                        directionButton.setVisibility(View.INVISIBLE);
-                        exploreInsideButton.setVisibility(View.INVISIBLE);
-                        popUpBar.setVisibility(View.INVISIBLE);
-                        floor8.setVisibility(View.INVISIBLE);
-                        floor9.setVisibility(View.INVISIBLE);
+
+                    isInfoWindowShown = true;
+                } else {
+                    marker.hideInfoWindow();
+                    directionButton.setVisibility(View.INVISIBLE);
+                    exploreInsideButton.setVisibility(View.INVISIBLE);
+                    popUpBar.setVisibility(View.INVISIBLE);
+                    floor1.setVisibility(View.INVISIBLE);
+                    floor2.setVisibility(View.INVISIBLE);
+                    floor8.setVisibility(View.INVISIBLE);
+                    floor9.setVisibility(View.INVISIBLE);
 
                         if (googoo != null) {
                             googoo.remove();
@@ -962,6 +972,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
 
+                floor1.setVisibility(View.INVISIBLE);
+                floor2.setVisibility(View.INVISIBLE);
                 floor8.setVisibility(View.INVISIBLE);
                 floor9.setVisibility(View.INVISIBLE);
 
