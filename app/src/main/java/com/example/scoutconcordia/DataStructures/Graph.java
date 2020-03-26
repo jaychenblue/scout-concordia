@@ -236,6 +236,7 @@ public class Graph
         // First Breath
         currentPointsToCycle.add(nodes[id1].getElement());
         nodes[id1].setTraversed(true);
+        nodes[id2].setTraversed(false);
         while (currentPointsToCycle.size() != 0)
         {
             currentPoint = currentPointsToCycle.getHead();
@@ -366,7 +367,7 @@ public class Graph
                 if (i == 0)
                     current = coordinatesToInsert.getHead();
                 if (current != null)
-                    if (false) // i < nmbClassNodes the condition causing the error
+                    if (i < nmbClassNodes) // i < nmbClassNodes the condition causing the error
                     {
                         returnMe.insertVertex((LatLng)current.getEle(), 0); //insert a class node
                     } else {
@@ -421,7 +422,7 @@ public class Graph
             for (int j = 0; j < nodes.length; j++)
             {
                 distance = calculateNodeDistance(currentNode.getElement(), nodes[j].getElement());
-                if (j != i && distance < 10)
+                if (j != i && distance < 8.5)
                     insertEdge(currentNode.getElement(), nodes[j].getElement());
             }
         }

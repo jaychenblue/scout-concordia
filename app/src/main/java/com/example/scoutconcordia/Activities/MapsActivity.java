@@ -200,36 +200,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
     
     
-        Graph g1 = new Graph(20);
-        LatLng p0 = new LatLng(0, 0);
+        Graph g1 = new Graph(6);
         LatLng p1 = new LatLng(1, 1);
         LatLng p2 = new LatLng(2, 2);
         LatLng p3 = new LatLng(3, 3);
         LatLng p4 = new LatLng(4, 4);
         LatLng p5 = new LatLng(5, 5);
         LatLng p6 = new LatLng(6, 6);
-        LatLng p7 = new LatLng(7, 7);
-        LatLng p8 = new LatLng(8, 8);
-        g1.insertVertex(p0, 1);
-        g1.insertVertex(p1, 1);
+        g1.insertVertex(p1, 0);
         g1.insertVertex(p2, 1);
         g1.insertVertex(p3, 0);
-        g1.insertVertex(p4, 0);
+        g1.insertVertex(p4, 1);
         g1.insertVertex(p5, 1);
         g1.insertVertex(p6, 1);
-        g1.insertVertex(p7, 0);
-        g1.insertVertex(p8, 0);
-        g1.insertEdge(p3, p1);
-        g1.insertEdge(p3, p5);
-        g1.insertEdge(p1, p7);
-        g1.insertEdge(p5, p4);
+        g1.insertEdge(p6, p4);
+        g1.insertEdge(p4, p3);
+        g1.insertEdge(p4, p5);
+        g1.insertEdge(p3, p2);
         g1.insertEdge(p5, p2);
-        g1.insertEdge(p7, p2);
-        g1.insertEdge(p7, p8);
-        g1.insertEdge(p2, p6);
-        g1.insertEdge(p4, p6);
-        g1.insertEdge(p6, p8);
-        Object[] path = g1.breathFirstSearch(p3, p8);
+        g1.insertEdge(p5, p1);
+        g1.insertEdge(p1, p2);
+        Object[] path = g1.breathFirstSearch(p6, p1);
         if (path != null)
         {
             Log.w("BFS", "Final Path");
