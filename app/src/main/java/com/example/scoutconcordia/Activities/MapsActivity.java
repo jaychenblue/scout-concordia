@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -52,6 +54,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -90,6 +94,17 @@ import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
 import com.google.android.material.button.MaterialButton;
 
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
+import static android.content.ContentValues.TAG;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
@@ -122,8 +137,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     private GroundOverlay googoo;
 
-    // Concordia buildings list
-    public static final List<String> locations = new ArrayList<>();
+    private static final List<String> locations = new ArrayList<>(); // Concordia buildings list
+    private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
+    private String startingPoint;
+    private String destination;
+    private Polyline pathPolyline = null; // polyline for displaying the map
+    private Dialog setOriginDialog;
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -344,6 +363,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+
     public void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -353,15 +373,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onFindYourWayButtonClick(searchBar.getText().toString());
+                setOriginDialog = setOriginDialog(searchBar.getText().toString());
+                searchBar.setText(null);
+                setOriginDialog.show();
             }
         });
     }
     // onClick listener for when "Find your way" button is clicked
-    public void onFindYourWayButtonClick(final String destination){
+    public AlertDialog setOriginDialog(final String dest){
         AlertDialog.Builder builder = new AlertDialog.Builder(this  );
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
+        final View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
         builder.setView(dialogView);
 
         final AutoCompleteTextView startingLocation = dialogView.findViewById(R.id.starting_location);
@@ -375,14 +397,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                 startingPoint = startingLocation.getText().toString();
+                 destination = dest;
             }
         });
-        builder.create().show();
+        return builder.create();
     }
 
     // get directions button clicked in dialog for getting directions (in onFindYourWayButtonClick)
     public void onGetDirectionsClick(View v){
+        setOriginDialog.dismiss();
+        drawDirectionsPath(locationMap.get(startingPoint), locationMap.get(destination));
     }
 
     // walking option selected in dialog for getting directions (in onFindYourWayButtonClick)
@@ -605,6 +630,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void drawDirectionsPath(LatLng startingPoint, LatLng destination){
+        if(pathPolyline != null) {
+            pathPolyline.remove(); //remove previous path
+        }
+
+        List<LatLng> path = new ArrayList();
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey(getString(R.string.google_maps_key))
+                .build();
+
+        DirectionsApiRequest request = DirectionsApi.newRequest(context);
+        request.mode(TravelMode.WALKING).origin(startingPoint.latitude+","+startingPoint.longitude).destination(destination.latitude+","+destination.longitude);
+        try {
+            DirectionsResult res = request.await();
+            long duration; // journey duration in seconds
+            long durationTraffic; // journey duration in traffic in seconds
+
+            // adds coordinates of each step on the first route give to the List<LatLng> for drawing the polyline
+            if (res.routes != null && res.routes.length > 0) {
+                DirectionsRoute route = res.routes[0]; // take the first route
+                if (route.legs != null) {
+                    for (int i = 0; i < route.legs.length; i++) { //loop through all the legs
+                        DirectionsLeg leg = route.legs[i];
+                        if (leg.steps != null) {
+                            for (int j = 0; j < leg.steps.length; j++) {    // loop through all the steps
+                                DirectionsStep step = leg.steps[j];
+                                EncodedPolyline points = step.polyline;
+                                duration = step.duration.inSeconds; // add duration of leg to total duration
+                                if (points != null) {
+                                    List<com.google.maps.model.LatLng> coords = points.decodePath();
+                                    for (com.google.maps.model.LatLng coord : coords) {
+                                        path.add(new LatLng(coord.lat, coord.lng));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            mMap.addMarker(new MarkerOptions().position(startingPoint));
+            mMap.addMarker(new MarkerOptions().position(destination));
+            //draw path
+            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
+            pathPolyline = mMap.addPolyline(opts);
+            animateCamera(destination, zoomLevel);
+        }
+        catch(Throwable t){
+            Log.d(TAG, t.getMessage());
+        }
+    }
+
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
     public Graph createGraph(String encryptedFileName)
     {
@@ -752,7 +828,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             // add building name to list
             locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
-
+            // add building name adn coordinates to the map
+            locationMap.put(((BuildingInfo) currentBuilding.getEle()).getName().trim(), (LatLng)currentCoordinate.getEle());
 
             for (int j = 0; j < coordinates.size(); j++)
             {
