@@ -122,6 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Marker> markerBuildings = new ArrayList<>();
     private List<Marker> hall8floorMarkers = new ArrayList<>();
     private List<Marker> hall9floorMarkers = new ArrayList<>();
+    private List<Graph> floorGraphs = new ArrayList<>();
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -209,6 +210,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor9ButtonListener();
         addfloor1ButtonListener();
         addfloor2ButtonListener();
+
+        createFloorGraphs();
+
+        floorGraphs.indexOf(hall_8_floor);
+        LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
+        LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
+
+        String fromMe = "";
+        String toMe = "";
+        searchForClass(fromMe, toMe);
 
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
@@ -414,6 +425,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                }
             }
         });
+    }
+
+    public void searchForClass(String fromMe, String toMe)
+    {
+
+    }
+    public void createFloorGraphs()
+    {
+        // Lets try creating a graph for Hall 8th Floor
+        Graph hall_8_floor = createGraph("encryptedhall8nodes");
+        Graph hall_9_floor = createGraph("emcryptedhall9nodes");
+
+        floorGraphs.add(hall_8_floor);
+        floorGraphs.add(hall_9_floor);
+
+        //LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
+        //LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
+
+        //Log.w("Point 1:", point1.toString());
+        //Log.w("Point 2:", point2.toString());
+
+        //Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
+
+        //LatLng[] dest = new LatLng[path.length];
+        //System.arraycopy(path, 0, dest, 0, path.length);
+
+
+        //Polyline searchPath = mMap.addPolyline(new PolylineOptions());
+        //List<LatLng> listOfPoints = new ArrayList<>();
+        //searchPath.setPoints(Arrays.asList(dest));
+
+        //if (path != null)
+        //{
+        //    Log.w("BFS", "Final Path");
+        //    for (int i = 0; i < path.length; i++)
+        //    {
+        //        Log.w("BFS", path[i].toString());
+
+        //        // lets highlight the path.
+        //        for (Marker markers : hall8floorMarkers)
+        //        {
+        //            if (markers.getPosition().equals(path[i]))
+        //            {
+        //                if (path[i].equals(point1))
+        //                {
+        //                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+        //                } else if (path[i].equals(point2))
+        //                {
+        //                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+        //                } else {
+        //                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+        //                }
+        //            }
+        //        }
+        //    }
+       // }
     }
 
     public void addfloor8ButtonListener()
@@ -1040,7 +1107,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // add building name to list
             locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
 
-
             for (int j = 0; j < coordinates.size(); j++)
             {
                 po.add((LatLng)currentCoordinate.getEle());
@@ -1086,7 +1152,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
         return false; // returning false calls the super method, returning true does not
     }
-
 
     private void animateCamera(LatLng latLng, float zoomLevel)
     {
