@@ -210,7 +210,12 @@ public class Graph
         for (int i = 0; i < nodes.length; i++)
         {
             if (nodes[i] != null)
-                nodes[i].setTraversed(false);
+            {
+                if (nodes[i].getType() > 0) // not a class node
+                    nodes[i].setTraversed(false);
+                else
+                    nodes[i].setTraversed(true);
+            }
         }
         // Both points exist
         int id1 = getID(from);
@@ -235,54 +240,21 @@ public class Graph
         {
             currentPoint = currentPointsToCycle.getHead();
             currentTreeNode = breathFirstSearchResults.findSpecifiedNode(breathFirstSearchResults.getHead(), (LatLng) currentPoint.getEle());
-            for (int i = 0; i < currentPointsToCycle.size(); i++) {
+            for (int i = 0; i < currentPointsToCycle.size(); i++)
+            {
                 id1 = getID((LatLng) currentPoint.getEle());
-                if (id1 >= 0) {
+                if (id1 >= 0)
+                {
                     currentTreeNode = breathFirstSearchResults.findSpecifiedNode(breathFirstSearchResults.getHead(), (LatLng) currentPoint.getEle());
                     LinkedList.Node currentAdjacentNode = nodes[id1].adjacencyList.getHead(); // LinkList of Graph Nodes
-                    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null)  // while the currentAdjacentNode is already traversed, go next.
+                    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null)
                     {
                         currentAdjacentNode = currentAdjacentNode.getNext();
                     }
-                    for (int j = 0; j < nodes[id1].adjacencyList.size(); j++) {
-                        if (currentAdjacentNode != null) {
-                            //if (((Node) currentAdjacentNode.getEle()).getType() == 0)  //if it is a class node
-                            //{
-                            //    if (((Node) currentAdjacentNode.getEle()).getElement().equals(to)) // we found the point in this breath
-                            //    {
-                            //        currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
-                            //        return breathFirstSearchResults.getPath(from, to);
-                            //    }
-                            //    if (!(((Node) currentAdjacentNode.getEle()).isTraversed()))        // Adding New element to the breath
-                            //    {
-                            //        currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
-                            //        ((Node) currentAdjacentNode.getEle()).setTraversed(true);
-                            //        newCurrentPointsToCycle.add(((Node) currentAdjacentNode.getEle()).getElement());
-                            //    }
-                            //    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null) {
-                            //        currentAdjacentNode = currentAdjacentNode.getNext();
-                            //    }
-                            //    if (((Node) currentAdjacentNode.getEle()).isTraversed())
-                            //        currentAdjacentNode = currentAdjacentNode.getNext();
-                            //} else {  // if it is a hallway node
-                            //    //if (((Node) currentAdjacentNode.getEle()).getElement().equals(to)) // we found the point in this breath
-                            //    //{
-                            //    //    currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
-                            //    //    return breathFirstSearchResults.getPath(from, to);
-                            //    //}
-                            //    if (!(((Node) currentAdjacentNode.getEle()).isTraversed()))        // Adding New element to the breath
-                            //    {
-                            //        currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
-                            //        ((Node) currentAdjacentNode.getEle()).setTraversed(true);
-                            //        newCurrentPointsToCycle.add(((Node) currentAdjacentNode.getEle()).getElement());
-                            //    }
-                            //    while (((Node) currentAdjacentNode.getEle()).isTraversed() && currentAdjacentNode.getNext() != null) {
-                            //        currentAdjacentNode = currentAdjacentNode.getNext();
-                            //    }
-                            //    if (((Node) currentAdjacentNode.getEle()).isTraversed())
-                            //        currentAdjacentNode = currentAdjacentNode.getNext();
-                            //}
-
+                    for (int j = 0; j < nodes[id1].adjacencyList.size(); j++)
+                    {
+                        if (currentAdjacentNode != null)
+                        {
                             if (((Node) currentAdjacentNode.getEle()).getElement().equals(to)) // we found the point in this breath
                             {
                                 currentTreeNode.addToChildren(((Node) currentAdjacentNode.getEle()).getElement());
@@ -302,7 +274,8 @@ public class Graph
                                 currentAdjacentNode = currentAdjacentNode.getNext();
                         }
                     }
-                    if (currentPoint != null) {
+                    if (currentPoint != null)
+                    {
                         currentPoint = currentPoint.getNext();
                     }
                 }
