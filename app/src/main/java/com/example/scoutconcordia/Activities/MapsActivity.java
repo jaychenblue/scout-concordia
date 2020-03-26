@@ -34,7 +34,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
-import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -127,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
-    private GroundOverlay googoo;
+    private GroundOverlay hallGroundOverlay;
 
     // Concordia buildings list
     public static final List<String> locations = new ArrayList<>();
@@ -219,8 +218,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addfloor1ButtonListener()
     {
 
-        if (googoo != null) {
-            googoo.remove();
+        if (hallGroundOverlay != null) {
+            hallGroundOverlay.remove();
         }
 
         floor1 = (Button) findViewById(R.id.floor1);
@@ -246,7 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .anchor(0, 1)
                         .bearing(imgRotation);
 
-                googoo = mMap.addGroundOverlay(goo1);
+                hallGroundOverlay = mMap.addGroundOverlay(goo1);
 
 
 
@@ -322,8 +321,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addfloor2ButtonListener()
     {
 
-        if (googoo != null) {
-            googoo.remove();
+        if (hallGroundOverlay != null) {
+            hallGroundOverlay.remove();
         }
 
         floor2 = (Button) findViewById(R.id.floor2);
@@ -347,7 +346,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .anchor(0, 1)
                         .bearing(imgRotation);
 
-                googoo = mMap.addGroundOverlay(goo2);
+                hallGroundOverlay = mMap.addGroundOverlay(goo2);
 
 
 //                // Lets try creating a graph for Hall 8th Floor
@@ -420,8 +419,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addfloor8ButtonListener()
     {
 
-        if (googoo != null) {
-            googoo.remove();
+        if (hallGroundOverlay != null) {
+            hallGroundOverlay.remove();
         }
 
         floor8 = (Button) findViewById(R.id.floor8);
@@ -446,7 +445,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .anchor(0, 1)
                         .bearing(imgRotation);
 
-                googoo = mMap.addGroundOverlay(goo8);
+                hallGroundOverlay = mMap.addGroundOverlay(goo8);
 
 
                 // For future reference, this will be necessary in order to remove the overlay once
@@ -517,8 +516,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addfloor9ButtonListener()
     {
 
-        if (googoo != null) {
-            googoo.remove();
+        if (hallGroundOverlay != null) {
+            hallGroundOverlay.remove();
         }
 
         floor9 = (Button) findViewById(R.id.floor9);
@@ -545,7 +544,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                mMap.addGroundOverlay(goo);
 
 //                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
-                googoo = mMap.addGroundOverlay(goo9);
+                hallGroundOverlay = mMap.addGroundOverlay(goo9);
 
                 // Lets try creating a graph for Hall 8th Floor
                 Graph hall_9_floor = createGraph("encryptedhall9nodes");
@@ -937,9 +936,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     floor8.setVisibility(View.INVISIBLE);
                     floor9.setVisibility(View.INVISIBLE);
 
-                        if (googoo != null) {
-                            googoo.remove();
-                        }
+
+                    if (hallGroundOverlay != null) {
+                        hallGroundOverlay.remove();
+                    }
 
 
                     isInfoWindowShown = true;
@@ -953,9 +953,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     floor8.setVisibility(View.INVISIBLE);
                     floor9.setVisibility(View.INVISIBLE);
 
-                        if (googoo != null) {
-                            googoo.remove();
-                        }
+                    if (hallGroundOverlay != null) {
+                        hallGroundOverlay.remove();
+                    }
 
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
@@ -977,8 +977,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor8.setVisibility(View.INVISIBLE);
                 floor9.setVisibility(View.INVISIBLE);
 
-                if (googoo != null) {
-                    googoo.remove();
+                if (hallGroundOverlay != null) {
+                    hallGroundOverlay.remove();
                 }
 
                 for (Marker m : hall8floorMarkers)
