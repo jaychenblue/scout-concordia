@@ -5,6 +5,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,10 +18,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
@@ -53,8 +61,12 @@ import java.io.InputStream;
 import com.google.android.gms.common.api.Status;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -66,6 +78,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
+import com.google.android.material.button.MaterialButton;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
@@ -88,17 +101,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+    // Concordia buildings list
+    public static final List<String> locations = new ArrayList<>();
+
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        setmContext(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Places.initialize(this, getString(R.string.google_maps_key));
+/**        Places.initialize(this, getString(R.string.google_maps_key));
         PlacesClient placesClient = Places.createClient(this);
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
@@ -134,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("STATUS CODE: "+ status.getStatusMessage());
             }
         });
-
+*/
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_maps);
@@ -192,6 +207,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 toggleCampus();
             }
         });
+    }
+
+
+    public void initializeSearchBar(){
+        final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, locations);
+        searchBar.setAdapter(adapter);
+
+        searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onFindYourWayButtonClick(searchBar.getText().toString());
+            }
+        });
+    }
+    // onClick listener for when "Find your way" button is clicked
+    public void onFindYourWayButtonClick(final String destination){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this  );
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
+        builder.setView(dialogView);
+
+        final AutoCompleteTextView startingLocation = dialogView.findViewById(R.id.starting_location);
+        RadioButton useCurrentLocationButton = dialogView.findViewById(R.id.useMyLocationButton);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, locations);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        startingLocation.setAdapter(adapter);
+
+        startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+        builder.create().show();
+    }
+
+    // get directions button clicked in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onGetDirectionsClick(View v){
+    }
+
+    // walking option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onWalkingSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // car option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onCarSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // transit option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onTransitSelected(MenuItem m){
+        m.setChecked(true);
+    }
+
+    // shuttle option selected in dialog for getting directions (in onFindYourWayButtonClick)
+    public void onShuttleSelected(MenuItem m){
+        m.setChecked(true);
     }
 
     // this is the listener for the get directions button.
@@ -266,6 +343,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
+        initializeSearchBar();
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -448,6 +526,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             PolygonOptions po = new PolygonOptions();
             LinkedList<LatLng> coordinates = ((BuildingInfo)currentBuilding.getEle()).getCoordinates();
             LinkedList.Node currentCoordinate = coordinates.getHead();
+
+            // add building name to list
+            locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
+
+
             for (int j = 0; j < coordinates.size(); j++)
             {
                 po.add((LatLng)currentCoordinate.getEle());
