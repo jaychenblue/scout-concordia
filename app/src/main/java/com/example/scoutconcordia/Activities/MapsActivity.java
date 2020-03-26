@@ -34,6 +34,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
+import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -256,15 +257,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         hall8floorMarkers.add(polyMarker);
                     }
                 }
-                for (LatLng vertices : hall_8_floor.vertices())
-                {
-                    if (hall_8_floor.incidentVerticies(vertices) != null)
-                        Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
-                    else
-                        Log.w("Adjacency List", "Failed!");
-                }
 
-                LatLng point1 = hall_8_floor.searchByClassName("H-810");
+                LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
                 LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
 
                 Log.w("Point 1:", point1.toString());
@@ -286,7 +280,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (int i = 0; i < path.length; i++)
                     {
                         Log.w("BFS", path[i].toString());
-                        
+
                           // lets highlight the path.
                           for (Marker markers : hall8floorMarkers)
                           {
@@ -337,11 +331,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
                 googoo = mMap.addGroundOverlay(goo);
 
-
-
                 // Lets try creating a graph for Hall 8th Floor
-                //Graph hall_8_floor = createGraph("encryptedhall8nodes");
-                Graph hall_9_floor = createGraph("hall9nodes");
+                Graph hall_9_floor = createGraph("encryptedhall9nodes");
+                //Graph hall_9_floor = createGraph("hall9nodes");
 
                 for (Graph.Node node : hall_9_floor.nodes())
                 {
@@ -353,15 +345,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         hall9floorMarkers.add(polyMarker);
                     }
                 }
-                for (LatLng vertices : hall_9_floor.vertices())
-                {
-                    if (hall_9_floor.incidentVerticies(vertices) != null)
-                        Log.w("Adjacency List", Arrays.toString(hall_9_floor.incidentVerticies(vertices)));
-                    else
-                        Log.w("Adjacency List", "Failed!");
-                }
 
-                LatLng point1 = hall_9_floor.searchByClassName("H-967");
+                LatLng point1 = hall_9_floor.searchByClassName("H-927");
                 LatLng point2 = hall_9_floor.searchByClassName("ELEVATOR");
 
                 Log.w("Point 1:", point1.toString());
@@ -650,7 +635,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall8nodes"))
+                if (filename.equals("hall9nodes"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -697,59 +682,60 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                isInfoWindowShown = false;
-                searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
-
-                // move the camera to the marker location
-                animateCamera(marker.getPosition(), zoomLevel);
-
-                if (!isInfoWindowShown) {
-                    marker.showInfoWindow();
-
-                    activeInfoWindow = marker.getTitle();
-
-                    // this sets the parameters for the button that appears on click. (The direction button)
-                    directionButton.setVisibility(View.VISIBLE);
-                    LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    //directionButtonLayoutParams.topMargin = 200;
-                    //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
-                    directionButton.setLayoutParams(directionButtonLayoutParams);
-
-                    // this sets the parameters for the button that appears on click. (The explore inside button)
-                    exploreInsideButton.setVisibility(View.VISIBLE);
-                    LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                    //exploreButtonLayoutParams.topMargin = 200;
-                    //exploreButtonLayoutParams.leftMargin = 400;
-                    exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
-
-                    // this sets the parameters for the pop up bar that appears on click
-                    popUpBar.setVisibility(View.VISIBLE);
-
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
-
-
-                    if (googoo != null) {
-                        googoo.remove();
-                    }
-
-
-                    isInfoWindowShown = true;
-                } else {
-                    marker.hideInfoWindow();
-                    directionButton.setVisibility(View.INVISIBLE);
-                    exploreInsideButton.setVisibility(View.INVISIBLE);
-                    popUpBar.setVisibility(View.INVISIBLE);
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
-
-                    if (googoo != null) {
-                        googoo.remove();
-                    }
-
+                // we only want to perform these actions if the marker we clicked on is one of the custom markers.
+                if (markerBuildings.contains(marker)) {
 
                     isInfoWindowShown = false;
-                    activeInfoWindow = null;
+                    searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
+
+                    // move the camera to the marker location
+                    animateCamera(marker.getPosition(), zoomLevel);
+
+                    if (!isInfoWindowShown) {
+                        marker.showInfoWindow();
+
+                        activeInfoWindow = marker.getTitle();
+
+                        // this sets the parameters for the button that appears on click. (The direction button)
+                        directionButton.setVisibility(View.VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        //directionButtonLayoutParams.topMargin = 200;
+                        //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
+
+                        // this sets the parameters for the button that appears on click. (The explore inside button)
+                        exploreInsideButton.setVisibility(View.VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        //exploreButtonLayoutParams.topMargin = 200;
+                        //exploreButtonLayoutParams.leftMargin = 400;
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+
+                        // this sets the parameters for the pop up bar that appears on click
+                        popUpBar.setVisibility(View.VISIBLE);
+
+                        floor8.setVisibility(View.INVISIBLE);
+                        floor9.setVisibility(View.INVISIBLE);
+
+                        if (googoo != null) {
+                            googoo.remove();
+                        }
+
+                        isInfoWindowShown = true;
+                    } else {
+                        marker.hideInfoWindow();
+                        directionButton.setVisibility(View.INVISIBLE);
+                        exploreInsideButton.setVisibility(View.INVISIBLE);
+                        popUpBar.setVisibility(View.INVISIBLE);
+                        floor8.setVisibility(View.INVISIBLE);
+                        floor9.setVisibility(View.INVISIBLE);
+
+                        if (googoo != null) {
+                            googoo.remove();
+                        }
+
+                        isInfoWindowShown = false;
+                        activeInfoWindow = null;
+                    }
                 }
                 return true;
             }
@@ -767,6 +753,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if (googoo != null) {
                     googoo.remove();
+                }
+
+                for (Marker m : hall8floorMarkers)
+                {
+                    m.setVisible(false);
+                }
+                for (Marker m : hall9floorMarkers)
+                {
+                    m.setVisible(false);
                 }
 
                 popUpBar.setVisibility(View.INVISIBLE);
