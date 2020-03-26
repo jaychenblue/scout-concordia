@@ -116,6 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
     private List<Marker> hall8floorMarkers = new ArrayList<>();
+    private List<Marker> hall9floorMarkers = new ArrayList<>();
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -238,18 +239,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //                hall8.remove();
 
-
                 // Lets try creating a graph for Hall 8th Floor
-                Graph hall_8_floor = createGraph("encryptedhall8nodes");
-                //System.out.println(hall_8_floor.vertices().length);
-
-                // This is temporary to help in placing the markers for each floor
-                //for (LatLng vertices : hall_8_floor.vertices())
-                //{
-//
-//                    Marker polyMarker = mMap.addMarker(new MarkerOptions().position(vertices));
-//                    hall8floorMarkers.add(polyMarker); // add the marker to the list of markers
-//                }
+                //Graph hall_8_floor = createGraph("encryptedhall8nodes");
+                Graph hall_8_floor = createGraph("hall8nodes");
 
                 for (Graph.Node node : hall_8_floor.nodes())
                 {
@@ -269,34 +261,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.w("Adjacency List", "Failed!");
                 }
 
-                LatLng point1 = hall_8_floor.vertices()[30];  //start
-                LatLng point2 = hall_8_floor.vertices()[70];  //end
+                LatLng point1 = hall_8_floor.searchByClassName("H-810");
+                LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
+
                 Log.w("Point 1:", point1.toString());
                 Log.w("Point 2:", point2.toString());
 
                 Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
 
-                if (path != null) {
+                if (path != null)
+                {
                     Log.w("BFS", "Final Path");
-                    for (int i = 0; i < path.length; i++) {
+                    for (int i = 0; i < path.length; i++)
+                    {
                         Log.w("BFS", path[i].toString());
 
                           // lets highlight the path.
                           for (Marker markers : hall8floorMarkers)
                           {
                               if (markers.getPosition().equals(path[i]))
-                                       if (path[i].equals(point1))
-                                       {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-                                       } else if (path[i].equals(point2))
-                                       {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-                                       } else {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-                                       }
-                           }
-                       }
-                  }
+                              {
+                                  if (path[i].equals(point1))
+                                  {
+                                      markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+                                  } else if (path[i].equals(point2))
+                                  {
+                                      markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+                                  } else {
+                                      markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+                                  }
+                              }
+                          }
+                    }
+                }
             }
         });
     }
@@ -328,6 +325,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 //                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
                 googoo = mMap.addGroundOverlay(goo);
+
+
+
+                // Lets try creating a graph for Hall 8th Floor
+                //Graph hall_8_floor = createGraph("encryptedhall8nodes");
+                Graph hall_9_floor = createGraph("hall9nodes");
+
+                for (Graph.Node node : hall_9_floor.nodes())
+                {
+                    if (node.getType() > 0) {  // if it is a hall node
+                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        hall9floorMarkers.add(polyMarker);
+                    } else { // if it is a class node
+                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        hall9floorMarkers.add(polyMarker);
+                    }
+                }
+                for (LatLng vertices : hall_9_floor.vertices())
+                {
+                    if (hall_9_floor.incidentVerticies(vertices) != null)
+                        Log.w("Adjacency List", Arrays.toString(hall_9_floor.incidentVerticies(vertices)));
+                    else
+                        Log.w("Adjacency List", "Failed!");
+                }
+
+                LatLng point1 = hall_9_floor.searchByClassName("H-810");  // NEED TO CHANGE THIS WHEN YOU PUT IN THE NEW DATA
+                LatLng point2 = hall_9_floor.searchByClassName("ELEVATOR");
+
+                Log.w("Point 1:", point1.toString());
+                Log.w("Point 2:", point2.toString());
+
+                Object[] path = hall_9_floor.breathFirstSearch(point1, point2);
+
+                if (path != null)
+                {
+                    Log.w("BFS", "Final Path");
+                    for (int i = 0; i < path.length; i++)
+                    {
+                        Log.w("BFS", path[i].toString());
+
+                        // lets highlight the path.
+                        for (Marker markers : hall9floorMarkers)
+                        {
+                            if (markers.getPosition().equals(path[i]))
+                            {
+                                if (path[i].equals(point1))
+                                {
+                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+                                } else if (path[i].equals(point2))
+                                {
+                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+                                } else {
+                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
     }
@@ -612,7 +667,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
         // First we need to decrypt the file to have access to the locations
-        useMeToRead.decryptFile(true);
+        useMeToRead.decryptFile(false);
 
         // with the decrypted file, we can add the nodes to the graph
         graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
