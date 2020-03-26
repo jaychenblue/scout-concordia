@@ -366,7 +366,7 @@ public class Graph
                 if (i == 0)
                     current = coordinatesToInsert.getHead();
                 if (current != null)
-                    if (i < nmbClassNodes)
+                    if (false) // i < nmbClassNodes the condition causing the error
                     {
                         returnMe.insertVertex((LatLng)current.getEle(), 0); //insert a class node
                     } else {
@@ -415,44 +415,14 @@ public class Graph
         float distance = 0;
         Node[] closestNodes = new Node[3]; // create an array of length 1
         int nmbClosestNodes = 2;
-
-        for (Node node: this.nodes)
+        for (int i = 0; i < nodes.length; i++)
         {
-            smallestDistance = 1000000;
-            secondSmallestDistance = 1000000;
-            distance = 1000000;
-            LatLng myCoordinate = node.element;
-
-            for (Node otherNode: this.nodes)
+            Node currentNode = nodes[i];
+            for (int j = 0; j < nodes.length; j++)
             {
-                if (otherNode != node)  // we only want to get the distance if the nodes are not equal
-                {
-                    distance = calculateNodeDistance(myCoordinate, otherNode.element);
-
-                    if (distance < smallestDistance)
-                    {
-                        closestNodes[2] = closestNodes[1];
-                        closestNodes[1] = closestNodes[0];
-                        closestNodes[0] = otherNode;
-                        thirdSmallestDistance = secondSmallestDistance;
-                        secondSmallestDistance = smallestDistance;
-                        smallestDistance = distance;
-                    } else if (distance > smallestDistance && distance < secondSmallestDistance)
-                    {
-                        closestNodes[2] = closestNodes[1];
-                        closestNodes[1] = otherNode;
-                        thirdSmallestDistance = secondSmallestDistance;
-                        secondSmallestDistance = distance;
-                    } else if (distance > secondSmallestDistance && distance < thirdSmallestDistance)
-                    {
-                        closestNodes[2] = otherNode;
-                        thirdSmallestDistance = distance;
-                    }
-                }
-            }
-            for (Node closestNode : closestNodes)
-            {
-                this.insertEdge(node.element, closestNode.element);
+                distance = calculateNodeDistance(currentNode.getElement(), nodes[j].getElement());
+                if (j != i && distance < 10)
+                    insertEdge(currentNode.getElement(), nodes[j].getElement());
             }
         }
     }

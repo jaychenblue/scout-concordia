@@ -326,7 +326,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 for (LatLng vertices : hall_8_floor.vertices())
                 {
-                    Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
+                    if (hall_8_floor.incidentVerticies(vertices) != null)
+                        Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
+                    else
+                        Log.w("Adjacency List", "Failed!");
                 }
 
                 //Marker tempMarker = hall8floorMarkers.get(10);
