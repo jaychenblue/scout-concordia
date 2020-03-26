@@ -78,9 +78,6 @@ import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
 
-import static android.location.Location.distanceBetween;
-
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
@@ -194,45 +191,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // lets encrypt all of the files before using them
         encryptAllInputFiles();
 
-
-        // Lets try creating a graph for Hall 8th Floor
-        //Graph hall_8_floor = new Graph(1);
-        //createGraph(hall_8_floor, "encrypted_hall8nodes.txt");
-    
-    
-        Graph g1 = new Graph(6);
-        LatLng p1 = new LatLng(1, 1);
-        LatLng p2 = new LatLng(2, 2);
-        LatLng p3 = new LatLng(3, 3);
-        LatLng p4 = new LatLng(4, 4);
-        LatLng p5 = new LatLng(5, 5);
-        LatLng p6 = new LatLng(6, 6);
-        g1.insertVertex(p1, 0);
-        g1.insertVertex(p2, 1);
-        g1.insertVertex(p3, 0);
-        g1.insertVertex(p4, 1);
-        g1.insertVertex(p5, 1);
-        g1.insertVertex(p6, 1);
-        g1.insertEdge(p6, p4);
-        g1.insertEdge(p4, p3);
-        g1.insertEdge(p4, p5);
-        g1.insertEdge(p3, p2);
-        g1.insertEdge(p5, p2);
-        g1.insertEdge(p5, p1);
-        g1.insertEdge(p1, p2);
-        Object[] path = g1.breathFirstSearch(p6, p1);
-        if (path != null)
-        {
-            Log.w("BFS", "Final Path");
-            for (int i = 0; i < path.length; i++)
-            {
-                Log.w("BFS", path[i].toString());
-            }
-        }
-        else
-            Log.w("BFS", "Failed!");
-
-
         // Playing with the Tree
         /*
         N_aryTree tree = new N_aryTree();
@@ -305,16 +263,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 // Lets try creating a graph for Hall 8th Floor
-                Graph hall_8_floor = createGraph("encrypted_classrooms");
+                Graph hall_8_floor = createGraph("encrypted_hall8nodes");
                 //System.out.println(hall_8_floor.vertices().length);
 
                 // This is temporary to help in placing the markers for each floor
-                for (LatLng vertices : hall_8_floor.vertices())
-                {
-                    Marker polyMarker = mMap.addMarker(new MarkerOptions().position(vertices));
-                    hall8floorMarkers.add(polyMarker); // add the marker to the list of markers
-                }
+                //for (LatLng vertices : hall_8_floor.vertices())
+                //{
+//
+//                    Marker polyMarker = mMap.addMarker(new MarkerOptions().position(vertices));
+//                    hall8floorMarkers.add(polyMarker); // add the marker to the list of markers
+//                }
 
+                for (Graph.Node node : hall_8_floor.nodes())
+                {
+                    if (node.getType() > 0) {  // if it is a hall node
+                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        hall8floorMarkers.add(polyMarker);
+                    } else { // if it is a class node
+                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        hall8floorMarkers.add(polyMarker);
+                    }
+                }
                 for (LatLng vertices : hall_8_floor.vertices())
                 {
                     if (hall_8_floor.incidentVerticies(vertices) != null)
@@ -323,25 +292,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.w("Adjacency List", "Failed!");
                 }
 
-                //Marker tempMarker = hall8floorMarkers.get(10);
-                //LatLng tempLatLng = tempMarker.getPosition();
-                //tempMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // green is the selected node
-
-                //for (LatLng vertice : hall_8_floor.vertices())
-                // {
-                //    if (hall_8_floor.areAdjacent(vertice, tempLatLng))
-                //    {
-                //        for (Marker markers : hall8floorMarkers)
-                //            if (markers.getPosition().equals(vertice))
-                //            {
-                //                markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));  // blue is the closest node
-                //            }
-                //    }
-                // }
-
-
-                LatLng point1 = hall_8_floor.vertices()[20];  //start
-                LatLng point2 = hall_8_floor.vertices()[27];  //end
+                LatLng point1 = hall_8_floor.vertices()[30];  //start
+                LatLng point2 = hall_8_floor.vertices()[70];  //end
                 Log.w("Point 1:", point1.toString());
                 Log.w("Point 2:", point2.toString());
 
@@ -370,7 +322,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                   }
             }
         });
-
     }
 
     public void addfloor9ButtonListener()

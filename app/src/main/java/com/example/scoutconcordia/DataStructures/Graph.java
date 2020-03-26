@@ -1,7 +1,5 @@
 package com.example.scoutconcordia.DataStructures;
 
-import android.location.Location;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -9,8 +7,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-import io.opencensus.trace.Link;
 
 import static android.location.Location.distanceBetween;
 
@@ -50,8 +46,8 @@ public class Graph
 
         private int getId() { return id; }
         private void setId(int id) { this.id = id; }
-        private int getType() { return type; }
-        private LatLng getElement() { return element; }
+        public int getType() { return type; }
+        public LatLng getElement() { return element; }
         private void setElement(LatLng element) { this.element = element; }
         private boolean isTraversed() { return traversed; }
         private void setTraversed(boolean traversed) { this.traversed = traversed; }
@@ -200,6 +196,12 @@ public class Graph
         }
         return returnMe;
     }
+
+    // returns an array of all the nodes in the graph
+    public Node[] nodes()
+    {
+        return nodes;
+    }
     
     // returns an array of points corresponding to the shortest path from --> to
     public Object[] breathFirstSearch(LatLng from, LatLng to)
@@ -327,7 +329,7 @@ public class Graph
                 reader.nextLine();  // reads the {
                 reader.nextLine();
 
-                currentLine = reader.nextLine(); // starts reading the classrooms
+                currentLine = reader.nextLine(); // starts reading the hall8nodes
 
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
@@ -406,16 +408,7 @@ public class Graph
     public void addAjacentNodes()
     {
         // we want to insert an edge between all of the nodes that are adjacent. i.e the nodes that are closest to eachother
-        // if a node is closest to 2 nodes then it will have 2 nodes in its adjacency list.
-
-        // we want each node to have 2 closest nodes. They will be stored in an array [closest_node, second_closest_node]
-
-        float smallestDistance = 0;
-        float secondSmallestDistance = 0;
-        float thirdSmallestDistance = 0;
         float distance = 0;
-        Node[] closestNodes = new Node[3]; // create an array of length 1
-        int nmbClosestNodes = 2;
         for (int i = 0; i < nodes.length; i++)
         {
             Node currentNode = nodes[i];
@@ -426,18 +419,6 @@ public class Graph
                     insertEdge(currentNode.getElement(), nodes[j].getElement());
             }
         }
-    }
-
-    public static Node[] addNode(Node arr[], Node x)
-    {
-        Node newarr[] = new Node[arr.length + 1];
-
-        for (int i = 0; i < arr.length; i++)
-        {
-            newarr[i] = arr[i];
-        }
-        newarr[arr.length] = x;
-        return newarr;
     }
 
     // calculates the distance between 2 nodes in meters
