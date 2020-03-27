@@ -3,7 +3,7 @@ package com.example.scoutconcordia.DataStructures;
 import com.google.android.gms.maps.model.LatLng;
 
 // under the assumption no 2 points will be the same
-class N_aryTree
+public class N_aryTree
 {
     TreeNode head;
     
