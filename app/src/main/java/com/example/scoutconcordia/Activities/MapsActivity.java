@@ -89,6 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Object[]> searchResults = new ArrayList<>();
     private int searchResultsIndex;
     private Polyline searchPath;
+    private Marker pathMarker;
 
     private Button floor1;
     private Button floor2;
@@ -293,6 +294,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String point2Floor = "b";
         String showFloor = "";
 
+        pathMarker = mMap.addMarker(new MarkerOptions()
+                .position(point2)
+                .visible(true));
+
         // we also need to consider if the point is an elevator/escalator so we need to check both points.
         for (Graph graph: floorGraphs)
         {
@@ -412,6 +417,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pathMarker.remove();
                 searchResultsIndex++; //increment the search result index
 
                 if (searchResultsIndex == searchResults.size())
