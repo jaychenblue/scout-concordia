@@ -16,6 +16,8 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +44,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -52,7 +57,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import com.google.maps.android.PolyUtil;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -61,6 +69,8 @@ import java.io.InputStream;
 import com.google.android.gms.common.api.Status;
 
 import java.io.OutputStream;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,7 +90,6 @@ import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
 import com.google.android.material.button.MaterialButton;
 
-
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
@@ -91,6 +100,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
     private Button directionButton;
     private Button exploreInsideButton;
+
+    private Button floor8;
+    private Button floor9;
+
+
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
@@ -98,15 +112,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
 
     private Marker searchMarker;
+    private String activeInfoWindow = null;
+    private List<Polygon> polygonBuildings = new ArrayList<>();
+    private List<Marker> markerBuildings = new ArrayList<>();
+    private List<Marker> hall8floorMarkers = new ArrayList<>();
 
-
+    // We use this for image overlay of Hall building
+    private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
+    private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
+    private GroundOverlay googoo;
 
     // Concordia buildings list
     public static final List<String> locations = new ArrayList<>();
 
     // Displays the Map
-    @Override protected void onCreate(Bundle savedInstanceState)
-    {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -146,18 +166,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onError(@NonNull Status status) {
-                    System.out.println("STATUS CODE: "+ status.getStatusMessage());
+                System.out.println("STATUS CODE: " + status.getStatusMessage());
             }
         });
 */
         addListenerOnToggle();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_maps);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.nav_map:
                         break;
 
@@ -179,23 +199,137 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addDirectionButtonListener();
         addExploreInsideButtonListener();
         addPopUpBarListener();
+        addfloor8ButtonListener();
+        addfloor9ButtonListener();
 
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
+    }
 
-        // Lets try creating a graph for Hall 8th Floor
-        //Graph hall_8_floor = new Graph(1);
-        Graph hall_8_floor = createGraph("hall8nodes");
+    public void addfloor8ButtonListener()
+    {
+        floor8 = (Button) findViewById(R.id.floor8);
+        floor8.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
 
-        Object[] vertices = hall_8_floor.vertices();
-        if (vertices != null)
-        {
-            Log.w("BFS", "Nodes");
-            for (int i = 0; i < vertices.length; i++)
-            {
-                Log.w("BFS", vertices[i].toString());
+                // THis code handles the map overlay of the floor plans.
+                // Map overlay of the Hall image over the building
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
+                int imgHeightPixels = dimensions.outHeight;
+
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
+
+                GroundOverlayOptions goo = new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(hallOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation);
+
+                googoo = mMap.addGroundOverlay(goo);
+
+
+                // For future reference, this will be necessary in order to remove the overlay once
+                // the app moves away contextually from the inside of the building.
+
+//                hall8.remove();
+
+
+                // Lets try creating a graph for Hall 8th Floor
+                Graph hall_8_floor = createGraph("encryptedhall8nodes");
+                //System.out.println(hall_8_floor.vertices().length);
+
+                // This is temporary to help in placing the markers for each floor
+                //for (LatLng vertices : hall_8_floor.vertices())
+                //{
+//
+//                    Marker polyMarker = mMap.addMarker(new MarkerOptions().position(vertices));
+//                    hall8floorMarkers.add(polyMarker); // add the marker to the list of markers
+//                }
+
+                for (Graph.Node node : hall_8_floor.nodes())
+                {
+                    if (node.getType() > 0) {  // if it is a hall node
+                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        hall8floorMarkers.add(polyMarker);
+                    } else { // if it is a class node
+                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        hall8floorMarkers.add(polyMarker);
+                    }
+                }
+                for (LatLng vertices : hall_8_floor.vertices())
+                {
+                    if (hall_8_floor.incidentVerticies(vertices) != null)
+                        Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
+                    else
+                        Log.w("Adjacency List", "Failed!");
+                }
+
+                LatLng point1 = hall_8_floor.vertices()[30];  //start
+                LatLng point2 = hall_8_floor.vertices()[70];  //end
+                Log.w("Point 1:", point1.toString());
+                Log.w("Point 2:", point2.toString());
+
+                Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
+
+                if (path != null) {
+                    Log.w("BFS", "Final Path");
+                    for (int i = 0; i < path.length; i++) {
+                        Log.w("BFS", path[i].toString());
+
+                          // lets highlight the path.
+                          for (Marker markers : hall8floorMarkers)
+                          {
+                              if (markers.getPosition().equals(path[i]))
+                                       if (path[i].equals(point1))
+                                       {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+                                       } else if (path[i].equals(point2))
+                                       {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+                                       } else {
+                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+                                       }
+                           }
+                       }
+                  }
             }
-        }
+        });
+    }
+
+    public void addfloor9ButtonListener()
+    {
+        floor9 = (Button) findViewById(R.id.floor9);
+        floor9.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                // THis code handles the map overlay of the floor plans.
+                // Map overlay of the Hall image over the building
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
+                int imgHeightPixels = dimensions.outHeight;
+
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall9p);
+
+                GroundOverlayOptions goo = new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(hallOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation);
+//                mMap.addGroundOverlay(goo);
+
+//                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
+                googoo = mMap.addGroundOverlay(goo);
+            }
+        });
     }
 
     // If button pushed change Campus
@@ -283,7 +417,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addExploreInsideButtonListener()
     {
         exploreInsideButton = (Button) findViewById(R.id.exploreInsideButton);
-        // can add a functionality here that gives us the directions when we press on the button
+
+        exploreInsideButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (activeInfoWindow != null)
+                {
+                    // we want to remove the building outline from the map so we can see the indoor floor plan
+                    LatLng loc = searchMarker.getPosition();  // this is the location of the marker
+
+                    // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
+                    for (Polygon poly : polygonBuildings) {
+                        if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
+                        {
+                            poly.setVisible(false);  // hide the polygon
+                            searchMarker.setVisible(false);  // hide the marker
+                            floor8.setVisibility(View.VISIBLE);
+                            floor9.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    // we want to zoom in onto the center of the building.
+                    animateCamera(loc, 19.0f);
+                }
+            };
+        });
+    }
+
+    // method for hiding all of the polygons on the map
+    public void hideAllPolygons()
+    {
+        for (Polygon poly : polygonBuildings) {
+            poly.setVisible(false);
+        }
+    }
+
+    // method for showing all of the polygons on the map
+    public void showAllPolygons()
+    {
+        for (Polygon poly : polygonBuildings) {
+            poly.setVisible(true);
+        }
     }
 
     // this is the listener for the pop up bar at the bottom of the screen.
@@ -291,6 +464,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         popUpBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
         // can add functionality here if we click on the pop up bar
+    }
+
+    // method for hiding all of the markers on the map
+    public void hideAllMarkers()
+    {
+        for (Marker mar : markerBuildings) {
+            mar.setVisible(false);
+        }
+    }
+
+    // method for showing all of the markers on the map
+    public void showAllMarkers()
+    {
+        for (Marker mar : markerBuildings) {
+            mar.setVisible(true);
+        }
     }
 
 
@@ -307,6 +496,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
             getCurrentLocation();
@@ -321,6 +511,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationChangeListener(this);
         mMap.setOnCameraMoveStartedListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
+
         FileAccessor locationAccessor = new FileAccessor();
         locationAccessor.setInputStream(getStreamFromFileName("encrypteddtown"));
         locationAccessor.decryptFile(true);
@@ -329,6 +520,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationAccessor.setInputStream(getStreamFromFileName("encryptedloyola"));
         locationAccessor.decryptFile(true);
         addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
+
         // Add a marker in Concordia and move the camera
         searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
@@ -343,6 +535,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
+
         initializeSearchBar();
     }
 
@@ -374,6 +567,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
     public void encryptAllInputFiles()
     {
+        //DES encrypter = new DES();
         InputStream fis = null;
         OutputStream fos = null;
         String filename = "";
@@ -390,16 +584,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                //if (filename.equals("loyolalocations"))
-                //{
-                //    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                //   Scanner readEncrypted = new Scanner(fis);
-                //    while (readEncrypted.hasNext())
-                //    {
-                //        System.out.println(readEncrypted.nextLine());
-                //    }
-                //}
-
+                if (filename.equals("hall8nodes"))
+                {
+                    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
+                   Scanner readEncrypted = new Scanner(fis);
+                    while (readEncrypted.hasNext())
+                    {
+                        System.out.println(readEncrypted.nextLine());
+                    }
+                    System.out.println("DONE");
+                }
             }
             // close the input and the output streams
             fis.close();
@@ -418,10 +612,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
         // First we need to decrypt the file to have access to the locations
-        useMeToRead.decryptFile(false);
+        useMeToRead.decryptFile(true);
 
         // with the decrypted file, we can add the nodes to the graph
         graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
+        graphName.addAdjacentNodes();
         return graphName;
     }
 
@@ -437,12 +632,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 isInfoWindowShown = false;
+                searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
 
                 // move the camera to the marker location
                 animateCamera(marker.getPosition(), zoomLevel);
 
                 if (!isInfoWindowShown) {
                     marker.showInfoWindow();
+
+                    activeInfoWindow = marker.getTitle();
 
                     // this sets the parameters for the button that appears on click. (The direction button)
                     directionButton.setVisibility(View.VISIBLE);
@@ -461,6 +659,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // this sets the parameters for the pop up bar that appears on click
                     popUpBar.setVisibility(View.VISIBLE);
 
+                    floor8.setVisibility(View.INVISIBLE);
+                    floor9.setVisibility(View.INVISIBLE);
+
+
+                    if (googoo != null) {
+                        googoo.remove();
+                    }
+
 
                     isInfoWindowShown = true;
                 } else {
@@ -468,22 +674,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     directionButton.setVisibility(View.INVISIBLE);
                     exploreInsideButton.setVisibility(View.INVISIBLE);
                     popUpBar.setVisibility(View.INVISIBLE);
-                    isInfoWindowShown = false;
-                }
+                    floor8.setVisibility(View.INVISIBLE);
+                    floor9.setVisibility(View.INVISIBLE);
 
-                // change the icon of the marker (this was for testing purposes)
-                //marker.setIcon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.smiling)));
+                    if (googoo != null) {
+                        googoo.remove();
+                    }
+
+
+                    isInfoWindowShown = false;
+                    activeInfoWindow = null;
+                }
                 return true;
             }
         });
 
+        // when we click on the map, we want to reset back to all the defaults
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
+
+                floor8.setVisibility(View.INVISIBLE);
+                floor9.setVisibility(View.INVISIBLE);
+
+                if (googoo != null) {
+                    googoo.remove();
+                }
+
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
+                showAllPolygons();
+                showAllMarkers();
             }
         });
     }
@@ -537,6 +760,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentCoordinate = currentCoordinate.getNext();
             }
             Polygon justAddedPolygon = mMap.addPolygon(po);
+            polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
             int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
@@ -548,6 +772,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //.snippet("This is a test piece of text to see how it will look like in the window")
                     //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .zIndex(44));
+            markerBuildings.add(polyMarker); // add the marker to the list of markers
 
             if (resID != 0)
             {
@@ -626,7 +851,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         // permission not granted, request for permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
     }
 
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -634,7 +859,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             case ACCESS_FINE_LOCATION:
                 if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
                     // permission granted, move the camera to current location
                     mMap.setMyLocationEnabled(true);
@@ -650,9 +875,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-     super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     // This sets the context and is called during the onCreate method.
     public static void setmContext(Context mContext) {
@@ -665,9 +889,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return mContext;
     }
 
-
     public InputStream getStreamFromFileName(String fileName)
     {
         return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
     }
 }
+
