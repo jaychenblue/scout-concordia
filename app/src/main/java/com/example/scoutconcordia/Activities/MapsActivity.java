@@ -429,10 +429,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor8 = (Button) findViewById(R.id.floor8);
         floor8.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if (hallGroundOverlay!= null)
-                {
-                    hallGroundOverlay.remove();
-                }
+
+                removeAllFloorOverlays();
                 setUpGroundOverlay("hall8p");
             }
         });
@@ -443,10 +441,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor9 = (Button) findViewById(R.id.floor9);
         floor9.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if (hallGroundOverlay!= null)
-                {
-                    hallGroundOverlay.remove();
-                }
+
+                removeAllFloorOverlays();
                 setUpGroundOverlay("hall9p");
             }
         });
