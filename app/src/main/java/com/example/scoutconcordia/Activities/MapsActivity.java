@@ -86,6 +86,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button exploreInsideButton;
     private Button nextStep;
 
+    private List<Object[]> searchResults = new ArrayList<>();
+    private int searchResultsIndex;
+    private Polyline searchPath;
+
     private Button floor1;
     private Button floor2;
     private Button floor8;
@@ -271,33 +275,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method is going to be used to display the search results from the searchForClass method
-    public void displaySearchResults(List<Object[]> results)
+    public void displaySearchResults(Object[] results)
     {
-        if (results.size() == 1)
+        LatLng[] dest = new LatLng[results.length];
+        System.arraycopy(results, 0, dest, 0, results.length);
+
+        //List<LatLng> listOfPoints = new ArrayList<>();
+        searchPath.setPoints(Arrays.asList(dest));
+        
+        // get the first point and the last point
+        LatLng point1 = dest[0];
+        LatLng point2 = dest[dest.length - 1];
+        String point1Floor = "a";
+        String point2Floor = "b";
+        String showFloor = "";
+
+        // we also need to consider if the point is an elevator/escalator so we need to check both points.
+        for (Graph graph: floorGraphs)
         {
-            Object[] path = results.get(0);
-            LatLng[] dest = new LatLng[path.length];
-            System.arraycopy(path, 0, dest, 0, path.length);
+            for (Graph.Node node: graph.nodes())
+            {
+                if (point1 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
+                {
+                    point1Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
+                    showFloor = point1Floor;
+                    break;
+                } else if (point2 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
+                {
+                    point2Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
+                    showFloor = point2Floor;
+                    break;
+                }
+            }
+            if (!showFloor.equals(""))  //if they got a new value that isn't the default value we found the floor
+            {
+                break;
+            }
+        }
 
-            Polyline searchPath = mMap.addPolyline(new PolylineOptions());
-            List<LatLng> listOfPoints = new ArrayList<>();
-            searchPath.setPoints(Arrays.asList(dest));
-
-            floor8.performClick();
-        } else // if the search results go over multiple floors
-        {
-             for (int i = 0; i < results.size(); i++)
-             {
-                 Object[] path = results.get(i);
-                 LatLng[] dest = new LatLng[path.length];
-                 System.arraycopy(path, 0, dest, 0, path.length);
-
-                 Polyline searchPath = mMap.addPolyline(new PolylineOptions());
-                 List<LatLng> listOfPoints = new ArrayList<>();
-                 searchPath.setPoints(Arrays.asList(dest));
-
-                 floor8.performClick();
-             }
+        // need to determine which floor map to show.
+        switch (showFloor) {
+            case "H-0":
+            case "H-1":
+                floor1.performClick();
+                break;
+            case "H-8":
+                floor8.performClick();
+                break;
+            case "H-9":
+                floor9.performClick();
+                break;
         }
     }
 
@@ -513,7 +540,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchResultsIndex++; //increment the search result index
 
+                if (searchResultsIndex == searchResults.size())
+                {
+                    // we want to reset the app back to the initial state
+                    searchResultsIndex = 0;
+                    searchPath.setVisible(false);
+                    nextStep.setVisibility(View.INVISIBLE);
+                } else
+                {
+                    displaySearchResults(searchResults.get(searchResultsIndex));
+                }
             }
         });
     }
@@ -603,9 +641,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // TESTING INDOOR DIRECTIONS
                 String fromMe = "H-811";
                 String toMe = "H-927.04";
-                List<Object[]> searchResults = searchForClass(fromMe, toMe);
-                searchResults.get(1);
-                displaySearchResults(searchForClass(fromMe, toMe));
+                searchResults = searchForClass(fromMe, toMe);
+                searchResultsIndex = 0;
+                searchPath.setVisible(true);
+                displaySearchResults(searchResults.get(searchResultsIndex));
             }
         });
     }
@@ -736,6 +775,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setInfoWindowAdapter(adapter);
 
         initializeSearchBar();
+
+        searchPath = mMap.addPolyline(new PolylineOptions());
     }
 
     // moves the camera to keep on user's location on any change in its location
