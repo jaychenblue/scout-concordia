@@ -140,8 +140,8 @@ tools:context=".Activities.MapsActivity">
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="396dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="394dp"
+        android:layout_marginEnd="4dp"
         android:text="8th Floor"
         android:visibility="invisible" />
 
@@ -151,8 +151,8 @@ tools:context=".Activities.MapsActivity">
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="450dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="442dp"
+        android:layout_marginEnd="4dp"
         android:text="9th Floor"
         android:visibility="invisible" />
 
@@ -162,8 +162,8 @@ tools:context=".Activities.MapsActivity">
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="289dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="297dp"
+        android:layout_marginEnd="5dp"
         android:text="1st Floor"
         android:visibility="invisible" />
 
@@ -174,8 +174,8 @@ tools:context=".Activities.MapsActivity">
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="343dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="346dp"
+        android:layout_marginEnd="4dp"
         android:text="2nd Floor"
         android:visibility="invisible" />
 

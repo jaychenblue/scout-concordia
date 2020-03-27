@@ -114,6 +114,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     private GroundOverlay hallGroundOverlay;
 
+    private GroundOverlayOptions goo1;
+    private GroundOverlayOptions goo2;
+    private GroundOverlayOptions goo8;
+    private GroundOverlayOptions goo9;
+
+
     private boolean disabilityPreference = false; //false for no disability, true for disability
 
     // Concordia buildings list
@@ -341,14 +347,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void addfloor1ButtonListener()
     {
 
-        if (hallGroundOverlay != null) {
-            hallGroundOverlay.remove();
-        }
 
         floor1 = (Button) findViewById(R.id.floor1);
         floor1.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View view) {
+
+                if (goo2 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo8 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo9 != null) {
+                    hallGroundOverlay.remove();
+                }
 
                 // THis code handles the map overlay of the floor plans.
                 // Map overlay of the Hall image over the building
@@ -362,7 +375,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall1p);
 
-                GroundOverlayOptions goo1 = new GroundOverlayOptions()
+                goo1 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
@@ -375,18 +388,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor2ButtonListener()
     {
-        if (hallGroundOverlay != null) {
-            hallGroundOverlay.remove();
-        }
+
+
 
         floor2 = (Button) findViewById(R.id.floor2);
-        floor2.setOnClickListener(new View.OnClickListener() {
+        floor2.setOnClickListener(new View.OnClickListener()
+        {
             public void onClick(View view) {
 
+                if (goo1 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo8 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo9 != null) {
+                    hallGroundOverlay.remove();
+                }
                 // THis code handles the map overlay of the floor plans.
                 // Map overlay of the Hall image over the building
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
                 int imgHeightPixels = dimensions.outHeight;
 
                 float imgHeightInPixels;
@@ -394,7 +417,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall2floor);
 
-                GroundOverlayOptions goo2 = new GroundOverlayOptions()
+                goo2 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
@@ -407,14 +430,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor8ButtonListener()
     {
-        if (hallGroundOverlay != null) {
-            hallGroundOverlay.remove();
-        }
+
 
         floor8 = (Button) findViewById(R.id.floor8);
         floor8.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
+                if (goo2 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo1 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo9 != null) {
+                    hallGroundOverlay.remove();
+                }
                 // THis code handles the map overlay of the floor plans.
                 // Map overlay of the Hall image over the building
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
@@ -427,7 +456,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
 
-                GroundOverlayOptions goo8 = new GroundOverlayOptions()
+                goo8 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
@@ -503,14 +532,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor9ButtonListener()
     {
-        if (hallGroundOverlay != null) {
-            hallGroundOverlay.remove();
-        }
+
 
         floor9 = (Button) findViewById(R.id.floor9);
         floor9.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
+                if (goo2 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo8 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo1 != null) {
+                    hallGroundOverlay.remove();
+                }
                 // THis code handles the map overlay of the floor plans.
                 // Map overlay of the Hall image over the building
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
@@ -523,7 +558,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 float overlaySize = 75;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall9p);
 
-                GroundOverlayOptions goo9 = new GroundOverlayOptions()
+                goo9 = new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
@@ -672,6 +707,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             floor2.setVisibility(View.VISIBLE);
                             floor8.setVisibility(View.VISIBLE);
                             floor9.setVisibility(View.VISIBLE);
+
+                            if (goo2 != null) {
+                                hallGroundOverlay.remove();
+                            }
+                            if (goo8 != null) {
+                                hallGroundOverlay.remove();
+                            }
+                            if (goo1 != null) {
+                                hallGroundOverlay.remove();
+                            }
+                            if (goo9 != null) {
+                                hallGroundOverlay.remove();
+                            }
                         }
                     }
                     // we want to zoom in onto the center of the building.
@@ -908,9 +956,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     floor9.setVisibility(View.INVISIBLE);
 
 
-                    if (hallGroundOverlay != null) {
-                        hallGroundOverlay.remove();
-                    }
+                        if (goo2 != null) {
+                            hallGroundOverlay.remove();
+                        }
+                        if (goo8 != null) {
+                            hallGroundOverlay.remove();
+                        }
+                        if (goo1 != null) {
+                            hallGroundOverlay.remove();
+                        }
+                        if (goo9 != null) {
+                            hallGroundOverlay.remove();
+                        }
 
 
                     isInfoWindowShown = true;
@@ -924,9 +981,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     floor8.setVisibility(View.INVISIBLE);
                     floor9.setVisibility(View.INVISIBLE);
 
-                    if (hallGroundOverlay != null) {
-                        hallGroundOverlay.remove();
-                    }
+                        if (goo2 != null) {
+                            hallGroundOverlay.remove();
+                        }
+                        if (goo8 != null) {
+                            hallGroundOverlay.remove();
+                        }
+                        if (goo1 != null) {
+                            hallGroundOverlay.remove();
+                        }
+                        if (goo9 != null) {
+                            hallGroundOverlay.remove();
+                        }
 
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
@@ -948,7 +1014,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor8.setVisibility(View.INVISIBLE);
                 floor9.setVisibility(View.INVISIBLE);
 
-                if (hallGroundOverlay != null) {
+                if (goo2 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo8 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo1 != null) {
+                    hallGroundOverlay.remove();
+                }
+                if (goo9 != null) {
                     hallGroundOverlay.remove();
                 }
 
