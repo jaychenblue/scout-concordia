@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,13 +21,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
@@ -40,6 +48,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -74,11 +83,24 @@ import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
 
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DirectionsStep;
+import com.google.maps.model.EncodedPolyline;
+import com.google.maps.model.TravelMode;
+import static android.content.ContentValues.TAG;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
-    private final int ACCESS_FINE_LOCATION = 9001;
+    // diffferent req code for handling result depending on why permission was asked
+    private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
+    private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
@@ -120,6 +142,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GroundOverlayOptions goo2;
     private GroundOverlayOptions goo8;
     private GroundOverlayOptions goo9;
+    private static final List<String> locations = new ArrayList<>(); // Concordia buildings list
+    private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
+    private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
+    private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
+    private Polyline pathPolyline = null; // polyline for displaying the map
+    private Dialog setOriginDialog;
+    private boolean useMyLocation = true; // whether useMyCurrentLocation button is checked
+    private Marker startLocationMarker, destinationMarker = null;
+    private int travelMode = 1; // 1 = walking (default), 2 = car, 3 = transit, 4 = shuttle
 
     private boolean disabilityPreference = false; //false for no disability, true for disability
 
@@ -454,57 +485,115 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                onFindYourWayButtonClick(searchBar.getText().toString());
+                setOriginDialog = setOriginDialog();
+                destination = searchBar.getText().toString(); //set destination name, to be used to get LatLng from locationMap
+                searchBar.setText(null);
+                setOriginDialog.show(); // create dialog asking user to select a starting point
+            }
+        });
+
+        //set autocomplete textview text to null and hide keyboard when dismissed
+        searchBar.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                searchBar.setText("");
+                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
     }
 
     // onClick listener for when "Find your way" button is clicked
-    public void onFindYourWayButtonClick(final String destination){
+    public AlertDialog setOriginDialog(){
+        useMyLocation = true; // reset useMyLocation to false
         AlertDialog.Builder builder = new AlertDialog.Builder(this  );
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
+        final View dialogView = inflater.inflate(R.layout.outdoor_buildings_diections_ui, null);
         builder.setView(dialogView);
 
         final AutoCompleteTextView startingLocation = dialogView.findViewById(R.id.starting_location);
-        RadioButton useCurrentLocationButton = dialogView.findViewById(R.id.useMyLocationButton);
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, locations);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         startingLocation.setAdapter(adapter);
+
+        ///when user clicks to enter starting point, uncheck useMyLocationButton if enabled
+        startingLocation.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(useMyLocation){ useMyLocationButtonClicked(dialogView); }
+                return false;
+            }
+        });
 
         startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 startingPoint = startingLocation.getText().toString();
             }
         });
-        builder.create().show();
+        return builder.create();
     }
 
-    // get directions button clicked in dialog for getting directions (in onFindYourWayButtonClick)
     public void onGetDirectionsClick(View v){
+        setOriginDialog.dismiss();
+
+        if(useMyLocation) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                getDirectionsFromCurrentLocation();
+            }
+            else{
+                requestPermissions(ACCESS_FINE_LOCATION_DRAW_PATH);
+            }
+        }
+        else { //starting point not current location
+
+            LatLng origin = null;
+            // if place is not in locationMap, exception will be thrown
+            // No need to check for destination as setOrigin only opens when one of the given options is selected
+            try{
+               origin = locationMap.get(startingPoint);
+            }
+            catch(Throwable t){
+                Log.d(TAG, ""+t.getMessage());
+                Toast.makeText(this, "Invalid starting location", Toast.LENGTH_LONG).show();
+            }
+
+            if(startingPoint != null) {
+                drawDirectionsPath(origin, locationMap.get(destination));
+            }
+        }
+    }
+
+    public void useMyLocationButtonClicked(View v){
+            RadioButton btn = (RadioButton)v.findViewById(R.id.useMyLocationButton);
+            btn.setChecked(!useMyLocation);
+            useMyLocation = !useMyLocation;
     }
 
     // walking option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onWalkingSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 1;
     }
 
     // car option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onCarSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 2;
     }
 
     // transit option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onTransitSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 3;
     }
 
     // shuttle option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onShuttleSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 4;
     }
+
 
     // this is the listener for the get directions button.
     // Once we get the search bar working, we can add a method for search here so that when the button is clicked it searches for location and gives the directions.
@@ -645,7 +734,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             // request for user's permission for location services
             animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
-            requestPermissions();
+            requestPermissions(ACCESS_FINE_LOCATION);
         }
 
         mMap.setOnMyLocationChangeListener(this);
@@ -745,6 +834,92 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void drawDirectionsPath(LatLng origin, LatLng dest){
+        resetPath();
+        List<LatLng> path = new ArrayList();
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey(getString(R.string.google_maps_key))
+                .build();
+
+        DirectionsApiRequest request = DirectionsApi.newRequest(context);
+        TravelMode mode = getTraveMode();
+        if(mode != null) { // not shuttle
+            request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
+        }
+
+        try {
+            DirectionsResult res = request.await();
+            // adds coordinates of each step on the first route give to the List<LatLng> for drawing the polyline
+            if (res.routes != null && res.routes.length > 0) {
+                DirectionsRoute route = res.routes[0]; // take the first route
+                if (route.legs != null) {
+                    for (int i = 0; i < route.legs.length; i++) { //loop through all the legs
+                        DirectionsLeg leg = route.legs[i];
+                        if (leg.steps != null) {
+                            for (int j = 0; j < leg.steps.length; j++) {    // loop through all the steps
+                                DirectionsStep step = leg.steps[j];
+                                EncodedPolyline polyline = step.polyline;
+                                if (polyline != null) {
+                                    List<com.google.maps.model.LatLng> coordinates = polyline.decodePath();
+                                    for (com.google.maps.model.LatLng coord : coordinates) {
+                                        path.add(new LatLng(coord.lat, coord.lng));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            startLocationMarker = mMap.addMarker(new MarkerOptions().position(origin));
+            destinationMarker = mMap.addMarker(new MarkerOptions().position(dest));
+            //draw path
+            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
+            pathPolyline = mMap.addPolyline(opts);
+            animateCamera(origin, zoomLevel);
+            // set starting point and destination to null
+            resetGetDirectionParams();
+        }
+        catch(Throwable t){
+            Log.d(TAG, t.getMessage());
+        }
+    }
+
+    private TravelMode getTraveMode(){
+        TravelMode mode = null;
+        switch (travelMode){
+            case 1:
+                mode = TravelMode.WALKING;
+                break;
+            case 2:
+                mode = TravelMode.DRIVING;
+                break;
+            case 3:
+                mode = TravelMode.TRANSIT;
+                break;
+            case 4:
+                mode = null; // shuttle
+                break;
+        }
+        return mode;
+    }
+
+    // remove previous path and markers
+    private void resetPath(){
+        if(pathPolyline != null) {
+            try {
+                startLocationMarker.remove();
+                destinationMarker.remove();
+                pathPolyline.remove(); //remove previous path
+            }catch(Throwable t){t.printStackTrace();}
+        }
+    }
+
+    private void resetGetDirectionParams(){
+        startingPoint = null;
+        destination = null;
+        travelMode = 1;
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
@@ -909,6 +1084,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             // add building name to list
             locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
+            // add building name adn coordinates to the map
+            locationMap.put(((BuildingInfo) currentBuilding.getEle()).getName().trim(), (LatLng)currentCoordinate.getEle());
 
             for (int j = 0; j < coordinates.size(); j++)
             {
@@ -963,17 +1140,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
     }
 
+    // animates camera to user's current location upon successfully retrieving its location
     private void getCurrentLocation()
     {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try
         {
-            Task location = fusedLocationProviderClient.getLastLocation();
+            final Task location = fusedLocationProviderClient.getLastLocation();
             location.addOnCompleteListener(new OnCompleteListener()
             {
                 @Override public void onComplete(@NonNull Task task) {
                     if(task.isSuccessful())
                     {
+
                         Location currentLocation = (Location) task.getResult();
                         LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                         animateCamera(currentLatLng, zoomLevel);
@@ -983,6 +1162,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }catch (SecurityException e){
             // some problem occurred, return Concordia downtown Campus Location
             animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
+            e.printStackTrace();
+        }
+    }
+
+    // calls drawDirectionsPath upon successfully retrieving user's location
+    private void getDirectionsFromCurrentLocation()
+    {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        try
+        {
+            final Task location = fusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener()
+            {
+                @Override public void onComplete(@NonNull Task task) {
+                    if(task.isSuccessful())
+                    {
+                        Location currentLocation = (Location) task.getResult();
+                        LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        drawDirectionsPath(currentLatLng, locationMap.get(destination));
+                    }
+                }
+            });
+        }catch (SecurityException e){
+            // some problem occurred, return Concordia downtown Campus Location
             e.printStackTrace();
         }
     }
@@ -1004,24 +1207,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
     }
 
-    private void requestPermissions()
+    private void requestPermissions(int requestCode)
     {
         // permission not granted, request for permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
+        }
     }
 
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode)
         {
             case ACCESS_FINE_LOCATION:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
                     // permission granted, move the camera to current location
                     mMap.setMyLocationEnabled(true);
                     getCurrentLocation();
                 }
+                break;
+            case ACCESS_FINE_LOCATION_DRAW_PATH:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    // permission granted,
+                    getDirectionsFromCurrentLocation();
+                }
+                break;
         }
     }
 
