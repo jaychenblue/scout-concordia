@@ -16,8 +16,6 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +27,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.Spinner;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
@@ -47,7 +43,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -68,31 +63,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.google.android.gms.common.api.Status;
-
 import java.io.OutputStream;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
-import com.google.android.material.button.MaterialButton;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
