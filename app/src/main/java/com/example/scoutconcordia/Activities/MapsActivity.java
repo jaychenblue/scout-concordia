@@ -152,6 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Dialog setOriginDialog;
     private boolean useMyLocation = true; // whether useMyCurrentLocation button is checked
     private Marker startLocationMarker, destinationMarker = null;
+    private int travelMode = 1; // 1 = walking (default), 2 = car, 3 = transit, 4 = shuttle
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -469,21 +470,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // walking option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onWalkingSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 1;
     }
 
     // car option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onCarSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 2;
     }
 
     // transit option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onTransitSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 3;
     }
 
     // shuttle option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onShuttleSelected(MenuItem m){
         m.setChecked(true);
+        travelMode = 4;
     }
 
 
@@ -688,24 +693,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void drawDirectionsPath(LatLng origin, LatLng dest){
-        if(pathPolyline != null) {
-            try {
-                startLocationMarker.remove();
-                destinationMarker.remove();
-                pathPolyline.remove(); //remove previous path
-            }catch(Throwable t){t.printStackTrace();}
-        }
-
+        resetPath();
         List<LatLng> path = new ArrayList();
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(getString(R.string.google_maps_key))
                 .build();
 
         DirectionsApiRequest request = DirectionsApi.newRequest(context);
-        request.mode(TravelMode.WALKING).origin(origin.latitude+","+origin.longitude).destination(dest.latitude+","+dest.longitude);
+        TravelMode mode = getTraveMode();
+        if(mode != null) { // not shuttle
+            request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
+        }
+
         try {
             DirectionsResult res = request.await();
-
             // adds coordinates of each step on the first route give to the List<LatLng> for drawing the polyline
             if (res.routes != null && res.routes.length > 0) {
                 DirectionsRoute route = res.routes[0]; // take the first route
@@ -733,7 +734,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
             pathPolyline = mMap.addPolyline(opts);
             animateCamera(origin, zoomLevel);
-
             // set starting point and destination to null
             resetGetDirectionParams();
         }
@@ -742,9 +742,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private TravelMode getTraveMode(){
+        TravelMode mode = null;
+        switch (travelMode){
+            case 1:
+                mode = TravelMode.WALKING;
+                break;
+            case 2:
+                mode = TravelMode.DRIVING;
+                break;
+            case 3:
+                mode = TravelMode.TRANSIT;
+                break;
+            case 4:
+                mode = null; // shuttle
+                break;
+        }
+        return mode;
+    }
+
+    // remove previous path and markers
+    private void resetPath(){
+        if(pathPolyline != null) {
+            try {
+                startLocationMarker.remove();
+                destinationMarker.remove();
+                pathPolyline.remove(); //remove previous path
+            }catch(Throwable t){t.printStackTrace();}
+        }
+    }
+
     private void resetGetDirectionParams(){
         startingPoint = null;
         destination = null;
+        travelMode = 1;
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
