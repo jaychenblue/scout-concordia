@@ -108,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Marker> hall8floorMarkers = new ArrayList<>();
     private List<Marker> hall9floorMarkers = new ArrayList<>();
     private List<Graph> floorGraphs = new ArrayList<>();
+    public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -119,11 +120,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GroundOverlayOptions goo8;
     private GroundOverlayOptions goo9;
 
-
     private boolean disabilityPreference = false; //false for no disability, true for disability
-
-    // Concordia buildings list
-    public static final List<String> locations = new ArrayList<>();
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -543,12 +540,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
 
-                            floor1.setVisibility(View.VISIBLE);
-                            floor2.setVisibility(View.VISIBLE);
-                            floor8.setVisibility(View.VISIBLE);
-                            floor9.setVisibility(View.VISIBLE);
-
                             removeAllFloorOverlays();
+
+                            if (poly.getTag().equals("H Building"))
+                            {
+                                floor1.setVisibility(View.VISIBLE);
+                                floor2.setVisibility(View.VISIBLE);
+                                floor8.setVisibility(View.VISIBLE);
+                                floor9.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                     // we want to zoom in onto the center of the building.
@@ -909,6 +909,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 po.add((LatLng)currentCoordinate.getEle());
                 currentCoordinate = currentCoordinate.getNext();
             }
+
             Polygon justAddedPolygon = mMap.addPolygon(po);
             polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
@@ -937,6 +938,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             polyMarker.setTag(Hall_Building);
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
+            justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
             currentBuilding = currentBuilding.getNext();
         }
     }
