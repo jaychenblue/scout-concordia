@@ -77,7 +77,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
@@ -138,11 +140,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     private GroundOverlay hallGroundOverlay;
 
-    private GroundOverlayOptions goo1;
-    private GroundOverlayOptions goo2;
-    private GroundOverlayOptions goo8;
-    private GroundOverlayOptions goo9;
-    private static final List<String> locations = new ArrayList<>(); // Concordia buildings list
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
     private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
@@ -374,6 +371,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
+
+        for (Graph graph : floorGraphs)
+        {
+            for (Graph.Node node: graph.nodes())
+            {
+                if (node.getType() == 0)
+                {
+                    locations.add(node.getRoom());
+                    locationMap.put(node.getRoom(), node.getElement());
+                }
+            }
+        }
     }
 
     public void setUpGroundOverlay(String image)
@@ -448,7 +457,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pathMarker.remove();
+                if (pathMarker != null)
+                {
+                    pathMarker.remove();
+                }
                 searchResultsIndex++; //increment the search result index
 
                 if (searchResultsIndex == searchResults.size())
@@ -457,8 +469,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     searchResultsIndex = 0;
                     searchPath.setVisible(false);
                     nextStep.setVisibility(View.INVISIBLE);
-                } else
-                {
+                } else if (searchResultsIndex == 0) {
+                    exploreInsideButton.performClick();
+                    displaySearchResults(searchResults.get(searchResultsIndex));
+                }else {
                     displaySearchResults(searchResults.get(searchResultsIndex));
                 }
             }
@@ -559,7 +573,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             if(startingPoint != null) {
-                drawDirectionsPath(origin, locationMap.get(destination));
+                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                {
+                    drawDirectionsPath(origin, locationMap.get(destination));
+                } else {  //if the destination is a classroom
+                    String buildingName = destination.substring(0,1) + " Building";
+                    String toMe = destination;
+                    searchMarker.setPosition(locationMap.get(buildingName));
+                    drawDirectionsPath(origin, locationMap.get(buildingName));
+
+
+                    //exploreInsideButton.performClick();
+                    searchResults = searchForClass("H-903", toMe);
+                    searchResultsIndex = -1;
+                    searchPath.setVisible(true);
+                }
             }
         }
     }
