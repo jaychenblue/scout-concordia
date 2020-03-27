@@ -336,7 +336,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void createFloorGraphs()
     {
-        // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = createGraph("encryptedhall8nodes");
         Graph hall_9_floor = createGraph("encryptedhall9nodes");
 
@@ -344,18 +343,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floorGraphs.add(hall_9_floor);
     }
 
+    public void setUpGroundOverlay(String image)
+    {
+        BitmapFactory.Options dimensions = new BitmapFactory.Options();
+        dimensions.inJustDecodeBounds = true;
+        int imgHeightPixels = dimensions.outHeight;
+        float imgHeightInPixels;
+        float imgRotation = -56;
+        float overlaySize = 75;
+        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier(image, "drawable", getPackageName()));
+
+        hallGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                .image(floorPlan)
+                .position(hallOverlaySouthWest, overlaySize)
+                .anchor(0, 1)
+                .bearing(imgRotation));
+    }
+
     public void addfloor1ButtonListener()
     {
-
-
         floor1 = (Button) findViewById(R.id.floor1);
         floor1.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View view) {
 
                 removeAllFloorOverlays();
-
-
+                
                 // THis code handles the map overlay of the floor plans.
                 // Map overlay of the Hall image over the building
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
@@ -381,9 +394,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor2ButtonListener()
     {
-
-
-
         floor2 = (Button) findViewById(R.id.floor2);
         floor2.setOnClickListener(new View.OnClickListener()
         {
@@ -416,127 +426,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor8ButtonListener()
     {
-
-
         floor8 = (Button) findViewById(R.id.floor8);
         floor8.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                removeAllFloorOverlays();
-
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
-                int imgHeightPixels = dimensions.outHeight;
-
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
-
-                goo8 = new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation);
-
-                hallGroundOverlay = mMap.addGroundOverlay(goo8);
-
-
-                // For future reference, this will be necessary in order to remove the overlay once
-                // the app moves away contextually from the inside of the building.
-
-//                hall8.remove();
-
-                // Lets try creating a graph for Hall 8th Floor
-                //Graph hall_8_floor = createGraph("encryptedhall8nodes");
-                //Graph hall_8_floor = createGraph("hall8nodes");
-
-                //for (Graph.Node node : hall_8_floor.nodes())
-                //{
-                //    if (node.getType() > 0) {  // if it is a hall node
-                //        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                //        hall8floorMarkers.add(polyMarker);
-                //    } else { // if it is a class node
-                //        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                //        hall8floorMarkers.add(polyMarker);
-                //    }
-               // }
-
-                //LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
-                //LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
-
-                //Log.w("Point 1:", point1.toString());
-                //Log.w("Point 2:", point2.toString());
-
-                //Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
-
-              //  LatLng[] dest = new LatLng[path.length];
-              //  System.arraycopy(path, 0, dest, 0, path.length);
-
-
-             //   Polyline searchPath = mMap.addPolyline(new PolylineOptions());
-             //   List<LatLng> listOfPoints = new ArrayList<>();
-             //   searchPath.setPoints(Arrays.asList(dest));
-
-             //   if (path != null)
-             //   {
-             //       Log.w("BFS", "Final Path");
-             //       for (int i = 0; i < path.length; i++)
-             //       {
-             //           Log.w("BFS", path[i].toString());
-            //
-             //             // lets highlight the path.
-             //             for (Marker markers : hall8floorMarkers)
-             //             {
-             //                 if (markers.getPosition().equals(path[i]))
-             //                 {
-             //                     if (path[i].equals(point1))
-             //                     {
-             //                         markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-             //                     } else if (path[i].equals(point2))
-             //                     {
-             //                         markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-             //                     } else {
-             //                         markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-             //                     }
-             //                 }
-             //             }
-             //       }
-             //   }
+                if (hallGroundOverlay!= null)
+                {
+                    hallGroundOverlay.remove();
+                }
+                setUpGroundOverlay("hall8p");
             }
         });
     }
 
     public void addfloor9ButtonListener()
     {
-
-
         floor9 = (Button) findViewById(R.id.floor9);
         floor9.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
-                removeAllFloorOverlays();
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
-                int imgHeightPixels = dimensions.outHeight;
-
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall9p);
-
-                goo9 = new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation);
-
-                hallGroundOverlay = mMap.addGroundOverlay(goo9);
+                if (hallGroundOverlay!= null)
+                {
+                    hallGroundOverlay.remove();
+                }
+                setUpGroundOverlay("hall9p");
             }
         });
     }
