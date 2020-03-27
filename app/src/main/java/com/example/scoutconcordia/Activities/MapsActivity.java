@@ -80,6 +80,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -212,230 +213,104 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor2ButtonListener();
 
         createFloorGraphs();
-
-        floorGraphs.indexOf(hall_8_floor);
-        LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
-        LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
-
-        String fromMe = "";
-        String toMe = "";
-        searchForClass(fromMe, toMe);
-
+        
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
     }
 
+    public List<Object[]> searchForClass(String fromMe, String toMe) {
+        // if we dont find the to me location on the same floor we need to send it to the escalator.
+        LatLng point1 = null;
+        LatLng point2 = null;
+        String floor1 = "";
+        String floor2 = "";
+        Graph graph1 = null;
+        Graph graph2 = null;
+        List<Object[]> results = new ArrayList<>();
 
-    public void addfloor1ButtonListener()
-    {
-
-        if (hallGroundOverlay != null) {
-            hallGroundOverlay.remove();
-        }
-
-        floor1 = (Button) findViewById(R.id.floor1);
-        floor1.setOnClickListener(new View.OnClickListener()
+        for (Graph graph : floorGraphs)
         {
-            public void onClick(View view) {
-
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
-                int imgHeightPixels = dimensions.outHeight;
-
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall1p);
-
-                GroundOverlayOptions goo1 = new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation);
-
-                hallGroundOverlay = mMap.addGroundOverlay(goo1);
-
-
-
-//                // Lets try creating a graph for Hall 8th Floor
-//                Graph hall_8_floor = createGraph("encryptedhall8nodes");
-//                //Graph hall_8_floor = createGraph("hall8nodes");
-//
-//                for (Graph.Node node : hall_8_floor.nodes())
-//                {
-//                    if (node.getType() > 0) {  // if it is a hall node
-//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                        hall8floorMarkers.add(polyMarker);
-//                    } else { // if it is a class node
-//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                        hall8floorMarkers.add(polyMarker);
-//                    }
-//                }
-//                for (LatLng vertices : hall_8_floor.vertices())
-//                {
-//                    if (hall_8_floor.incidentVerticies(vertices) != null)
-//                        Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
-//                    else
-//                        Log.w("Adjacency List", "Failed!");
-//                }
-//
-//                LatLng point1 = hall_8_floor.searchByClassName("H-810");
-//                LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
-//
-//                Log.w("Point 1:", point1.toString());
-//                Log.w("Point 2:", point2.toString());
-//
-//                Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
-//
-//                LatLng[] dest = new LatLng[path.length];
-//                System.arraycopy(path, 0, dest, 0, path.length);
-//
-//
-//                Polyline searchPath = mMap.addPolyline(new PolylineOptions());
-//                List<LatLng> listOfPoints = new ArrayList<>();
-//                searchPath.setPoints(Arrays.asList(dest));
-//
-//                if (path != null)
-//                {
-//                    Log.w("BFS", "Final Path");
-//                    for (int i = 0; i < path.length; i++)
-//                    {
-//                        Log.w("BFS", path[i].toString());
-//
-//                        // lets highlight the path.
-//                        for (Marker markers : hall8floorMarkers)
-//                        {
-//                            if (markers.getPosition().equals(path[i]))
-//                            {
-//                                if (path[i].equals(point1))
-//                                {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-//                                } else if (path[i].equals(point2))
-//                                {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-//                                } else {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
+            point1 = graph.searchByClassName(fromMe);
+            if (point1 != null)
+            {
+                graph1 = graph;
+                floor1 = graph.id;
+                break;
             }
-        });
-    }
-
-
-
-    public void addfloor2ButtonListener()
-    {
-
-        if (hallGroundOverlay != null) {
-            hallGroundOverlay.remove();
         }
 
-        floor2 = (Button) findViewById(R.id.floor2);
-        floor2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall2floor);
-
-                GroundOverlayOptions goo2 = new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation);
-
-                hallGroundOverlay = mMap.addGroundOverlay(goo2);
-
-
-//                // Lets try creating a graph for Hall 8th Floor
-//                Graph hall_8_floor = createGraph("encryptedhall8nodes");
-//                //Graph hall_8_floor = createGraph("hall8nodes");
-//
-//                for (Graph.Node node : hall_8_floor.nodes())
-//                {
-//                    if (node.getType() > 0) {  // if it is a hall node
-//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                        hall8floorMarkers.add(polyMarker);
-//                    } else { // if it is a class node
-//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                        hall8floorMarkers.add(polyMarker);
-//                    }
-//                }
-//                for (LatLng vertices : hall_8_floor.vertices())
-//                {
-//                    if (hall_8_floor.incidentVerticies(vertices) != null)
-//                        Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
-//                    else
-//                        Log.w("Adjacency List", "Failed!");
-//                }
-//
-//                LatLng point1 = hall_8_floor.searchByClassName("H-810");
-//                LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
-//
-//                Log.w("Point 1:", point1.toString());
-//                Log.w("Point 2:", point2.toString());
-//
-//                Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
-//
-//                LatLng[] dest = new LatLng[path.length];
-//                System.arraycopy(path, 0, dest, 0, path.length);
-//
-//
-//                Polyline searchPath = mMap.addPolyline(new PolylineOptions());
-//                List<LatLng> listOfPoints = new ArrayList<>();
-//                searchPath.setPoints(Arrays.asList(dest));
-//
-//                if (path != null)
-//                {
-//                    Log.w("BFS", "Final Path");
-//                    for (int i = 0; i < path.length; i++)
-//                    {
-//                        Log.w("BFS", path[i].toString());
-//
-//                        // lets highlight the path.
-//                        for (Marker markers : hall8floorMarkers)
-//                        {
-//                            if (markers.getPosition().equals(path[i]))
-//                            {
-//                                if (path[i].equals(point1))
-//                                {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-//                                } else if (path[i].equals(point2))
-//                                {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-//                                } else {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
+        for (Graph graph: floorGraphs)
+        {
+            point2 = graph.searchByClassName(toMe);
+            if (point2 != null)
+            {
+                graph2 = graph;
+                floor2 = graph.id;
+                break;
             }
-        });
+        }
+
+        //if either of the points are null then we stop right away.
+        if (point1 == null || point2 == null)
+        {
+            Log.w("ERROR: ", "The location you selected was not found");
+            return null;
+        }
+
+        // we want to check if both of the locations are on the same floor
+        if (floor1.equals(floor2))  //this is an easy search as they are on the same floor
+        {
+            Object[] path = graph1.breathFirstSearch(point1, point2);
+            results.add(path);
+            return results;
+        }
+        else {
+            // we have to get more creative with the search and break it down
+            // we need to search from class -> escalator, then from escalator -> class on the right floor
+            Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ESCALATOR"));
+            Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ESCALATOR"), point2);
+            results.add(path1);
+            results.add(path2);
+            return results;
+        }
     }
 
-    public void searchForClass(String fromMe, String toMe)
+    // this method is going to be used to display the search results from the searchForClass method
+    public void displaySearchResults(List<Object[]> results)
     {
+        if (results.size() == 1)
+        {
+            Object[] path = results.get(0);
+            LatLng[] dest = new LatLng[path.length];
+            System.arraycopy(path, 0, dest, 0, path.length);
 
+            Polyline searchPath = mMap.addPolyline(new PolylineOptions());
+            List<LatLng> listOfPoints = new ArrayList<>();
+            searchPath.setPoints(Arrays.asList(dest));
+
+            floor8.performClick();
+        } else // if the search results go over multiple floors
+        {
+             for (int i = 0; i < results.size(); i++)
+             {
+                 Object[] path = results.get(i);
+                 LatLng[] dest = new LatLng[path.length];
+                 System.arraycopy(path, 0, dest, 0, path.length);
+
+                 Polyline searchPath = mMap.addPolyline(new PolylineOptions());
+                 List<LatLng> listOfPoints = new ArrayList<>();
+                 searchPath.setPoints(Arrays.asList(dest));
+
+                 floor8.performClick();
+             }
+        }
     }
+
     public void createFloorGraphs()
     {
         // Lets try creating a graph for Hall 8th Floor
         Graph hall_8_floor = createGraph("encryptedhall8nodes");
-        Graph hall_9_floor = createGraph("emcryptedhall9nodes");
+        Graph hall_9_floor = createGraph("encryptedhall9nodes");
 
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
@@ -480,7 +355,77 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //            }
         //        }
         //    }
-       // }
+        // }
+    }
+
+    public void addfloor1ButtonListener()
+    {
+
+        if (hallGroundOverlay != null) {
+            hallGroundOverlay.remove();
+        }
+
+        floor1 = (Button) findViewById(R.id.floor1);
+        floor1.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+
+                // THis code handles the map overlay of the floor plans.
+                // Map overlay of the Hall image over the building
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
+                int imgHeightPixels = dimensions.outHeight;
+
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall1p);
+
+                GroundOverlayOptions goo1 = new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(hallOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation);
+
+                hallGroundOverlay = mMap.addGroundOverlay(goo1);
+            }
+        });
+    }
+
+
+
+    public void addfloor2ButtonListener()
+    {
+
+        if (hallGroundOverlay != null) {
+            hallGroundOverlay.remove();
+        }
+
+        floor2 = (Button) findViewById(R.id.floor2);
+        floor2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+
+                // THis code handles the map overlay of the floor plans.
+                // Map overlay of the Hall image over the building
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall2floor);
+
+                GroundOverlayOptions goo2 = new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(hallOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation);
+
+                hallGroundOverlay = mMap.addGroundOverlay(goo2);
+            }
+        });
     }
 
     public void addfloor8ButtonListener()
@@ -521,61 +466,61 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                hall8.remove();
 
                 // Lets try creating a graph for Hall 8th Floor
-                Graph hall_8_floor = createGraph("encryptedhall8nodes");
+                //Graph hall_8_floor = createGraph("encryptedhall8nodes");
                 //Graph hall_8_floor = createGraph("hall8nodes");
 
-                for (Graph.Node node : hall_8_floor.nodes())
-                {
-                    if (node.getType() > 0) {  // if it is a hall node
-                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        hall8floorMarkers.add(polyMarker);
-                    } else { // if it is a class node
-                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        hall8floorMarkers.add(polyMarker);
-                    }
-                }
+                //for (Graph.Node node : hall_8_floor.nodes())
+                //{
+                //    if (node.getType() > 0) {  // if it is a hall node
+                //        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                //        hall8floorMarkers.add(polyMarker);
+                //    } else { // if it is a class node
+                //        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                //        hall8floorMarkers.add(polyMarker);
+                //    }
+               // }
 
-                LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
-                LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
+                //LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
+                //LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
 
-                Log.w("Point 1:", point1.toString());
-                Log.w("Point 2:", point2.toString());
+                //Log.w("Point 1:", point1.toString());
+                //Log.w("Point 2:", point2.toString());
 
-                Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
+                //Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
 
-                LatLng[] dest = new LatLng[path.length];
-                System.arraycopy(path, 0, dest, 0, path.length);
+              //  LatLng[] dest = new LatLng[path.length];
+              //  System.arraycopy(path, 0, dest, 0, path.length);
 
 
-                Polyline searchPath = mMap.addPolyline(new PolylineOptions());
-                List<LatLng> listOfPoints = new ArrayList<>();
-                searchPath.setPoints(Arrays.asList(dest));
+             //   Polyline searchPath = mMap.addPolyline(new PolylineOptions());
+             //   List<LatLng> listOfPoints = new ArrayList<>();
+             //   searchPath.setPoints(Arrays.asList(dest));
 
-                if (path != null)
-                {
-                    Log.w("BFS", "Final Path");
-                    for (int i = 0; i < path.length; i++)
-                    {
-                        Log.w("BFS", path[i].toString());
-
-                          // lets highlight the path.
-                          for (Marker markers : hall8floorMarkers)
-                          {
-                              if (markers.getPosition().equals(path[i]))
-                              {
-                                  if (path[i].equals(point1))
-                                  {
-                                      markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-                                  } else if (path[i].equals(point2))
-                                  {
-                                      markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-                                  } else {
-                                      markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-                                  }
-                              }
-                          }
-                    }
-                }
+             //   if (path != null)
+             //   {
+             //       Log.w("BFS", "Final Path");
+             //       for (int i = 0; i < path.length; i++)
+             //       {
+             //           Log.w("BFS", path[i].toString());
+            //
+             //             // lets highlight the path.
+             //             for (Marker markers : hall8floorMarkers)
+             //             {
+             //                 if (markers.getPosition().equals(path[i]))
+             //                 {
+             //                     if (path[i].equals(point1))
+             //                     {
+             //                         markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+             //                     } else if (path[i].equals(point2))
+             //                     {
+             //                         markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+             //                     } else {
+             //                         markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+             //                     }
+             //                 }
+             //             }
+             //       }
+             //   }
             }
         });
     }
@@ -613,54 +558,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
                 hallGroundOverlay = mMap.addGroundOverlay(goo9);
 
-                // Lets try creating a graph for Hall 8th Floor
-                Graph hall_9_floor = createGraph("encryptedhall9nodes");
-                //Graph hall_9_floor = createGraph("hall9nodes");
-
-                for (Graph.Node node : hall_9_floor.nodes())
-                {
-                    if (node.getType() > 0) {  // if it is a hall node
-                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        hall9floorMarkers.add(polyMarker);
-                    } else { // if it is a class node
-                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        hall9floorMarkers.add(polyMarker);
-                    }
-                }
-
-                LatLng point1 = hall_9_floor.searchByClassName("H-927");
-                LatLng point2 = hall_9_floor.searchByClassName("ELEVATOR");
-
-                Log.w("Point 1:", point1.toString());
-                Log.w("Point 2:", point2.toString());
-
-                Object[] path = hall_9_floor.breathFirstSearch(point1, point2);
-
-                if (path != null)
-                {
-                    Log.w("BFS", "Final Path");
-                    for (int i = 0; i < path.length; i++)
-                    {
-                        Log.w("BFS", path[i].toString());
-
-                        // lets highlight the path.
-                        for (Marker markers : hall9floorMarkers)
-                        {
-                            if (markers.getPosition().equals(path[i]))
-                            {
-                                if (path[i].equals(point1))
-                                {
-                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-                                } else if (path[i].equals(point2))
-                                {
-                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-                                } else {
-                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-                                }
-                            }
-                        }
-                    }
-                }
+                //// Lets try creating a graph for Hall 8th Floor
+                //Graph hall_9_floor = createGraph("encryptedhall9nodes");
+                ////Graph hall_9_floor = createGraph("hall9nodes");
+//
+//                for (Graph.Node node : hall_9_floor.nodes())
+//                {
+//                    if (node.getType() > 0) {  // if it is a hall node
+//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+//                        hall9floorMarkers.add(polyMarker);
+//                    } else { // if it is a class node
+//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+//                        hall9floorMarkers.add(polyMarker);
+//                    }
+//                }
+//
+//                LatLng point1 = hall_9_floor.searchByClassName("H-927");
+//                LatLng point2 = hall_9_floor.searchByClassName("ELEVATOR");
+//
+//                Log.w("Point 1:", point1.toString());
+//                Log.w("Point 2:", point2.toString());
+//
+//                Object[] path = hall_9_floor.breathFirstSearch(point1, point2);
+//
+//                if (path != null)
+//                {
+//                    Log.w("BFS", "Final Path");
+//                    for (int i = 0; i < path.length; i++)
+//                    {
+//                        Log.w("BFS", path[i].toString());
+//
+//                        // lets highlight the path.
+//                        for (Marker markers : hall9floorMarkers)
+//                        {
+//                            if (markers.getPosition().equals(path[i]))
+//                            {
+//                                if (path[i].equals(point1))
+//                                {
+//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
+//                                } else if (path[i].equals(point2))
+//                                {
+//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
+//                                } else {
+//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
             }
         });
     }
@@ -744,6 +689,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         directionButton = (Button) findViewById(R.id.directionsButton);
         // can add a functionality here that gives us the directions when we press on the button
+
+        directionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TESTING INDOOR DIRECTIONS
+                String fromMe = "H-811";
+                String toMe = "H-927.04";
+                displaySearchResults(searchForClass(fromMe, toMe));
+            }
+        });
     }
 
     // this is the listener for the explore inside button.
@@ -771,7 +726,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             floor9.setVisibility(View.VISIBLE);
                         }
                     }
-
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
                 }

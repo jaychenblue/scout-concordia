@@ -17,6 +17,7 @@ public class Graph
     private int numberOfNodes;
     private Node[] nodes;
     private N_aryTree breathFirstSearchResults;
+    public String id; //will contain the name of the floor
 
     public class Node
     {
@@ -339,7 +340,7 @@ public class Graph
                 currentPos = currentLine.indexOf("Name of Image: ");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
-                floorName = (currentLine.substring(currentPos + 13));
+                floorName = (currentLine.substring(currentPos + 15));
 
                 i++; i++;
                 currentLine = contents[i];
@@ -400,6 +401,7 @@ public class Graph
             LinkedList.Node current = null;
             LinkedList.Node currentClass = null;
             returnMe = new Graph(coordinatesToInsert.size());
+            returnMe.id = floorName;
             for (int i = 0; i < coordinatesToInsert.size(); i++)
             {
                 if (i == 0)
