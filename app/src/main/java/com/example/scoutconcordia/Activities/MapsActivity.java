@@ -104,12 +104,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
     private Button directionButton;
     private Button exploreInsideButton;
+    private Button nextStep;
 
     private Button floor1;
     private Button floor2;
     private Button floor8;
     private Button floor9;
-
 
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
@@ -129,6 +129,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     private GroundOverlay hallGroundOverlay;
+
+    private boolean disabilityPreference = false; //false for no disability, true for disability
 
     // Concordia buildings list
     public static final List<String> locations = new ArrayList<>();
@@ -211,6 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor9ButtonListener();
         addfloor1ButtonListener();
         addfloor2ButtonListener();
+        addNextStepListener();
 
         createFloorGraphs();
         
@@ -267,11 +270,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else {
             // we have to get more creative with the search and break it down
             // we need to search from class -> escalator, then from escalator -> class on the right floor
-            Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ESCALATOR"));
-            Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ESCALATOR"), point2);
-            results.add(path1);
-            results.add(path2);
-            return results;
+            if (disabilityPreference)
+            {
+                nextStep.setVisibility(View.VISIBLE); // enable the next step button
+                Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ELEVATOR"));
+                Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ELEVATOR"), point2);
+                results.add(path1);
+                results.add(path2);
+                return results;
+            } else
+            {
+                nextStep.setVisibility(View.VISIBLE); // enable the next step button
+                Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ESCALATOR"));
+                Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ESCALATOR"), point2);
+                results.add(path1);
+                results.add(path2);
+                return results;
+            }
         }
     }
 
@@ -314,48 +329,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
-
-        //LatLng point1 = hall_8_floor.searchByClassName("ESCALATOR");
-        //LatLng point2 = hall_8_floor.searchByClassName("ELEVATOR");
-
-        //Log.w("Point 1:", point1.toString());
-        //Log.w("Point 2:", point2.toString());
-
-        //Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
-
-        //LatLng[] dest = new LatLng[path.length];
-        //System.arraycopy(path, 0, dest, 0, path.length);
-
-
-        //Polyline searchPath = mMap.addPolyline(new PolylineOptions());
-        //List<LatLng> listOfPoints = new ArrayList<>();
-        //searchPath.setPoints(Arrays.asList(dest));
-
-        //if (path != null)
-        //{
-        //    Log.w("BFS", "Final Path");
-        //    for (int i = 0; i < path.length; i++)
-        //    {
-        //        Log.w("BFS", path[i].toString());
-
-        //        // lets highlight the path.
-        //        for (Marker markers : hall8floorMarkers)
-        //        {
-        //            if (markers.getPosition().equals(path[i]))
-        //            {
-        //                if (path[i].equals(point1))
-        //                {
-        //                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-        //                } else if (path[i].equals(point2))
-        //                {
-        //                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-        //                } else {
-        //                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-        //                }
-        //            }
-        //        }
-        //    }
-        // }
     }
 
     public void addfloor1ButtonListener()
@@ -393,11 +366,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
-
     public void addfloor2ButtonListener()
     {
-
         if (hallGroundOverlay != null) {
             hallGroundOverlay.remove();
         }
@@ -430,7 +400,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor8ButtonListener()
     {
-
         if (hallGroundOverlay != null) {
             hallGroundOverlay.remove();
         }
@@ -527,7 +496,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloor9ButtonListener()
     {
-
         if (hallGroundOverlay != null) {
             hallGroundOverlay.remove();
         }
@@ -553,59 +521,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .position(hallOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation);
-//                mMap.addGroundOverlay(goo);
 
-//                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
                 hallGroundOverlay = mMap.addGroundOverlay(goo9);
+            }
+        });
+    }
 
-                //// Lets try creating a graph for Hall 8th Floor
-                //Graph hall_9_floor = createGraph("encryptedhall9nodes");
-                ////Graph hall_9_floor = createGraph("hall9nodes");
-//
-//                for (Graph.Node node : hall_9_floor.nodes())
-//                {
-//                    if (node.getType() > 0) {  // if it is a hall node
-//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                        hall9floorMarkers.add(polyMarker);
-//                    } else { // if it is a class node
-//                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                        hall9floorMarkers.add(polyMarker);
-//                    }
-//                }
-//
-//                LatLng point1 = hall_9_floor.searchByClassName("H-927");
-//                LatLng point2 = hall_9_floor.searchByClassName("ELEVATOR");
-//
-//                Log.w("Point 1:", point1.toString());
-//                Log.w("Point 2:", point2.toString());
-//
-//                Object[] path = hall_9_floor.breathFirstSearch(point1, point2);
-//
-//                if (path != null)
-//                {
-//                    Log.w("BFS", "Final Path");
-//                    for (int i = 0; i < path.length; i++)
-//                    {
-//                        Log.w("BFS", path[i].toString());
-//
-//                        // lets highlight the path.
-//                        for (Marker markers : hall9floorMarkers)
-//                        {
-//                            if (markers.getPosition().equals(path[i]))
-//                            {
-//                                if (path[i].equals(point1))
-//                                {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-//                                } else if (path[i].equals(point2))
-//                                {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-//                                } else {
-//                                    markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
+    public void addNextStepListener()
+    {
+        nextStep = (Button) findViewById(R.id.nextStep);
+        nextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -621,7 +549,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
     public void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -635,6 +562,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
     // onClick listener for when "Find your way" button is clicked
     public void onFindYourWayButtonClick(final String destination){
         AlertDialog.Builder builder = new AlertDialog.Builder(this  );
@@ -653,7 +581,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
             }
         });
         builder.create().show();
@@ -696,6 +623,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // TESTING INDOOR DIRECTIONS
                 String fromMe = "H-811";
                 String toMe = "H-927.04";
+                List<Object[]> searchResults = searchForClass(fromMe, toMe);
+                searchResults.get(1);
                 displaySearchResults(searchForClass(fromMe, toMe));
             }
         });

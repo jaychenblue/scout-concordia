@@ -179,4 +179,17 @@ tools:context=".Activities.MapsActivity">
         android:text="2nd Floor"
         android:visibility="invisible" />
 
+    <Button
+        android:id="@+id/nextStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="550dp"
+        android:layout_marginLeft="55dp"
+        android:text="Next Step"
+        android:visibility="invisible" />
+
+
 </RelativeLayout>
