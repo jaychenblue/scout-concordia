@@ -368,26 +368,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
 
                 removeAllFloorOverlays();
-                
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
-                int imgHeightPixels = dimensions.outHeight;
-
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall1p);
-
-                goo1 = new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation);
-
-                hallGroundOverlay = mMap.addGroundOverlay(goo1);
+                setUpGroundOverlay("hall1p");
             }
         });
     }
@@ -400,26 +381,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
 
                 removeAllFloorOverlays();
-
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
-                int imgHeightPixels = dimensions.outHeight;
-
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall2floor);
-
-                goo2 = new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation);
-
-                hallGroundOverlay = mMap.addGroundOverlay(goo2);
+                setUpGroundOverlay("hall2floor");
             }
         });
     }
