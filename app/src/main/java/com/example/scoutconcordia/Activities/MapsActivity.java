@@ -470,6 +470,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     searchPath.setVisible(false);
                     nextStep.setVisibility(View.INVISIBLE);
                 } else if (searchResultsIndex == 0) {
+                    resetPath();  //erase the path from outdoor directions
                     exploreInsideButton.performClick();
                     displaySearchResults(searchResults.get(searchResultsIndex));
                 }else {
@@ -573,21 +574,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
             if(startingPoint != null) {
+                // this all assumes that the starting location is a building.
                 if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
                 {
                     drawDirectionsPath(origin, locationMap.get(destination));
                 } else {  //if the destination is a classroom
                     String buildingName = destination.substring(0,1) + " Building";
                     String toMe = destination;
-                    searchMarker.setPosition(locationMap.get(buildingName));
-                    drawDirectionsPath(origin, locationMap.get(buildingName));
 
+                    for (Marker marker : markerBuildings)
+                    {
+                        if ((marker.getTitle()).equals(buildingName))
+                        {
+                            searchMarker.setPosition(marker.getPosition());
+                            searchMarker.setVisible(false);
+                        }
+                    }
+
+                    drawDirectionsPath(origin, locationMap.get(buildingName));
 
                     //exploreInsideButton.performClick();
                     searchResults = searchForClass("H-903", toMe);
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
                 }
+                // what about if the starting location is a classroom??
             }
         }
     }
@@ -651,8 +662,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (activeInfoWindow != null)
-                {
+                //if (activeInfoWindow != null)
+                //{
                     // we want to remove the building outline from the map so we can see the indoor floor plan
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
@@ -676,7 +687,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
-                }
+                //}
             };
         });
     }
@@ -721,24 +732,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void removeAllFloorOverlays(){
-
         if (hallGroundOverlay != null){
             hallGroundOverlay.remove();
         }
-//        if (goo2 != null) {
-//            hallGroundOverlay.remove();
-//        }
-//        if (goo8 != null) {
-//            hallGroundOverlay.remove();
-//        }
-//        if (goo1 != null) {
-//            hallGroundOverlay.remove();
-//        }
-//        if (goo9 != null) {
-//            hallGroundOverlay.remove();
-//        }
     }
-
 
     /**
      * Manipulates the map once available.
