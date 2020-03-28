@@ -180,6 +180,29 @@ tools:context=".Activities.MapsActivity">
         android:visibility="invisible" />
 
     <Button
+        android:id="@+id/floorCC1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="4dp"
+        android:text="CC 1"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/floorCC2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="390dp"
+        android:layout_marginEnd="4dp"
+        android:text="CC 2"
+        android:visibility="invisible" />
+
+    <Button
         android:id="@+id/nextStep"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -95,6 +95,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button floor2;
     private Button floor8;
     private Button floor9;
+    private Button floorCC1;
+    private Button floorCC2;
 
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
@@ -115,6 +117,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     private GroundOverlay hallGroundOverlay;
+    private final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
+    private GroundOverlay ccGroundOverlay;
 
     private GroundOverlayOptions goo1;
     private GroundOverlayOptions goo2;
@@ -201,6 +205,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor9ButtonListener();
         addfloor1ButtonListener();
         addfloor2ButtonListener();
+        addfloorCC1ButtonListener();
+        addfloorCC2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
@@ -411,6 +417,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    public void addfloorCC1ButtonListener()
+    {
+        floorCC1 = (Button) findViewById(R.id.floorCC1);
+        floorCC1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 29;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", "drawable", getPackageName()));
+
+                hallGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(ccOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorCC2ButtonListener()
+    {
+        floorCC2 = (Button) findViewById(R.id.floorCC2);
+        floorCC2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 29;
+                float overlaySize = 75;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", "drawable", getPackageName()));
+
+                hallGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(ccOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
     public void addNextStepListener()
     {
         nextStep = (Button) findViewById(R.id.nextStep);
@@ -554,6 +612,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 floor2.setVisibility(View.VISIBLE);
                                 floor8.setVisibility(View.VISIBLE);
                                 floor9.setVisibility(View.VISIBLE);
+                            } else if (poly.getTag().equals("CC Building"))
+                            {
+                                floorCC1.setVisibility(View.VISIBLE);
+                                floorCC2.setVisibility(View.VISIBLE);
                             }
                         }
                     }
@@ -804,29 +866,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // this sets the parameters for the pop up bar that appears on click
                         popUpBar.setVisibility(View.VISIBLE);
 
-                    floor1.setVisibility(View.INVISIBLE);
-                    floor2.setVisibility(View.INVISIBLE);
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
-
+                        floor1.setVisibility(View.INVISIBLE);
+                        floor2.setVisibility(View.INVISIBLE);
+                        floor8.setVisibility(View.INVISIBLE);
+                        floor9.setVisibility(View.INVISIBLE);
+                        floorCC1.setVisibility(View.INVISIBLE);
+                        floorCC2.setVisibility(View.INVISIBLE);
 
                         removeAllFloorOverlays();
 
-
-
-                    isInfoWindowShown = true;
+                        isInfoWindowShown = true;
                 } else {
-                    marker.hideInfoWindow();
-                    directionButton.setVisibility(View.INVISIBLE);
-                    exploreInsideButton.setVisibility(View.INVISIBLE);
-                    popUpBar.setVisibility(View.INVISIBLE);
-                    floor1.setVisibility(View.INVISIBLE);
-                    floor2.setVisibility(View.INVISIBLE);
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
+                        marker.hideInfoWindow();
+                        directionButton.setVisibility(View.INVISIBLE);
+                        exploreInsideButton.setVisibility(View.INVISIBLE);
+                        popUpBar.setVisibility(View.INVISIBLE);
+                        floor1.setVisibility(View.INVISIBLE);
+                        floor2.setVisibility(View.INVISIBLE);
+                        floor8.setVisibility(View.INVISIBLE);
+                        floor9.setVisibility(View.INVISIBLE);
+                        floorCC1.setVisibility(View.INVISIBLE);
+                        floorCC2.setVisibility(View.INVISIBLE);
 
                         removeAllFloorOverlays();
-
 
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
