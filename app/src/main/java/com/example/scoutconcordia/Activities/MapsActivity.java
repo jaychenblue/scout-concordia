@@ -534,6 +534,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
 
+                resetButtonColors();
+                floorCC1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorCC1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
 
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
@@ -572,6 +575,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
 
+                resetButtonColors();
+                floorCC2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorCC2.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
 
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
@@ -637,15 +643,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     exploreInsideButton.performClick();
                     displaySearchResults(searchResults.get(searchResultsIndex));
                 } else if (searchResultsIndex == 100) {
-                    //if (classToClass)
-                    //{
-                    //    startingPoint = "H-110";  //NEED TO FIX THIS AS WELL
-                    //    resetPath();
-                    //} else
-                    //{
                         resetPath();
                         nextStep.setVisibility(View.INVISIBLE);  //we have reached the end of the search
-                    //}
                 } else
                 {
                     displaySearchResults(searchResults.get(searchResultsIndex));
@@ -863,7 +862,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         needMoreDirections = false;
                         if (destinationBuilding.equals("H"))
                         {
-                            searchResults = searchForClass("H-110", toMe);
+                            searchResults = searchForClass("H-100", toMe);
                         } else if (destinationBuilding.equals("CC"))
                         {
                             searchResults = searchForClass("CC-150", toMe);
@@ -871,7 +870,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     } else
                     {
                         if (startingBuilding.equals("H")) {
-                            searchResults = searchForClass("H-110", toMe);
+                            searchResults = searchForClass("H-100", toMe);
                         } else if (startingBuilding.equals("CC")) {
                             searchResults = searchForClass("CC-150", toMe);
                         }
@@ -894,7 +893,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     exploreInsideButton.performClick();
 
                     if (startingBuilding.equals("H")) {
-                        searchResults = searchForClass(startingPoint, "H-110");
+                        searchResults = searchForClass(startingPoint, "H-100");
                     } else if (startingBuilding.equals("CC")) {
                         searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                     }
@@ -934,7 +933,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         exploreInsideButton.performClick();
 
                         if (startingBuilding.equals("H")) {
-                            searchResults = searchForClass(startingPoint, "H-110"); //directions to exit for H building
+                            searchResults = searchForClass(startingPoint, "H-100"); //directions to exit for H building
                         } else if (startingBuilding.equals("CC")) {
                             searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                         }
@@ -1036,7 +1035,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                     }
-                    //floor1.setVisibility(View.VISIBLE); //display the button. THIS IS TEMPORARY
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
                 //}
