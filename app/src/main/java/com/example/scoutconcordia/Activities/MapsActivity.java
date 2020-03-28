@@ -361,6 +361,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case "H-1":
                 floor1.performClick();
                 break;
+            case "H-2":
+                floor2.performClick();
+                break;
             case "H-8":
                 floor8.performClick();
                 break;
@@ -378,11 +381,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void createFloorGraphs()
     {
+        Graph hall_1_floor = createGraph("hall1nodes", false);
+        Graph hall_2_floor = createGraph("hall2nodes", false);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("cc1nodes", false);
         Graph cc_2_floor = createGraph("cc2nodes", false);
 
+        floorGraphs.add(hall_1_floor);
+        floorGraphs.add(hall_2_floor);
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
         floorGraphs.add(cc_1_floor);
@@ -430,6 +437,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
+
+                //for (Graph graph : floorGraphs)
+                //{
+                //    System.out.println(graph.id);
+                //    if ((graph.id).equals("Hall 1 floor"))
+                //    {
+                //        for (Graph.Node node : graph.nodes())
+                //        {
+                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
+                //        }
+                //    }
+                //}
             }
         });
     }
@@ -446,6 +465,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor2.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall2floor");
+
+                //for (Graph graph : floorGraphs)
+                //{
+                //    System.out.println(graph.id);
+                //    if ((graph.id).equals("Hall 2 floor"))
+                //    {
+                //        for (Graph.Node node : graph.nodes())
+                //        {
+                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
+                //        }
+                //    }
+                //}
             }
         });
     }
@@ -803,7 +834,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //exploreInsideButton.performClick();
 
                     if (startingBuilding.equals("H")) {
-                        // NEED TO ADD THIS ONCE WE GET THE NODES FOR HALL 1ST FLOOR
+                        searchResults = searchForClass("H-110", toMe);
                     } else if (startingBuilding.equals("CC")) {
                         searchResults = searchForClass("CC-150", toMe);
                     }
@@ -826,7 +857,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     exploreInsideButton.performClick();
 
                     if (startingBuilding.equals("H")) {
-                        // NEED TO ADD THIS ONCE WE GET THE NODES FOR HALL 1ST FLOOR
+                        searchResults = searchForClass(startingPoint, "H-110");
                     } else if (startingBuilding.equals("CC")) {
                         searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                     }
@@ -949,7 +980,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                     }
-                    //floorCC2.setVisibility(View.VISIBLE); //display the button. THIS IS TEMPORARY
+                    //floor1.setVisibility(View.VISIBLE); //display the button. THIS IS TEMPORARY
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
                 //}
@@ -1342,7 +1373,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showAllPolygons();
                 showAllMarkers();
 
-                //System.out.println(latLng);
+                System.out.println(latLng);
             }
         });
     }
