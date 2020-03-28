@@ -32,6 +32,16 @@ public class GraphTest {
         coordinate2 = null;
     }
 
+    @Test
+    public void testReset() {
+        g.insertVertex(coordinate1, 1);
+        g.insertVertex(coordinate2, 1);
+        assertNotNull(g.nodes());
+
+        g.reset();
+        assertNull(g.nodes());
+    }
+
     // inserting elements
 
     @Test
@@ -125,6 +135,17 @@ public class GraphTest {
         g.insertEdge(coordinate1, coordinate2);
 
         assertNotNull(g.breathFirstSearch(coordinate1, coordinate2));
+    }
+
+    // testing inner Node class
+
+    @Test
+    public void testNodeGetters() {
+        Graph.Node node1 = g.new Node(coordinate1, 0, 1);
+        assertEquals(1, node1.getType());
+        assertEquals(coordinate1, node1.getElement());
+
+        node1 = null;
     }
 
 }

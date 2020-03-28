@@ -123,6 +123,10 @@ public class LinkedListTest {
         assertEquals(3, node3.getEle());
         assertEquals(node1, node3.getNext());
         assertEquals(node2, node3.getPrev());
+
+        node1 = null;
+        node2 = null;
+        node3 = null;
     }
 
     @Test
@@ -132,6 +136,10 @@ public class LinkedListTest {
         LinkedList.Node node3 = l.new Node(3, node1, node2);
 
         assertEquals("3", node3.toString());
+
+        node1 = null;
+        node2 = null;
+        node3 = null;
     }
     
 }
