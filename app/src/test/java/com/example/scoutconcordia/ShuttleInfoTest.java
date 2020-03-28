@@ -1,80 +1,38 @@
 package com.example.scoutconcordia;
 
+import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ShuttleInfoTest {
 
+    ShuttleInfo shuttleInfo;
+
     @BeforeEach
     public void beforeEach() throws Exception {
-
+        shuttleInfo = new ShuttleInfo();
     }
 
     @AfterEach
     public void afterEach() throws Exception {
-
+        shuttleInfo = null;
     }
 
-    // checking calculated route times
+    // based on the implementation choices, the methods being tested only work with the current time
+    // as a result, the test results change and cannot be predicted -- we can only test for null values
 
     @Test
     public void testGetEstimatedRouteTimeFromSGW() {
-
+        assertNotNull(shuttleInfo.getEstimatedRouteTimeFromSGW());
     }
 
     @Test
     public void testGetEstimatedRouteTimeFromLoyola() {
-
-    }
-
-    // checking shuttle times
-
-    @Test
-    public void testGetLoyolaMondayToThursdayTimes() {
-
-    }
-
-    @Test
-    public void testGetSGWMondayToThursdayTimes() {
-
-    }
-
-    @Test
-    public void testGetLoyolaFridayTimes() {
-
-    }
-
-    @Test
-    public void testGetSGWFridayTimes() {
-
-    }
-
-    // checking retrieval of times from encrypted files
-
-    @Test
-    public void testRetrieveMonToThursLoyola() {
-
-    }
-
-    @Test
-    public void testRetrieveFridayLoyola() {
-
-    }
-
-    @Test
-    public void testRetrieveMonToThursSGW() {
-
-    }
-
-    @Test
-    public void testRetrieveFridaySGW() {
-
+        assertNotNull(shuttleInfo.getEstimatedRouteTimeFromLoyola());
     }
 
 }
