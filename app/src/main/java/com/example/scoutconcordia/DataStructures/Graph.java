@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import static android.location.Location.distanceBetween;
+
+
 // Assumption is no two points are equivalent
 public class Graph
 {
@@ -15,17 +18,19 @@ public class Graph
     private Node[] nodes;
     private N_aryTree breathFirstSearchResults;
 
-    private class Node
+    public class Node
     {
         private int id;
         private LatLng element;
         private LinkedList<Node> adjacencyList;
         private boolean traversed;
+        private int type;  // 0 is a class node, 1 is a hall node.
 
-        public Node(LatLng element, int id)
+        public Node(LatLng element, int id, int type)
         {
             this.element = element;
             this.id = id;
+            this.type = type;
             adjacencyList = new LinkedList<Node>(this);
         }
 
@@ -41,7 +46,8 @@ public class Graph
 
         private int getId() { return id; }
         private void setId(int id) { this.id = id; }
-        private LatLng getElement() { return element; }
+        public int getType() { return type; }
+        public LatLng getElement() { return element; }
         private void setElement(LatLng element) { this.element = element; }
         private boolean isTraversed() { return traversed; }
         private void setTraversed(boolean traversed) { this.traversed = traversed; }
@@ -78,7 +84,8 @@ public class Graph
     }
 
     // returns true if element can be inserted false otherwise
-    public boolean insertVertex(LatLng element)
+    // type indicates whether the node is a class room node or a hall node
+    public boolean insertVertex(LatLng element, int type)
     {
         int placeMe = -1;
         for (int i = 0; i < nodes.length; i++)
@@ -89,7 +96,7 @@ public class Graph
         }
         if (placeMe == -1)
             return false;
-        nodes[placeMe] = new Node(element, placeMe);
+        nodes[placeMe] = new Node(element, placeMe, type);
         numberOfNodes++;
         return true;
     }
@@ -189,6 +196,12 @@ public class Graph
         }
         return returnMe;
     }
+
+    // returns an array of all the nodes in the graph
+    public Node[] nodes()
+    {
+        return nodes;
+    }
     
     // returns an array of points corresponding to the shortest path from --> to
     public Object[] breathFirstSearch(LatLng from, LatLng to)
@@ -199,7 +212,12 @@ public class Graph
         for (int i = 0; i < nodes.length; i++)
         {
             if (nodes[i] != null)
-                nodes[i].setTraversed(false);
+            {
+                if (nodes[i].getType() > 0) // not a class node
+                    nodes[i].setTraversed(false);
+                else
+                    nodes[i].setTraversed(true);
+            }
         }
         // Both points exist
         int id1 = getID(from);
@@ -220,6 +238,7 @@ public class Graph
         // First Breath
         currentPointsToCycle.add(nodes[id1].getElement());
         nodes[id1].setTraversed(true);
+        nodes[id2].setTraversed(false);
         while (currentPointsToCycle.size() != 0)
         {
             currentPoint = currentPointsToCycle.getHead();
@@ -276,57 +295,67 @@ public class Graph
     }
 
     // reads from a node file to add nodes to a graph
-    public static Graph addNodesToGraph(InputStream readFromMe)
+    public static Graph addNodesToGraph(String[] contents)
     {
         int currentPos = 0;
-        Scanner reader = null;
         String currentLine = null;
         String floorName = null;
         Graph returnMe = null;
         LatLng currentCoordinate = null;
+        String roomNumber = null;
+        String[] lineString = null;
+        int posOfHalfway = 0;
+        double x_coordinate = 0, y_coordinate = 0;
+        int nodeType = 0;  //0 is for a classroom node, 1 is for a hall node
+        int nmbClassNodes = 0;
+        int nmbHallNodes = 0;
 
         LinkedList<LatLng> coordinatesToInsert = new LinkedList<LatLng>(new LatLng(0,0));
+        LinkedList<String> namesToInsert = new LinkedList<String>("");
+
         try
         {
-            reader = new Scanner(readFromMe);
-            while(reader.hasNext())
+            for (int i = 0; i < contents.length; i++)
             {
-                currentLine = reader.nextLine();
+                currentLine = contents[i];
                 Log.println(Log.WARN, "printing", currentLine);
                 currentPos = currentLine.indexOf("Name of Image: ");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
                 floorName = (currentLine.substring(currentPos + 13));
-                reader.nextLine();
 
-                currentLine = reader.nextLine();
-
-                // read the file searching for coordinates
-                currentPos = currentLine.indexOf("Coordinates:");
-                currentLine = reader.nextLine();
+                i++; i++;
+                currentLine = contents[i];
+                currentPos = currentLine.indexOf("classrooms:");
+                i++;
+                currentLine = contents[i];
 
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
-                    int posOfHalfway = 0;
-                    double x_coordinate = 0, y_coordinate = 0;
-                    currentPos = currentLine.indexOf("{");
-                    posOfHalfway = currentLine.indexOf(",");
-                    x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
-                    y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-2));
-                    currentCoordinate = new LatLng(x_coordinate, y_coordinate);
-                    
-                    coordinatesToInsert.add(currentCoordinate);
-                    currentLine = reader.nextLine();
+                    coordinatesToInsert.add(readClassCoordinate(currentLine));
+                    nmbClassNodes += 1;
+                    i++;
+                    currentLine = contents[i];
                 }
-                int posOfHalfway = 0;
-                double x_coordinate = 0, y_coordinate = 0;
-                currentPos = currentLine.indexOf("{");
-                posOfHalfway = currentLine.indexOf(",");
-                x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
-                y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-1));
-                currentCoordinate = new LatLng(x_coordinate, y_coordinate);
-                
-                coordinatesToInsert.add(currentCoordinate);
+                // this is for the last classroom coordinate
+                coordinatesToInsert.add(readClassCoordinate(currentLine));
+                nmbClassNodes += 1;
+
+                // read the file searching for hallway
+                i++; i++;
+                currentLine = contents[i];
+                //currentLine = reader.nextLine();
+                while (currentLine.charAt(currentLine.length() - 1) != '}')
+                {
+                    coordinatesToInsert.add(readHallCoordinate(currentLine));
+                    nmbHallNodes += 1;
+                    i ++;
+                    currentLine = contents[i];
+                }
+                coordinatesToInsert.add( readHallCoordinate(currentLine));
+                nmbHallNodes += 1;
+                i++;
+                currentLine = contents[i];
             }
         } catch (InputMismatchException e) {
             e.printStackTrace();
@@ -342,10 +371,63 @@ public class Graph
                 if (i == 0)
                     current = coordinatesToInsert.getHead();
                 if (current != null)
-                    returnMe.insertVertex((LatLng)current.getEle());
+                    if (i < nmbClassNodes) // i < nmbClassNodes the condition causing the error
+                    {
+                        returnMe.insertVertex((LatLng)current.getEle(), 0); //insert a class node
+                    } else {
+                        returnMe.insertVertex((LatLng)current.getEle(), 1); //insert a hall node
+                    }
                 current = current.getNext();
             }
         }
         return returnMe;
+    }
+
+    private static LatLng readClassCoordinate(String currentLine)
+    {
+        String[] lineString = currentLine.split(":");
+        String floorName = lineString[0].trim(); // ex: H-801
+
+        int currentPos = lineString[1].indexOf("{");
+        int posOfHalfway = lineString[1].indexOf(",");
+        double x_coordinate = Double.parseDouble(lineString[1].substring(currentPos+1,posOfHalfway));
+        double y_coordinate = Double.parseDouble(lineString[1].substring(posOfHalfway+2, lineString[1].length()-2));
+        LatLng currentCoordinate = new LatLng(x_coordinate, y_coordinate);
+        return currentCoordinate;
+    }
+
+    private static LatLng readHallCoordinate(String currentLine)
+    {
+        int currentPos = currentLine.indexOf("{");
+        int posOfHalfway = currentLine.indexOf(",");
+        double x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfHalfway));
+        double y_coordinate = Double.parseDouble(currentLine.substring(posOfHalfway+2, currentLine.length()-2));
+        LatLng currentCoordinate = new LatLng(x_coordinate, y_coordinate);
+        return currentCoordinate;
+    }
+
+    public void addAdjacentNodes()
+    {
+        // we want to insert an edge between all of the nodes that are adjacent. i.e the nodes that are closest to eachother
+        float distance = 0;
+        for (int i = 0; i < nodes.length; i++)
+        {
+            Node currentNode = nodes[i];
+            for (int j = 0; j < nodes.length; j++)
+            {
+                distance = calculateNodeDistance(currentNode.getElement(), nodes[j].getElement());
+                if (j != i && distance < 8.5)
+                    insertEdge(currentNode.getElement(), nodes[j].getElement());
+            }
+        }
+    }
+
+    // calculates the distance between 2 nodes in meters
+    private float calculateNodeDistance(LatLng node1, LatLng node2)
+    {
+        float[] distance = new float[1];
+        distanceBetween(node1.latitude, node1.longitude, node2.latitude, node2.longitude, distance);
+
+        return distance[0];
     }
 }
