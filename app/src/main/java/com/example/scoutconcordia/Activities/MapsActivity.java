@@ -446,7 +446,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         float[] results = new float[1];
         Location.distanceBetween(origin.latitude, origin.longitude, dest.latitude, dest.longitude, results);
-        Toast.makeText(this, String.valueOf(results[0]), Toast.LENGTH_LONG).show();
         return results[0] > 2000.0;
     }
 
