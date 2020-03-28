@@ -119,6 +119,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button floor2;
     private Button floor8;
     private Button floor9;
+    private Button floorCC1;
+    private Button floorCC2;
 
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
@@ -139,6 +141,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     private GroundOverlay hallGroundOverlay;
+    private final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
+    private GroundOverlay ccGroundOverlay;
 
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
@@ -229,6 +233,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor9ButtonListener();
         addfloor1ButtonListener();
         addfloor2ButtonListener();
+        addfloorCC1ButtonListener();
+        addfloorCC2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
@@ -366,8 +372,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void createFloorGraphs()
     {
-        Graph hall_8_floor = createGraph("encryptedhall8nodes");
-        Graph hall_9_floor = createGraph("encryptedhall9nodes");
+        Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
+        Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
+        Graph cc_1_floor = createGraph("cc1nodes", false);
+        Graph cc_2_floor = createGraph("cc2nodes", false);
 
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
@@ -383,6 +391,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
+        floorGraphs.add(cc_1_floor);
+        floorGraphs.add(cc_2_floor);
+
     }
 
     public void setUpGroundOverlay(String image)
@@ -461,6 +472,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor9.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall9p");
+            }
+        });
+    }
+
+    public void addfloorCC1ButtonListener()
+    {
+        floorCC1 = (Button) findViewById(R.id.floorCC1);
+        floorCC1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 29;
+                float overlaySize = 82;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", "drawable", getPackageName()));
+
+                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(ccOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+
+               // for (Graph graph : floorGraphs)
+               // {
+               //     System.out.println(graph.id);
+               //     if ((graph.id).equals("CC 1 floor"))
+               //     {
+               //         for (Graph.Node node : graph.nodes())
+               //         {
+               //             mMap.addMarker(new MarkerOptions().position(node.getElement()));
+               //         }
+               //     }
+               // }
+            }
+        });
+    }
+
+    public void addfloorCC2ButtonListener()
+    {
+        floorCC2 = (Button) findViewById(R.id.floorCC2);
+        floorCC2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 29;
+                float overlaySize = 82;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", "drawable", getPackageName()));
+
+                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(ccOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+
+               // for (Graph graph : floorGraphs)
+               // {
+               //     System.out.println(graph.id);
+               //     if ((graph.id).equals("CC 2 floor"))
+               //     {
+               //         for (Graph.Node node : graph.nodes())
+               //         {
+               //             mMap.addMarker(new MarkerOptions().position(node.getElement()));
+               //         }
+               //     }
+               // }
             }
         });
     }
@@ -696,6 +783,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 floor2.setVisibility(View.VISIBLE);
                                 floor8.setVisibility(View.VISIBLE);
                                 floor9.setVisibility(View.VISIBLE);
+                            } else if (poly.getTag().equals("CC Building"))
+                            {
+                                floorCC1.setVisibility(View.VISIBLE);
+                                floorCC2.setVisibility(View.VISIBLE);
                             }
                         }
                     }
@@ -748,6 +839,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void removeAllFloorOverlays(){
         if (hallGroundOverlay != null){
             hallGroundOverlay.remove();
+        }
+        if (ccGroundOverlay != null){
+            ccGroundOverlay.remove();
         }
     }
 
@@ -973,13 +1067,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
-    public Graph createGraph(String encryptedFileName)
+    public Graph createGraph(String encryptedFileName, boolean isEncrypted)
     {
         FileAccessor useMeToRead = new FileAccessor();
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
         // First we need to decrypt the file to have access to the locations
-        useMeToRead.decryptFile(true);
+        useMeToRead.decryptFile(isEncrypted);
 
         // with the decrypted file, we can add the nodes to the graph
         graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
@@ -999,8 +1093,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 // we only want to perform these actions if the marker we clicked on is one of the custom markers.
-                if (markerBuildings.contains(marker)) {
-
+                if (markerBuildings.contains(marker))
+                {
                     isInfoWindowShown = false;
                     searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
 
@@ -1029,33 +1123,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // this sets the parameters for the pop up bar that appears on click
                         popUpBar.setVisibility(View.VISIBLE);
 
-                    floor1.setVisibility(View.INVISIBLE);
-                    floor2.setVisibility(View.INVISIBLE);
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
-
+                        floor1.setVisibility(View.INVISIBLE);
+                        floor2.setVisibility(View.INVISIBLE);
+                        floor8.setVisibility(View.INVISIBLE);
+                        floor9.setVisibility(View.INVISIBLE);
+                        floorCC1.setVisibility(View.INVISIBLE);
+                        floorCC2.setVisibility(View.INVISIBLE);
 
                         removeAllFloorOverlays();
 
-
-
-                    isInfoWindowShown = true;
+                        isInfoWindowShown = true;
                 } else {
-                    marker.hideInfoWindow();
-                    directionButton.setVisibility(View.INVISIBLE);
-                    exploreInsideButton.setVisibility(View.INVISIBLE);
-                    popUpBar.setVisibility(View.INVISIBLE);
-                    floor1.setVisibility(View.INVISIBLE);
-                    floor2.setVisibility(View.INVISIBLE);
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
+                        marker.hideInfoWindow();
+                        directionButton.setVisibility(View.INVISIBLE);
+                        exploreInsideButton.setVisibility(View.INVISIBLE);
+                        popUpBar.setVisibility(View.INVISIBLE);
+                        floor1.setVisibility(View.INVISIBLE);
+                        floor2.setVisibility(View.INVISIBLE);
+                        floor8.setVisibility(View.INVISIBLE);
+                        floor9.setVisibility(View.INVISIBLE);
+                        floorCC1.setVisibility(View.INVISIBLE);
+                        floorCC2.setVisibility(View.INVISIBLE);
 
                         removeAllFloorOverlays();
-
 
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
                     }
+                } else {
+                    System.out.println(marker.getPosition());
                 }
                 return true;
             }
@@ -1072,9 +1168,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor2.setVisibility(View.INVISIBLE);
                 floor8.setVisibility(View.INVISIBLE);
                 floor9.setVisibility(View.INVISIBLE);
+                floorCC1.setVisibility(View.INVISIBLE);
+                floorCC2.setVisibility(View.INVISIBLE);
 
                 removeAllFloorOverlays();
-
 
                 for (Marker m : hall8floorMarkers)
                 {
@@ -1089,6 +1186,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 isInfoWindowShown = false;
                 showAllPolygons();
                 showAllMarkers();
+
+                //System.out.println(latLng);
             }
         });
     }
@@ -1142,7 +1241,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 po.add((LatLng)currentCoordinate.getEle());
                 currentCoordinate = currentCoordinate.getNext();
             }
-
             Polygon justAddedPolygon = mMap.addPolygon(po);
             polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
