@@ -40,6 +40,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
+import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -236,6 +237,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
+
         addDirectionButtonListener();
         addExploreInsideButtonListener();
         addPopUpBarListener();
@@ -407,8 +409,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Graph hall_2_floor = createGraph("hall2nodes", false);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
-        Graph cc_1_floor = createGraph("cc1nodes", false);
-        Graph cc_2_floor = createGraph("cc2nodes", false);
+        Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
+        Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
 
         floorGraphs.add(hall_1_floor);
         floorGraphs.add(hall_2_floor);
@@ -487,18 +489,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor2.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall2floor");
-
-                //for (Graph graph : floorGraphs)
-                //{
-                //    System.out.println(graph.id);
-                //    if ((graph.id).equals("Hall 2 floor"))
-                //    {
-                //        for (Graph.Node node : graph.nodes())
-                //        {
-                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                //        }
-                //    }
-                //}
             }
         });
     }
@@ -559,18 +549,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .position(ccOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation));
-
-               // for (Graph graph : floorGraphs)
-               // {
-               //     System.out.println(graph.id);
-               //     if ((graph.id).equals("CC 1 floor"))
-               //     {
-               //         for (Graph.Node node : graph.nodes())
-               //         {
-               //             mMap.addMarker(new MarkerOptions().position(node.getElement()));
-               //         }
-               //     }
-               // }
             }
         });
     }
@@ -600,18 +578,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .position(ccOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation));
-
-                //for (Graph graph : floorGraphs)
-                //{
-                //    System.out.println(graph.id);
-                //    if ((graph.id).equals("CC 2 floor"))
-                //    {
-                //        for (Graph.Node node : graph.nodes())
-                //        {
-                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                //        }
-                //    }
-                //}
             }
         });
     }
@@ -771,90 +737,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(this, "Invalid starting location", Toast.LENGTH_LONG).show();
             }
 
-            getDirections();
-
-            /**
-            if(startingPoint != null)
+            if (startingPoint != null)
             {
-                if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
-                {
-                    if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
-                    {
-                        drawDirectionsPath(origin, locationMap.get(destination));
-                    } else {                                                                                            //if the destination is a classroom
-                        String buildingName = destination.split("-")[0] + " Building";
-                        //String buildingName = destination.substring(0,1) + " Building";
-                        String toMe = destination;
-
-                        for (Marker marker : markerBuildings) {
-                            if ((marker.getTitle()).equals(buildingName)) {
-                                searchMarker.setPosition(marker.getPosition());
-                                searchMarker.setVisible(false);
-                            }
-                        }
-
-                        drawDirectionsPath(origin, locationMap.get(buildingName));
-
-                        //exploreInsideButton.performClick();
-                        searchResults = searchForClass("CC-101", toMe);
-                        searchResultsIndex = -1;
-                        searchPath.setVisible(true);
-                    }
-                } else //if the starting point is a classroom
-                {
-                    String startingBuilding = "";
-                    String destinationBuilding = "";
-                    // if the destination is a building
-                    if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
-                    {
-                        // need to go from class room to exit (we can hard code the exit for H and for CC)
-                        startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
-                                searchMarker.setPosition(marker.getPosition());
-                                searchMarker.setVisible(false);
-                            }
-                        }
-                        exploreInsideButton.performClick();
-
-                        if (startingBuilding.equals("H"))
-                        {
-                            // NEED TO ADD THIS ONCE WE GET THE NODES FOR HALL 1ST FLOOR
-                        } else if (startingBuilding.equals("CC"))
-                        {
-                            searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
-                        }
-                        searchResultsIndex = -1;
-                        searchPath.setVisible(true);
-
-                        needMoreDirections = true;
-
-                        // need to go from exit to the building
-
-                    } else // if the destination is a classroom
-                    {
-                        startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-                        destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-
-                        if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
-                        {
-                            for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                                if ((marker.getTitle()).equals(startingBuilding + " Building")) {
-                                    searchMarker.setPosition(marker.getPosition());
-                                    searchMarker.setVisible(false);
-                                }
-                            }
-                            exploreInsideButton.performClick();
-                            searchResults = searchForClass(startingPoint, destination);
-                            searchResultsIndex = -1;
-                            searchPath.setVisible(true);
-                        } else //if both classes are in different buildings
-                        {
-
-                        }
-                    }
-                }
-            } **/
+                setOriginDialog.dismiss();
+                getDirections();
+            }
         }
     }
 
@@ -975,9 +862,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // go from the building entrance to the class
                     }
                 }
-            if(startingPoint != null) {
-                setOriginDialog.dismiss();
-                drawDirectionsPath(origin, locationMap.get(destination));
             }
         }
     }
@@ -1284,7 +1168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall9nodes"))
+                if (filename.equals("cc2nodes"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
