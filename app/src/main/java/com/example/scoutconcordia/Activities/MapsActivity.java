@@ -100,7 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
-    // diffferent req code for handling result depending on why permission was asked
+    // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -132,8 +132,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String activeInfoWindow = null;
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
-    private List<Marker> hall8floorMarkers = new ArrayList<>();
-    private List<Marker> hall9floorMarkers = new ArrayList<>();
     private List<Graph> floorGraphs = new ArrayList<>();
     public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
@@ -367,6 +365,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             case "H-9":
                 floor9.performClick();
                 break;
+            case "CC-1":
+                floorCC1.performClick();
+                break;
+            case "CC-2":
+                floorCC2.performClick();
+                break;
         }
     }
 
@@ -379,6 +383,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
+        floorGraphs.add(cc_1_floor);
+        floorGraphs.add(cc_2_floor);
 
         for (Graph graph : floorGraphs)
         {
@@ -391,9 +397,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         }
-        floorGraphs.add(cc_1_floor);
-        floorGraphs.add(cc_2_floor);
-
     }
 
     public void setUpGroundOverlay(String image)
@@ -537,17 +540,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .anchor(0, 1)
                         .bearing(imgRotation));
 
-               // for (Graph graph : floorGraphs)
-               // {
-               //     System.out.println(graph.id);
-               //     if ((graph.id).equals("CC 2 floor"))
-               //     {
-               //         for (Graph.Node node : graph.nodes())
-               //         {
-               //             mMap.addMarker(new MarkerOptions().position(node.getElement()));
-               //         }
-               //     }
-               // }
+                //for (Graph graph : floorGraphs)
+                //{
+                //    System.out.println(graph.id);
+                //    if ((graph.id).equals("CC 2 floor"))
+                //    {
+                //        for (Graph.Node node : graph.nodes())
+                //        {
+                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
+                //        }
+                //    }
+                //}
             }
         });
     }
@@ -680,7 +683,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 {
                     drawDirectionsPath(origin, locationMap.get(destination));
                 } else {  //if the destination is a classroom
-                    String buildingName = destination.substring(0,1) + " Building";
+                    String buildingName = destination.split("-")[0] + " Building";
+                    //String buildingName = destination.substring(0,1) + " Building";
                     String toMe = destination;
 
                     for (Marker marker : markerBuildings)
@@ -695,7 +699,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     drawDirectionsPath(origin, locationMap.get(buildingName));
 
                     //exploreInsideButton.performClick();
-                    searchResults = searchForClass("H-903", toMe);
+                    searchResults = searchForClass("CC-101", toMe);
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
                 }
@@ -746,8 +750,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 // TESTING INDOOR DIRECTIONS
-                String fromMe = "H-811";
-                String toMe = "H-927.04";
+                String fromMe = "CC-215";
+                String toMe = "CC-219";
                 searchResults = searchForClass(fromMe, toMe);
                 searchResultsIndex = 0;
                 searchPath.setVisible(true);
@@ -790,6 +794,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                     }
+                    //floorCC2.setVisibility(View.VISIBLE); //display the button. THIS IS TEMPORARY
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
                 //}
@@ -854,6 +859,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor8.setTextColor(getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
         floor9.setTextColor(getResources().getColor(R.color.black));
+        floorCC1.setBackgroundResource(android.R.drawable.btn_default);
+        floorCC1.setTextColor(getResources().getColor(R.color.black));
+        floorCC2.setBackgroundResource(android.R.drawable.btn_default);
+        floorCC2.setTextColor(getResources().getColor(R.color.black));
     }
 
     /**
@@ -1172,15 +1181,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floorCC2.setVisibility(View.INVISIBLE);
 
                 removeAllFloorOverlays();
-
-                for (Marker m : hall8floorMarkers)
-                {
-                    m.setVisible(false);
-                }
-                for (Marker m : hall9floorMarkers)
-                {
-                    m.setVisible(false);
-                }
 
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
