@@ -145,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
     private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
+    private LatLng origin; //origin of directions search
     private Polyline pathPolyline = null; // polyline for displaying the map
     private Dialog setOriginDialog;
     private boolean useMyLocation = true; // whether useMyCurrentLocation button is checked
@@ -152,6 +153,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int travelMode = 1; // 1 = walking (default), 2 = car, 3 = transit, 4 = shuttle
 
     private boolean disabilityPreference = false; //false for no disability, true for disability
+    private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -569,15 +571,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if (searchResultsIndex == searchResults.size())
                 {
-                    // we want to reset the app back to the initial state
-                    searchResultsIndex = 0;
-                    searchPath.setVisible(false);
-                    nextStep.setVisibility(View.INVISIBLE);
+                    if (needMoreDirections)
+                    {
+                        /// NEED TO CHECK THIS OUT
+                        LatLng[] dest = new LatLng[searchResults.get(searchResultsIndex - 1).length];
+                        System.arraycopy(searchResults.get(searchResultsIndex - 1), 0, dest, 0, searchResults.get(searchResultsIndex - 1).length);
+                        origin = dest[dest.length - 1];
+                        startingPoint = "CC Building";
+                        needMoreDirections = false;
+                        getDirections(); // call get directions again to continue getting directions
+                    } else
+                    {
+                        // we want to reset the app back to the initial state
+                        searchResultsIndex = 0;
+                        searchPath.setVisible(false);
+                        nextStep.setVisibility(View.INVISIBLE);
+                    }
                 } else if (searchResultsIndex == 0) {
                     resetPath();  //erase the path from outdoor directions
                     exploreInsideButton.performClick();
                     displaySearchResults(searchResults.get(searchResultsIndex));
-                }else {
+                }  else
+                {
                     displaySearchResults(searchResults.get(searchResultsIndex));
                 }
             }
@@ -665,8 +680,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         else { //starting point not current location
-
-            LatLng origin = null;
+            origin = null;
             // if place is not in locationMap, exception will be thrown
             // No need to check for destination as setOrigin only opens when one of the given options is selected
             try{
@@ -677,33 +691,174 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(this, "Invalid starting location", Toast.LENGTH_LONG).show();
             }
 
-            if(startingPoint != null) {
-                // this all assumes that the starting location is a building.
+            getDirections();
+
+            /**
+            if(startingPoint != null)
+            {
+                if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+                {
+                    if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                    {
+                        drawDirectionsPath(origin, locationMap.get(destination));
+                    } else {                                                                                            //if the destination is a classroom
+                        String buildingName = destination.split("-")[0] + " Building";
+                        //String buildingName = destination.substring(0,1) + " Building";
+                        String toMe = destination;
+
+                        for (Marker marker : markerBuildings) {
+                            if ((marker.getTitle()).equals(buildingName)) {
+                                searchMarker.setPosition(marker.getPosition());
+                                searchMarker.setVisible(false);
+                            }
+                        }
+
+                        drawDirectionsPath(origin, locationMap.get(buildingName));
+
+                        //exploreInsideButton.performClick();
+                        searchResults = searchForClass("CC-101", toMe);
+                        searchResultsIndex = -1;
+                        searchPath.setVisible(true);
+                    }
+                } else //if the starting point is a classroom
+                {
+                    String startingBuilding = "";
+                    String destinationBuilding = "";
+                    // if the destination is a building
+                    if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                    {
+                        // need to go from class room to exit (we can hard code the exit for H and for CC)
+                        startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                                searchMarker.setPosition(marker.getPosition());
+                                searchMarker.setVisible(false);
+                            }
+                        }
+                        exploreInsideButton.performClick();
+
+                        if (startingBuilding.equals("H"))
+                        {
+                            // NEED TO ADD THIS ONCE WE GET THE NODES FOR HALL 1ST FLOOR
+                        } else if (startingBuilding.equals("CC"))
+                        {
+                            searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                        }
+                        searchResultsIndex = -1;
+                        searchPath.setVisible(true);
+
+                        needMoreDirections = true;
+
+                        // need to go from exit to the building
+
+                    } else // if the destination is a classroom
+                    {
+                        startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+                        destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+
+                        if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
+                        {
+                            for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                                if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                                    searchMarker.setPosition(marker.getPosition());
+                                    searchMarker.setVisible(false);
+                                }
+                            }
+                            exploreInsideButton.performClick();
+                            searchResults = searchForClass(startingPoint, destination);
+                            searchResultsIndex = -1;
+                            searchPath.setVisible(true);
+                        } else //if both classes are in different buildings
+                        {
+
+                        }
+                    }
+                }
+            } **/
+        }
+    }
+
+    public void getDirections()
+    {
+        String startingBuilding = "";
+        String destinationBuilding = "";
+        if(startingPoint != null) {
+            if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+            {
                 if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
                 {
                     drawDirectionsPath(origin, locationMap.get(destination));
-                } else {  //if the destination is a classroom
+                } else {                                                                                            //if the destination is a classroom
                     String buildingName = destination.split("-")[0] + " Building";
-                    //String buildingName = destination.substring(0,1) + " Building";
                     String toMe = destination;
 
-                    for (Marker marker : markerBuildings)
-                    {
-                        if ((marker.getTitle()).equals(buildingName))
-                        {
+                    for (Marker marker : markerBuildings) {
+                        if ((marker.getTitle()).equals(buildingName)) {
                             searchMarker.setPosition(marker.getPosition());
                             searchMarker.setVisible(false);
                         }
                     }
-
                     drawDirectionsPath(origin, locationMap.get(buildingName));
 
                     //exploreInsideButton.performClick();
-                    searchResults = searchForClass("CC-101", toMe);
+
+                    if (startingBuilding.equals("H")) {
+                        // NEED TO ADD THIS ONCE WE GET THE NODES FOR HALL 1ST FLOOR
+                    } else if (startingBuilding.equals("CC")) {
+                        searchResults = searchForClass("CC-150", toMe);
+                    }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
                 }
-                // what about if the starting location is a classroom??
+            } else //if the starting point is a classroom
+            {
+                // if the destination is a building
+                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                {
+                    // need to go from class room to exit (we can hard code the exit for H and for CC)
+                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+                    for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                        if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                            searchMarker.setPosition(marker.getPosition());
+                            searchMarker.setVisible(false);
+                        }
+                    }
+                    exploreInsideButton.performClick();
+
+                    if (startingBuilding.equals("H")) {
+                        // NEED TO ADD THIS ONCE WE GET THE NODES FOR HALL 1ST FLOOR
+                    } else if (startingBuilding.equals("CC")) {
+                        searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                    }
+                    searchResultsIndex = -1;
+                    searchPath.setVisible(true);
+
+                    needMoreDirections = true;
+
+                    // need to go from exit to the building. Will be called in the needMoreDirections loop
+
+                } else // if the destination is a classroom
+                {
+                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+                    destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+
+                    if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
+                    {
+                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                                searchMarker.setPosition(marker.getPosition());
+                                searchMarker.setVisible(false);
+                            }
+                        }
+                        exploreInsideButton.performClick();
+                        searchResults = searchForClass(startingPoint, destination);
+                        searchResultsIndex = -1;
+                        searchPath.setVisible(true);
+                    } else //if both classes are in different buildings
+                    {
+
+                    }
+                }
             }
         }
     }
