@@ -20,9 +20,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -61,6 +63,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.maps.android.PolyUtil;
@@ -95,6 +98,8 @@ import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
 import static android.content.ContentValues.TAG;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
@@ -153,6 +158,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean useMyLocation = true; // whether useMyCurrentLocation button is checked
     private Marker startLocationMarker, destinationMarker = null;
     private int travelMode = 1; // 1 = walking (default), 2 = car, 3 = transit, 4 = shuttle
+    private BottomNavigationView travelOptionsMenu = null;
+    private boolean shuttleAvailable = false;
 
     private boolean disabilityPreference = false; //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
@@ -664,7 +671,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public void initializeSearchBar(){
+    private void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, locations);
@@ -692,7 +699,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // onClick listener for when "Find your way" button is clicked
-    public AlertDialog setOriginDialog(){
+    private AlertDialog setOriginDialog(){
         useMyLocation = true; // reset useMyLocation to false
         AlertDialog.Builder builder = new AlertDialog.Builder(this  );
         LayoutInflater inflater = this.getLayoutInflater();
@@ -700,6 +707,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         builder.setView(dialogView);
 
         final AutoCompleteTextView startingLocation = dialogView.findViewById(R.id.starting_location);
+        travelOptionsMenu = dialogView.findViewById(R.id.travel_modes_nav_bar);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, locations);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         startingLocation.setAdapter(adapter);
@@ -717,15 +725,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                  startingPoint = startingLocation.getText().toString();
+                 if(!enableShuttle(dialogView, locationsInDifferentCampuses(startingPoint, destination))){
+                     setModeToWalkIfShuttleSelected();
+                 }
             }
         });
         return builder.create();
     }
 
-    public void onGetDirectionsClick(View v){
-        setOriginDialog.dismiss();
+    private boolean locationsInDifferentCampuses(String startingPoint, String destination){
+        LatLng origin = locationMap.get(startingPoint);
+        LatLng dest = locationMap.get(destination);
 
+        float[] results = new float[1];
+        Location.distanceBetween(origin.latitude, origin.longitude, dest.latitude, dest.longitude, results);
+        return results[0] > 2000.0;
+    }
+
+    private boolean enableShuttle(View v, boolean enabled){
+        BottomNavigationItemView shuttleModeItem = v.findViewById(R.id.shuttle);
+        shuttleModeItem.setEnabled(enabled);
+        shuttleAvailable = enabled;
+        return enabled;
+    }
+
+    public void onGetDirectionsClick(View v){
         if(useMyLocation) {
+            setOriginDialog.dismiss();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 getDirectionsFromCurrentLocation();
             }
@@ -949,32 +975,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // go from the building entrance to the class
                     }
                 }
+            if(startingPoint != null) {
+                setOriginDialog.dismiss();
+                drawDirectionsPath(origin, locationMap.get(destination));
             }
         }
     }
 
     public void useMyLocationButtonClicked(View v){
-            RadioButton btn = (RadioButton)v.findViewById(R.id.useMyLocationButton);
-            btn.setChecked(!useMyLocation);
-            useMyLocation = !useMyLocation;
+        RadioButton btn = (RadioButton)v.findViewById(R.id.useMyLocationButton);
+        AutoCompleteTextView startingLocation = ((ViewGroup)v.getParent().getParent()).findViewById(R.id.starting_location);
+
+        setModeToWalkIfShuttleSelected();
+        enableShuttle((ViewGroup)v.getParent().getParent(), false);
+        btn.setChecked(!useMyLocation);
+        useMyLocation = !useMyLocation;
     }
 
     // walking option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onWalkingSelected(MenuItem m){
         m.setChecked(true);
         travelMode = 1;
+        if(shuttleAvailable) {
+            travelOptionsMenu.findViewById(R.id.shuttle).setEnabled(true);
+        }
     }
 
     // car option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onCarSelected(MenuItem m){
         m.setChecked(true);
         travelMode = 2;
+        if(shuttleAvailable) {
+            travelOptionsMenu.findViewById(R.id.shuttle).setEnabled(true);
+        }
     }
 
     // transit option selected in dialog for getting directions (in onFindYourWayButtonClick)
     public void onTransitSelected(MenuItem m){
         m.setChecked(true);
         travelMode = 3;
+        if(shuttleAvailable) {
+            travelOptionsMenu.findViewById(R.id.shuttle).setEnabled(true);
+        }
     }
 
     // shuttle option selected in dialog for getting directions (in onFindYourWayButtonClick)
@@ -983,6 +1025,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         travelMode = 4;
     }
 
+    private void setModeToWalkIfShuttleSelected(){
+        if(travelOptionsMenu.findViewById(R.id.shuttle).isSelected()){
+            travelOptionsMenu.getMenu().getItem(0).setChecked(true); // index 0 = MenuItem walking
+        }
+    }
 
     // this is the listener for the get directions button.
     // Once we get the search bar working, we can add a method for search here so that when the button is clicked it searches for location and gives the directions.
@@ -1267,7 +1314,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         DirectionsApiRequest request = DirectionsApi.newRequest(context);
         TravelMode mode = getTraveMode();
-        if(mode != null) { // not shuttle
+        if(mode != null) {
             request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
         }
 
@@ -1318,10 +1365,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mode = TravelMode.DRIVING;
                 break;
             case 3:
-                mode = TravelMode.TRANSIT;
-                break;
             case 4:
-                mode = null; // shuttle
+                mode = TravelMode.TRANSIT;
                 break;
         }
         return mode;
@@ -1384,22 +1429,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         activeInfoWindow = marker.getTitle();
 
-                        // this sets the parameters for the button that appears on click. (The direction button)
-                        directionButton.setVisibility(View.VISIBLE);
-                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                        //directionButtonLayoutParams.topMargin = 200;
-                        //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
-                        directionButton.setLayoutParams(directionButtonLayoutParams);
+                    // this sets the parameters for the button that appears on click. (The direction button)
+                    directionButton.setVisibility(VISIBLE);
+                    LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                    //directionButtonLayoutParams.topMargin = 200;
+                    //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
+                    directionButton.setLayoutParams(directionButtonLayoutParams);
 
-                        // this sets the parameters for the button that appears on click. (The explore inside button)
-                        exploreInsideButton.setVisibility(View.VISIBLE);
-                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                        //exploreButtonLayoutParams.topMargin = 200;
-                        //exploreButtonLayoutParams.leftMargin = 400;
-                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+                    // this sets the parameters for the button that appears on click. (The explore inside button)
+                    exploreInsideButton.setVisibility(VISIBLE);
+                    LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                    //exploreButtonLayoutParams.topMargin = 200;
+                    //exploreButtonLayoutParams.leftMargin = 400;
+                    exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
 
-                        // this sets the parameters for the pop up bar that appears on click
-                        popUpBar.setVisibility(View.VISIBLE);
+                    // this sets the parameters for the pop up bar that appears on click
+                    popUpBar.setVisibility(VISIBLE);
 
                         hideHallButtons();
                         hideCCButtons();
