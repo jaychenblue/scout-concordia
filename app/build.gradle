@@ -56,3 +56,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.1'
     androidTestImplementation 'com.android.support.test:runner:0.4.1'
 }
+
+apply plugin: "com.vanniktech.android.junit.jacoco"
+
+junitJacoco{
+    jacocoVersion = '0.8.2' //type string
+    ignoreProjects = [] //type string array
+    excludes
+    includeNoLocationClasses = true //type boolean
+    includeInstrumentationCoverageInMergedReport = true
+}
