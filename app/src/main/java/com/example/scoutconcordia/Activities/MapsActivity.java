@@ -408,6 +408,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor1.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View view) {
+
+                resetButtonColors();
+                floor1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
             }
@@ -421,6 +425,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             public void onClick(View view) {
 
+                resetButtonColors();
+                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall2floor");
             }
@@ -432,6 +439,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor8 = (Button) findViewById(R.id.floor8);
         floor8.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+
+                resetButtonColors();
+                floor8.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor8.setTextColor(getResources().getColor((R.color.faintGray)));
 
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall8p");
@@ -445,6 +456,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor9.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
+                resetButtonColors();
+                floor9.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor9.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall9p");
             }
@@ -735,6 +749,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (hallGroundOverlay != null){
             hallGroundOverlay.remove();
         }
+    }
+
+    public void resetButtonColors() {
+        floor1.setBackgroundResource(android.R.drawable.btn_default);
+        floor1.setTextColor(getResources().getColor(R.color.black));
+        floor2.setBackgroundResource(android.R.drawable.btn_default);
+        floor2.setTextColor(getResources().getColor(R.color.black));
+        floor8.setBackgroundResource(android.R.drawable.btn_default);
+        floor8.setTextColor(getResources().getColor(R.color.black));
+        floor9.setBackgroundResource(android.R.drawable.btn_default);
+        floor9.setTextColor(getResources().getColor(R.color.black));
     }
 
     /**
