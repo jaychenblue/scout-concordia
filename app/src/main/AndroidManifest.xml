@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:screenOrientation="portrait">
 
         <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="219414920184"/>
