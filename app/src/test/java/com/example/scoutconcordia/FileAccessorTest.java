@@ -39,5 +39,4 @@ public class FileAccessorTest {
         assertNotNull(fileAccessor.obtainContents());
         assertEquals("1,2,3,4,5", fileAccessor.obtainContents()[0]);
     }
-
 }
