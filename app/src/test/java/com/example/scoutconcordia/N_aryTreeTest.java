@@ -29,8 +29,8 @@ public class N_aryTreeTest {
 
         tree = new N_aryTree();
         node1 = tree.new TreeNode(null, coordinate1);
-        node2 = tree.new TreeNode(null, coordinate2);
-        node3 = tree.new TreeNode(null, coordinate2);
+        node2 = tree.new TreeNode(node1, coordinate2);
+        node3 = tree.new TreeNode(node1, coordinate2);
     }
 
     @AfterEach
@@ -88,13 +88,26 @@ public class N_aryTreeTest {
         assertNull(tree.findSpecifiedNode(null, null));
 
         assertNotNull(tree.findSpecifiedNode(node1, coordinate1)); // should find itself
+        assertEquals(node1, tree.findSpecifiedNode(node1, coordinate1)); // should find itself
 
         assertNull(tree.findSpecifiedNode(node1, coordinate2)); // node 1 has no children
 
+        node1.setElement(coordinate1);
+        assertEquals(coordinate1, node1.getElement());
+
         node2.setElement(coordinate2);
+        assertEquals(coordinate2, node2.getElement());
+
+        node2.setParent(node1);
+        assertEquals(node1, node2.getParent());
+
         l = new LinkedList<N_aryTree.TreeNode>(node2);
         node1.setChildren(l);
-        //assertNotNull(tree.findSpecifiedNode(node1, coordinate2));
+        assertEquals(l, node1.getChildren());
+
+        node1.addToChildren(coordinate2);
+
+        assertNotNull(tree.findSpecifiedNode(node1, coordinate2));
 
         l = null;
     }
@@ -102,7 +115,23 @@ public class N_aryTreeTest {
     @Test
     public void testGetPath() {
         assertNull(tree.getPath(null, null));
-        //assertNull(tree.getPath(coordinate1, coordinate2));
+
+        node1.setElement(coordinate1);
+        assertEquals(coordinate1, node1.getElement());
+
+        node2.setElement(coordinate2);
+        assertEquals(coordinate2, node2.getElement());
+
+        node2.setParent(node1);
+        assertEquals(node1, node2.getParent());
+
+        node1.addToChildren(coordinate2);
+
+        tree.setHead(node1);
+
+        assertEquals(coordinate1, tree.getHead().getElement());
+
+        assertNotNull(tree.getPath(coordinate1, coordinate2));
     }
 
 }

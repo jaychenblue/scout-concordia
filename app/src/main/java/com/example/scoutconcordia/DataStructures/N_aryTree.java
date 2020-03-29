@@ -74,6 +74,10 @@ public class N_aryTree
     {
         return head;
     }
+
+    public void setHead(TreeNode head) {
+        this.head = head;
+    }
     
     public TreeNode findSpecifiedNode(TreeNode goFromHere, LatLng findThisPoint)
     {
