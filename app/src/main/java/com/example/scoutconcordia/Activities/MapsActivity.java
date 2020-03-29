@@ -255,7 +255,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //encryptAllInputFiles();
     }
 
-    private List<Object[]> searchForClass(String fromMe, String toMe) {
+    public List<Object[]> searchForClass(String fromMe, String toMe) {
         // if we dont find the to me location on the same floor we need to send it to the escalator.
         LatLng point1 = null;
         LatLng point2 = null;
@@ -326,7 +326,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method is going to be used to display the search results from the searchForClass method
-    private void displaySearchResults(Object[] results)
+    public void displaySearchResults(Object[] results)
     {
         LatLng[] dest = new LatLng[results.length];
         System.arraycopy(results, 0, dest, 0, results.length);
@@ -404,7 +404,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void createFloorGraphs()
+    public void createFloorGraphs()
     {
         Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
         //Graph hall_2_floor = createGraph("hall2nodes", false);
@@ -433,7 +433,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void setUpGroundOverlay(String image)
+    public void setUpGroundOverlay(String image)
     {
         BitmapFactory.Options dimensions = new BitmapFactory.Options();
         dimensions.inJustDecodeBounds = true;
@@ -450,7 +450,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .bearing(imgRotation));
     }
 
-    private void addfloor1ButtonListener()
+    public void addfloor1ButtonListener()
     {
         floor1 = (Button) findViewById(R.id.floor1);
         floor1.setOnClickListener(new View.OnClickListener()
@@ -493,7 +493,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        });
 //    }
 
-    private void addfloor8ButtonListener()
+    public void addfloor8ButtonListener()
     {
         floor8 = (Button) findViewById(R.id.floor8);
         floor8.setOnClickListener(new View.OnClickListener() {
@@ -509,7 +509,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void addfloor9ButtonListener()
+    public void addfloor9ButtonListener()
     {
         floor9 = (Button) findViewById(R.id.floor9);
         floor9.setOnClickListener(new View.OnClickListener() {
@@ -524,7 +524,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void addfloorCC1ButtonListener()
+    public void addfloorCC1ButtonListener()
     {
         floorCC1 = (Button) findViewById(R.id.floorCC1);
         floorCC1.setOnClickListener(new View.OnClickListener() {
@@ -553,7 +553,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void addfloorCC2ButtonListener()
+    public void addfloorCC2ButtonListener()
     {
         floorCC2 = (Button) findViewById(R.id.floorCC2);
         floorCC2.setOnClickListener(new View.OnClickListener() {
@@ -582,7 +582,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void addNextStepListener()
+    public void addNextStepListener()
     {
         nextStep = (Button) findViewById(R.id.nextStep);
         nextStep.setOnClickListener(new View.OnClickListener() {
@@ -627,7 +627,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // If button pushed change Campus
-    private void addListenerOnToggle()
+    public void addListenerOnToggle()
     {
         toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
@@ -745,7 +745,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void getDirections()
+    public void getDirections()
     {
         if(startingPoint != null) {
             if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
@@ -925,13 +925,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// TESTING INDOOR DIRECTIONS
-                //String fromMe = "CC-215";
-                //String toMe = "CC-219";
-                //searchResults = searchForClass(fromMe, toMe);
-                //searchResultsIndex = 0;
-                //searchPath.setVisible(true);
-                //displaySearchResults(searchResults.get(searchResultsIndex));
+                // TESTING INDOOR DIRECTIONS
+                String fromMe = "CC-215";
+                String toMe = "CC-219";
+                searchResults = searchForClass(fromMe, toMe);
+                searchResultsIndex = 0;
+                searchPath.setVisible(true);
+                displaySearchResults(searchResults.get(searchResultsIndex));
             }
         });
     }
@@ -974,7 +974,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // method for hiding all of the polygons on the map
-    private void hideAllPolygons()
+    public void hideAllPolygons()
     {
         for (Polygon poly : polygonBuildings) {
             poly.setVisible(false);
@@ -982,7 +982,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // method for showing all of the polygons on the map
-    private void showAllPolygons()
+    public void showAllPolygons()
     {
         for (Polygon poly : polygonBuildings) {
             poly.setVisible(true);
@@ -990,14 +990,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this is the listener for the pop up bar at the bottom of the screen.
-    private void addPopUpBarListener()
+    public void addPopUpBarListener()
     {
         popUpBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
         // can add functionality here if we click on the pop up bar
     }
 
     // method for hiding all of the markers on the map
-    private void hideAllMarkers()
+    public void hideAllMarkers()
     {
         for (Marker mar : markerBuildings) {
             mar.setVisible(false);
@@ -1005,14 +1005,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // method for showing all of the markers on the map
-    private void showAllMarkers()
+    public void showAllMarkers()
     {
         for (Marker mar : markerBuildings) {
             mar.setVisible(true);
         }
     }
 
-    private void showHallButtons()
+    public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
         //floor2.setVisibility(View.VISIBLE);
@@ -1020,7 +1020,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor9.setVisibility(View.VISIBLE);
     }
 
-    private void hideHallButtons()
+    public void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
         //floor2.setVisibility(View.INVISIBLE);
@@ -1028,20 +1028,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor9.setVisibility(View.INVISIBLE);
     }
 
-    private void showCCButtons()
+    public void showCCButtons()
     {
         floorCC1.setVisibility(View.VISIBLE);
         floorCC2.setVisibility(View.VISIBLE);
     }
 
-    private void hideCCButtons()
+    public void hideCCButtons()
     {
         floorCC1.setVisibility(View.INVISIBLE);
         floorCC2.setVisibility(View.INVISIBLE);
     }
 
 
-    private void removeAllFloorOverlays(){
+    public void removeAllFloorOverlays(){
         if (hallGroundOverlay != null){
             hallGroundOverlay.remove();
         }
@@ -1050,7 +1050,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void resetButtonColors() {
+    public void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getResources().getColor(R.color.black));
         //floor2.setBackgroundResource(android.R.drawable.btn_default);
@@ -1275,7 +1275,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
-    private Graph createGraph(String encryptedFileName, boolean isEncrypted)
+    public Graph createGraph(String encryptedFileName, boolean isEncrypted)
     {
         FileAccessor useMeToRead = new FileAccessor();
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
