@@ -419,7 +419,7 @@ public class ShuttleInfo {
 
     // This returns a double array, which holds the shuttle time of the requested day and location.
     // It essentially converts strings into doubles, for calculation purposoes.
-    public double[] getLoyolaMondayToThursdayTimes() {
+    private double[] getLoyolaMondayToThursdayTimes() {
 
         String[] numRange = retrieveMonToThursLoyola();
 
@@ -446,7 +446,7 @@ public class ShuttleInfo {
     }
 
     // This returns a double array, which holds the shuttle time of the requested day and location
-    public double[] getSGWMondayToThursdayTimes() {
+    private double[] getSGWMondayToThursdayTimes() {
 
         String[] numRange = retrieveMonToThursSGW();
 
@@ -472,7 +472,7 @@ public class ShuttleInfo {
     }
 
     // This returns a double array, which holds the shuttle time of the requested day and location
-    public double[] getLoyolaFridayTimes() {
+    private double[] getLoyolaFridayTimes() {
 
         String[] numRange = retrieveFridayLoyola();
 
@@ -498,7 +498,7 @@ public class ShuttleInfo {
     }
 
     // This returns a double array, which holds the shuttle time of the requested day and location
-    public double[] getSGWFridayTimes() {
+    private double[] getSGWFridayTimes() {
 
         String[] numRange = retrieveFridaySGW();
 
@@ -526,7 +526,7 @@ public class ShuttleInfo {
 
     // These methods will handle the retrieval of times from external encrypted txt files,
     // And then convert them into a comprehensible String array which can be used by this class for calculations.
-    public String[] retrieveMonToThursLoyola() {
+    private String[] retrieveMonToThursLoyola() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
@@ -562,7 +562,7 @@ public class ShuttleInfo {
     }
 
 
-    public String[] retrieveFridayLoyola() {
+    private String[] retrieveFridayLoyola() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
@@ -597,7 +597,7 @@ public class ShuttleInfo {
     }
 
 
-    public String[] retrieveMonToThursSGW() {
+    private String[] retrieveMonToThursSGW() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
@@ -632,7 +632,7 @@ public class ShuttleInfo {
     }
 
 
-    public String[] retrieveFridaySGW() {
+    private String[] retrieveFridaySGW() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 

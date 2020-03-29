@@ -42,6 +42,7 @@ import android.widget.ToggleButton;
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
+import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -168,6 +169,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
+
+
+        // Victor's log tests
+        ShuttleInfo testShuttleInfo = new ShuttleInfo();
+
+        //This gets the estimated time in minutes from Loyola to SGW at the current time
+        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromLoyola() + " minutes");
+
+        //This gets the estimated time in minutes from SGW to Loyola at the current time
+        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromSGW() + " minutes");
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 

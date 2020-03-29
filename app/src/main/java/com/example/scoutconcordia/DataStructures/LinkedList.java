@@ -16,7 +16,7 @@ public class LinkedList <E>
         private LinkedList.Node next;
         private LinkedList.Node prev;
         
-        Node()
+        public Node()
         {
             element = null;
             next = null;
@@ -24,7 +24,7 @@ public class LinkedList <E>
             size++;
         }
         
-        Node(E element, LinkedList.Node after, LinkedList.Node previous)
+        public Node(E element, LinkedList.Node after, LinkedList.Node previous)
         {
             if (element != null && element.getClass() == classType.getClass())
                 this.element = (E)element;
@@ -38,7 +38,7 @@ public class LinkedList <E>
         private void setNext(Node nexty) {next = nexty;}
         private void setPrev(Node prevy) {prev = prevy;}
         public Node getNext() {return next;}
-        private Node getPrev() {return prev;}
+        public Node getPrev() {return prev;}
         public E getEle() {return element;}
         public String toString() {return element.toString();}
     }
