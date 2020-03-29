@@ -122,7 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker pathMarker;
 
     private Button floor1;
-    private Button floor2;
+    //private Button floor2;
     private Button floor8;
     private Button floor9;
     private Button floorCC1;
@@ -244,7 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
-        addfloor2ButtonListener();
+        //addfloor2ButtonListener();
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
         addNextStepListener();
@@ -297,6 +297,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // we want to check if both of the locations are on the same floor
         if (floor1.equals(floor2))  //this is an easy search as they are on the same floor
         {
+            nextStep.setVisibility(VISIBLE);
             Object[] path = graph1.breathFirstSearch(point1, point2);
             results.add(path);
             return results;
@@ -306,7 +307,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // we need to search from class -> escalator, then from escalator -> class on the right floor
             if (disabilityPreference)
             {
-                nextStep.setVisibility(View.VISIBLE); // enable the next step button
+                nextStep.setVisibility(VISIBLE); // enable the next step button
                 Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ELEVATOR"));
                 Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ELEVATOR"), point2);
                 results.add(path1);
@@ -314,7 +315,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return results;
             } else
             {
-                nextStep.setVisibility(View.VISIBLE); // enable the next step button
+                nextStep.setVisibility(VISIBLE); // enable the next step button
                 Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ESCALATOR"));
                 Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ESCALATOR"), point2);
                 results.add(path1);
@@ -375,11 +376,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideCCButtons();
                 floor1.performClick();
                 break;
-            case "H-2":
-                showHallButtons();
-                hideCCButtons();
-                floor2.performClick();
-                break;
+            //case "H-2":
+            //    showHallButtons();
+            //    hideCCButtons();
+            //    floor2.performClick();
+            //    break;
             case "H-8":
                 showHallButtons();
                 hideCCButtons();
@@ -405,15 +406,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void createFloorGraphs()
     {
-        Graph hall_1_floor = createGraph("hall1nodes", false);
-        Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
+        //Graph hall_2_floor = createGraph("hall2nodes", false);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
         Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
 
         floorGraphs.add(hall_1_floor);
-        floorGraphs.add(hall_2_floor);
+        //floorGraphs.add(hall_2_floor);
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
         floorGraphs.add(cc_1_floor);
@@ -477,21 +478,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public void addfloor2ButtonListener()
-    {
-        floor2 = (Button) findViewById(R.id.floor2);
-        floor2.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view) {
-
-                resetButtonColors();
-                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-                setUpGroundOverlay("hall2floor");
-            }
-        });
-    }
+//    public void addfloor2ButtonListener()
+//    {
+//        floor2 = (Button) findViewById(R.id.floor2);
+//        floor2.setOnClickListener(new View.OnClickListener()
+//        {
+//            public void onClick(View view) {
+//                resetButtonColors();
+//                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+//                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
+//                removeAllFloorOverlays();
+//                setUpGroundOverlay("hall2floor");
+//            }
+//        });
+//    }
 
     public void addfloor8ButtonListener()
     {
@@ -1015,7 +1015,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
-        floor2.setVisibility(View.VISIBLE);
+        //floor2.setVisibility(View.VISIBLE);
         floor8.setVisibility(View.VISIBLE);
         floor9.setVisibility(View.VISIBLE);
     }
@@ -1023,7 +1023,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
-        floor2.setVisibility(View.INVISIBLE);
+        //floor2.setVisibility(View.INVISIBLE);
         floor8.setVisibility(View.INVISIBLE);
         floor9.setVisibility(View.INVISIBLE);
     }
@@ -1053,8 +1053,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getResources().getColor(R.color.black));
-        floor2.setBackgroundResource(android.R.drawable.btn_default);
-        floor2.setTextColor(getResources().getColor(R.color.black));
+        //floor2.setBackgroundResource(android.R.drawable.btn_default);
+        //floor2.setTextColor(getResources().getColor(R.color.black));
         floor8.setBackgroundResource(android.R.drawable.btn_default);
         floor8.setTextColor(getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
@@ -1146,12 +1146,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /*
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
     // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
     public void encryptAllInputFiles()
     {
-        //DES encrypter = new DES();
+        DES encrypter = new DES();
         InputStream fis = null;
         OutputStream fos = null;
         String filename = "";
@@ -1165,10 +1166,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encryptedFilename = "encrypted_" + filename;
                 fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                //encrypter.encryptFile(fis, fos);
+                encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("cc2nodes"))
+                if (filename.equals("hall1nodes2"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -1187,7 +1188,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    } */
 
     private void drawDirectionsPath(LatLng origin, LatLng dest){
         resetPath();
