@@ -11,7 +11,8 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.example.scoutconcordia.Activities.MapsActivity;
+import com.example.scoutconcordia.Activities.SplashScreenActivity;
+import com.example.scoutconcordia.R;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -23,16 +24,16 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class SwitchCampus {
+public class MapTest {
 
     @Rule
-    public ActivityTestRule<MapsActivity> mActivityTestRule = new ActivityTestRule<>(MapsActivity.class);
+    public ActivityTestRule<SplashScreenActivity> mActivityTestRule = new ActivityTestRule<>(SplashScreenActivity.class);
 
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
@@ -40,26 +41,26 @@ public class SwitchCampus {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void switchCampus() {
-        ViewInteraction toggleButton = onView(
-                allOf(withId(R.id.toggleButton), withText("SGW"),
+    public void mapTest() {
+        ViewInteraction bottomNavigationItemView = onView(
+                allOf(withId(R.id.nav_shuttle), withContentDescription("Shuttle"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withId(R.id.nav_bar_activity_maps),
                                         0),
-                                1),
+                                2),
                         isDisplayed()));
-        toggleButton.perform(click());
+        bottomNavigationItemView.perform(click());
 
-        ViewInteraction toggleButton2 = onView(
-                allOf(withId(R.id.toggleButton), withText("Loyola"),
+        ViewInteraction bottomNavigationItemView2 = onView(
+                allOf(withId(R.id.nav_map), withContentDescription("Map"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withId(R.id.nav_bar_activity_shuttle_schedule),
                                         0),
                                 1),
                         isDisplayed()));
-        toggleButton2.perform(click());
+        bottomNavigationItemView2.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

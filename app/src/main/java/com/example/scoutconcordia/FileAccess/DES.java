@@ -18,7 +18,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 
-class DES
+public class DES
 {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -37,7 +37,7 @@ class DES
     private static SecretKeyFactory factory;
     private static SecretKey myDesKey;
 
-    public DES() {
+    DES() {
         this.desKey = "0123456789abcdef";
         this.keyBytes = hexToByte(this.desKey);
         {
@@ -84,37 +84,37 @@ class DES
     }
 
     /** Method for encrypting a file. Requires an input stream and an output stream **/
-    public void encryptFile(InputStream readFromMe, OutputStream writeToMe)
-    {
-        Scanner reader = null;
-        PrintWriter writer = null;
-        try
-        {
-            Cipher desCipher = Cipher.getInstance("DES");
-            reader = new Scanner(readFromMe);
-            writer = new PrintWriter(writeToMe);
-
-            // reads from the input file and outputs encrypted text to the output file
-            while (reader.hasNextLine())
-            {
-                desCipher.init(Cipher.ENCRYPT_MODE, myDesKey);
-                String encryptMe = reader.nextLine();
-                byte[] textEncrypted = desCipher.doFinal(encryptMe.getBytes("UTF-8"));
-                writer.println(bytesToHex(textEncrypted));
-            }
-        }
-        catch(Exception e)
-        {
-            Log.println(Log.WARN, "decrypting", "An Exception occured");
-        }
-        finally
-        {
-            if (reader != null)
-                reader.close();
-            if (writer != null)
-                writer.close();
-        }
-    }
+//    public void encryptFile(InputStream readFromMe, OutputStream writeToMe)
+//    {
+//        Scanner reader = null;
+//        PrintWriter writer = null;
+//        try
+//        {
+//            Cipher desCipher = Cipher.getInstance("DES");
+//            reader = new Scanner(readFromMe);
+//            writer = new PrintWriter(writeToMe);
+//
+//            // reads from the input file and outputs encrypted text to the output file
+//            while (reader.hasNextLine())
+//            {
+//                desCipher.init(Cipher.ENCRYPT_MODE, myDesKey);
+//                String encryptMe = reader.nextLine();
+//                byte[] textEncrypted = desCipher.doFinal(encryptMe.getBytes("UTF-8"));
+//                writer.println(bytesToHex(textEncrypted));
+//            }
+//        }
+//        catch(Exception e)
+//        {
+//            Log.println(Log.WARN, "decrypting", "An Exception occured");
+//        }
+//        finally
+//        {
+//            if (reader != null)
+//                reader.close();
+//            if (writer != null)
+//                writer.close();
+//        }
+//    }
 
     /** Helper method for converting an array of bytes to hex characters **/
     private static String bytesToHex(byte[] bytes) {
