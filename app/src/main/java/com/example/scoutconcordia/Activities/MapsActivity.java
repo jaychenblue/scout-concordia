@@ -135,6 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
 
     private Marker searchMarker;
+    private Polygon activePolygon;
     private String activeInfoWindow = null;
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
@@ -925,13 +926,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TESTING INDOOR DIRECTIONS
-                String fromMe = "CC-215";
-                String toMe = "CC-219";
-                searchResults = searchForClass(fromMe, toMe);
-                searchResultsIndex = 0;
-                searchPath.setVisible(true);
-                displaySearchResults(searchResults.get(searchResultsIndex));
+                destination = (activePolygon.getTag()).toString();
+                activePolygon.setVisible(true);
+                setOriginDialog = setOriginDialog();
+                setOriginDialog.show(); // create dialog asking user to select a starting point
             }
         });
     }
@@ -943,32 +941,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //if (activeInfoWindow != null)
-                //{
                     // we want to remove the building outline from the map so we can see the indoor floor plan
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
-                    // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
-                    for (Polygon poly : polygonBuildings) {
-                        if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
-                        {
-                            poly.setVisible(false);  // hide the polygon
-                            searchMarker.setVisible(false);  // hide the marker
+                    activePolygon.setVisible(false);  // hide the polygon
+                    searchMarker.setVisible(false);  // hide the marker
 
-                            removeAllFloorOverlays();
+                    removeAllFloorOverlays();
 
-                            if (poly.getTag().equals("H Building"))
-                            {
-                                showHallButtons();
-                            } else if (poly.getTag().equals("CC Building"))
-                            {
-                                showCCButtons();
-                            }
-                        }
+                    if (activePolygon.getTag().equals("H Building"))
+                    {
+                        showHallButtons();
+                    } else if (activePolygon.getTag().equals("CC Building"))
+                    {
+                        showCCButtons();
                     }
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
-                //}
             };
         });
     }
@@ -1306,30 +1295,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     isInfoWindowShown = false;
                     searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
 
+                    for (Polygon poly : polygonBuildings)
+                    {
+                        if (PolyUtil.containsLocation(searchMarker.getPosition(), poly.getPoints(), true))
+                        {
+                            activePolygon = poly;
+                        }
+                    }
+
                     // move the camera to the marker location
                     animateCamera(marker.getPosition(), zoomLevel);
 
-                    if (!isInfoWindowShown) {
+                    if (!isInfoWindowShown)
+                    {
                         marker.showInfoWindow();
 
                         activeInfoWindow = marker.getTitle();
 
-                    // this sets the parameters for the button that appears on click. (The direction button)
-                    directionButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    //directionButtonLayoutParams.topMargin = 200;
-                    //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
-                    directionButton.setLayoutParams(directionButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The direction button)
+                        directionButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        //directionButtonLayoutParams.topMargin = 200;
+                        //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
 
-                    // this sets the parameters for the button that appears on click. (The explore inside button)
-                    exploreInsideButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                    //exploreButtonLayoutParams.topMargin = 200;
-                    //exploreButtonLayoutParams.leftMargin = 400;
-                    exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The explore inside button)
+                        exploreInsideButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        //exploreButtonLayoutParams.topMargin = 200;
+                        //exploreButtonLayoutParams.leftMargin = 400;
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
 
-                    // this sets the parameters for the pop up bar that appears on click
-                    popUpBar.setVisibility(VISIBLE);
+                        // this sets the parameters for the pop up bar that appears on click
+                        popUpBar.setVisibility(VISIBLE);
 
                         hideHallButtons();
                         hideCCButtons();
@@ -1337,7 +1335,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         removeAllFloorOverlays();
 
                         isInfoWindowShown = true;
-                } else {
+                    } else
+                    {
                         marker.hideInfoWindow();
                         directionButton.setVisibility(View.INVISIBLE);
                         exploreInsideButton.setVisibility(View.INVISIBLE);
@@ -1375,6 +1374,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showAllPolygons();
                 showAllMarkers();
                 resetGetDirectionParams();
+                activePolygon = null;
 
                 //System.out.println(latLng);
             }
