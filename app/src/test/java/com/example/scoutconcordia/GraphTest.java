@@ -34,8 +34,8 @@ public class GraphTest {
 
     @Test
     public void testReset() {
-        g.insertVertex(coordinate1, 1);
-        g.insertVertex(coordinate2, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
+        g.insertVertex(coordinate2, 1, "CC-110");
         assertNotNull(g.nodes());
 
         g.reset();
@@ -46,18 +46,18 @@ public class GraphTest {
 
     @Test
     public void testInsertVertex() {
-        assertTrue(g.insertVertex(coordinate1, 1));
-        assertTrue(g.insertVertex(coordinate2, 1));
-        assertTrue(g.insertVertex(coordinate1, 1));
-        assertFalse(g.insertVertex(coordinate2, 1)); // should be false because exceeds graph size of 3
+        assertTrue(g.insertVertex(coordinate1, 1, "H-907"));
+        assertTrue(g.insertVertex(coordinate2, 1, "CC-110"));
+        assertTrue(g.insertVertex(coordinate1, 1, "H-820"));
+        assertFalse(g.insertVertex(coordinate2, 1, "CC-210")); // should be false because exceeds graph size of 3
     }
 
     @Test
     public void testInsertEdge() {
         assertEquals(-1, g.insertEdge(coordinate1, coordinate2)); // -1 if point not in graph
 
-        g.insertVertex(coordinate1, 1);
-        g.insertVertex(coordinate2, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
+        g.insertVertex(coordinate2, 1, "CC-110");
 
         assertEquals(1, g.insertEdge(coordinate1, coordinate2)); // 1 if successful
 
@@ -68,11 +68,11 @@ public class GraphTest {
     public void testAreAdjacent() {
         assertFalse(g.areAdjacent(coordinate1, coordinate2));
 
-        g.insertVertex(coordinate1, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
 
         assertFalse(g.areAdjacent(coordinate1, coordinate2));
 
-        g.insertVertex(coordinate2, 1);
+        g.insertVertex(coordinate2, 1, "CC-110");
         g.insertEdge(coordinate1, coordinate2);
 
         assertTrue(g.areAdjacent(coordinate1, coordinate2)); // now that both points are connected, should be true
@@ -84,7 +84,7 @@ public class GraphTest {
     public void testReplace() {
         assertFalse(g.replace(coordinate1, coordinate2)); // shouldn't work because nothing is in the graph yet
 
-        g.insertVertex(coordinate1, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
 
         assertTrue(g.replace(coordinate1, coordinate2));
     }
@@ -93,8 +93,8 @@ public class GraphTest {
     public void testRemoveEdge() {
         assertEquals(-1, g.removeEdge(coordinate1, coordinate2)); // nothing in the graph yet
 
-        g.insertVertex(coordinate1, 1);
-        g.insertVertex(coordinate2, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
+        g.insertVertex(coordinate2, 1, "CC-110");
         assertEquals(0, g.removeEdge(coordinate1, coordinate2)); // nodes aren't connected yet
 
         g.insertEdge(coordinate1, coordinate2);
@@ -105,14 +105,14 @@ public class GraphTest {
     public void testRemoveVertex() {
         assertEquals(-1, g.removeVertex(coordinate1));
 
-        g.insertVertex(coordinate1, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
 
         assertEquals(1, g.removeVertex(coordinate1));
     }
 
     @Test
     public void testIncidentVerticies() {
-        g.insertVertex(coordinate1, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
 
         assertNotNull(g.incidentVerticies(coordinate1));
     }
@@ -121,17 +121,38 @@ public class GraphTest {
 
     @Test
     public void testVertices() {
-        g.insertVertex(coordinate1, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
 
         assertNotNull(g.vertices());
+    }
+
+    @Test
+    public void testNodes() {
+        g.insertVertex(coordinate1, 1, "H-907");
+        g.insertVertex(coordinate2, 1, "CC-110");
+        g.insertVertex(coordinate2, 1, "CC-117");
+
+        assertNotNull(g.nodes());
+        assertEquals(coordinate1, g.nodes()[0].getElement());
+        assertEquals(coordinate2, g.nodes()[1].getElement());
+        assertEquals(coordinate2, g.nodes()[2].getElement());
+    }
+
+    @Test
+    public void testSearchByClassName() {
+        g.insertVertex(coordinate1, 1, "H-907");
+        g.insertVertex(coordinate2, 1, "CC-110");
+
+        assertEquals(coordinate1, g.searchByClassName("H-907"));
+        assertEquals(coordinate2, g.searchByClassName("CC-110"));
     }
 
     @Test
     public void testBreathFirstSearch() {
         assertNull(g.breathFirstSearch(coordinate1, coordinate2));
 
-        g.insertVertex(coordinate1, 1);
-        g.insertVertex(coordinate2, 1);
+        g.insertVertex(coordinate1, 1, "H-907");
+        g.insertVertex(coordinate2, 1, "CC-110");
         g.insertEdge(coordinate1, coordinate2);
 
         assertNotNull(g.breathFirstSearch(coordinate1, coordinate2));
@@ -141,9 +162,10 @@ public class GraphTest {
 
     @Test
     public void testNodeGetters() {
-        Graph.Node node1 = g.new Node(coordinate1, 0, 1);
+        Graph.Node node1 = g.new Node(coordinate1, 0, 1, "H-907");
         assertEquals(1, node1.getType());
         assertEquals(coordinate1, node1.getElement());
+        assertEquals("H-907", node1.getRoom());
 
         node1 = null;
     }
