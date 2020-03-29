@@ -37,7 +37,7 @@ public class DES
     private static SecretKeyFactory factory;
     private static SecretKey myDesKey;
 
-    public DES() {
+    DES() {
         this.desKey = "0123456789abcdef";
         this.keyBytes = hexToByte(this.desKey);
         {

@@ -82,7 +82,7 @@ public class BuildingInfo
                 currentPos = currentLine.indexOf("Name: ");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
-                currentBuilding.name = (currentLine.substring(currentPos + 5));
+                currentBuilding.name = (currentLine.substring(currentPos + 6));
                 i++;
 
                 i++;
