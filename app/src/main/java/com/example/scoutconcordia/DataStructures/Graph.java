@@ -17,6 +17,7 @@ public class Graph
     private int numberOfNodes;
     private Node[] nodes;
     private N_aryTree breathFirstSearchResults;
+    public String id; //will contain the name of the floor
 
     public class Node
     {
@@ -25,12 +26,14 @@ public class Graph
         private LinkedList<Node> adjacencyList;
         private boolean traversed;
         private int type;  // 0 is a class node, 1 is a hall node.
+        private String room; //this is the corresponding room name for the node
 
-        public Node(LatLng element, int id, int type)
+        public Node(LatLng element, int id, int type, String room)
         {
             this.element = element;
             this.id = id;
             this.type = type;
+            this.room = room;
             adjacencyList = new LinkedList<Node>(this);
         }
 
@@ -48,6 +51,7 @@ public class Graph
         private void setId(int id) { this.id = id; }
         public int getType() { return type; }
         public LatLng getElement() { return element; }
+        public String getRoom() {return room;}
         private void setElement(LatLng element) { this.element = element; }
         private boolean isTraversed() { return traversed; }
         private void setTraversed(boolean traversed) { this.traversed = traversed; }
@@ -85,7 +89,7 @@ public class Graph
 
     // returns true if element can be inserted false otherwise
     // type indicates whether the node is a class room node or a hall node
-    public boolean insertVertex(LatLng element, int type)
+    public boolean insertVertex(LatLng element, int type, String room)
     {
         int placeMe = -1;
         for (int i = 0; i < nodes.length; i++)
@@ -96,7 +100,7 @@ public class Graph
         }
         if (placeMe == -1)
             return false;
-        nodes[placeMe] = new Node(element, placeMe, type);
+        nodes[placeMe] = new Node(element, placeMe, type, room);
         numberOfNodes++;
         return true;
     }
@@ -121,7 +125,7 @@ public class Graph
         if (id1 < 0 || id2 < 0)
             return false;
         if (nodes[id1].adjacencyList.contains(nodes[id2]))
-                return true;
+            return true;
         return false;
     }
 
@@ -134,7 +138,7 @@ public class Graph
         nodes[id].element = newCoordinate;
         return true;
     }
-    
+
     // returns -1 if the elements can't be found in the nodes of the graph, 0 if one of the elements couldn't be removed / wasn't in the adjacency list and 1 if it was successful
     public int removeEdge(LatLng ele1, LatLng ele2)
     {
@@ -150,7 +154,7 @@ public class Graph
         nodes[id2].adjacencyList.removeOBJ(nodes[id1]);
         return 1;
     }
-    
+
     // returns -1 if element isn't in the graph, 0 if the element to be removed wasn't in one of it's own adjacent entries / system error and 1 if successful
     public int removeVertex(LatLng removeMe)
     {
@@ -167,7 +171,7 @@ public class Graph
         numberOfNodes--;
         return 1;
     }
-    
+
     // returns any vertices next to the coordinate
     public LatLng[] incidentVerticies(LatLng coordinate)
     {
@@ -202,7 +206,21 @@ public class Graph
     {
         return nodes;
     }
-    
+
+    public LatLng searchByClassName(String className)
+    {
+        String currentRoom;
+        for (int i = 0; i < nodes.length; i++)
+        {
+            currentRoom = nodes[i].getRoom();
+            if (currentRoom.equals(className))  //we have found the room
+            {
+                return nodes[i].getElement();
+            }
+        }
+        return null; //if we don't get a match we return null
+    }
+
     // returns an array of points corresponding to the shortest path from --> to
     public Object[] breathFirstSearch(LatLng from, LatLng to)
     {
@@ -322,7 +340,7 @@ public class Graph
                 currentPos = currentLine.indexOf("Name of Image: ");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
-                floorName = (currentLine.substring(currentPos + 13));
+                floorName = (currentLine.substring(currentPos + 15));
 
                 i++; i++;
                 currentLine = contents[i];
@@ -333,27 +351,43 @@ public class Graph
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
                     coordinatesToInsert.add(readClassCoordinate(currentLine));
+                    namesToInsert.add(readClassName(currentLine));
                     nmbClassNodes += 1;
                     i++;
                     currentLine = contents[i];
                 }
                 // this is for the last classroom coordinate
                 coordinatesToInsert.add(readClassCoordinate(currentLine));
+                namesToInsert.add(readClassName(currentLine));
                 nmbClassNodes += 1;
 
                 // read the file searching for hallway
                 i++; i++;
                 currentLine = contents[i];
-                //currentLine = reader.nextLine();
                 while (currentLine.charAt(currentLine.length() - 1) != '}')
                 {
                     coordinatesToInsert.add(readHallCoordinate(currentLine));
+                    namesToInsert.add("HALLWAY");
                     nmbHallNodes += 1;
                     i ++;
                     currentLine = contents[i];
                 }
                 coordinatesToInsert.add( readHallCoordinate(currentLine));
+                namesToInsert.add("HALLWAY");
                 nmbHallNodes += 1;
+
+                //read the file searching for the escalator node
+                i++; i++;
+                currentLine = contents[i];
+                coordinatesToInsert.add(readHallCoordinate(currentLine));
+                namesToInsert.add("ESCALATOR");
+
+                // read the file searching for the elevator node
+                i++; i++;
+                currentLine = contents[i];
+                coordinatesToInsert.add(readHallCoordinate(currentLine));
+                namesToInsert.add("ELEVATOR");
+
                 i++;
                 currentLine = contents[i];
             }
@@ -365,18 +399,26 @@ public class Graph
         finally
         {
             LinkedList.Node current = null;
+            LinkedList.Node currentClass = null;
             returnMe = new Graph(coordinatesToInsert.size());
+            returnMe.id = floorName;
             for (int i = 0; i < coordinatesToInsert.size(); i++)
             {
                 if (i == 0)
+                {
                     current = coordinatesToInsert.getHead();
+                    currentClass = namesToInsert.getHead();
+                }
                 if (current != null)
                     if (i < nmbClassNodes) // i < nmbClassNodes the condition causing the error
                     {
-                        returnMe.insertVertex((LatLng)current.getEle(), 0); //insert a class node
+                        returnMe.insertVertex((LatLng)current.getEle(), 0, (String)currentClass.getEle()); //insert a class node
+                    } else if (i > nmbClassNodes && i < nmbClassNodes + nmbHallNodes) {
+                        returnMe.insertVertex((LatLng)current.getEle(), 1, (String)currentClass.getEle()); //insert a hall node
                     } else {
-                        returnMe.insertVertex((LatLng)current.getEle(), 1); //insert a hall node
+                        returnMe.insertVertex((LatLng)current.getEle(), 2, (String)currentClass.getEle()); //insert a hall node
                     }
+                currentClass = currentClass.getNext();
                 current = current.getNext();
             }
         }
@@ -394,6 +436,14 @@ public class Graph
         double y_coordinate = Double.parseDouble(lineString[1].substring(posOfHalfway+2, lineString[1].length()-2));
         LatLng currentCoordinate = new LatLng(x_coordinate, y_coordinate);
         return currentCoordinate;
+    }
+
+    private static String readClassName(String currentLine)
+    {
+        String[] lineString = currentLine.split(":");
+        String floorName = lineString[0].trim(); // ex: H-801
+
+        return floorName;
     }
 
     private static LatLng readHallCoordinate(String currentLine)

@@ -17,8 +17,6 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +40,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.scoutconcordia.DataStructures.Graph;
+import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -56,7 +55,6 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -78,11 +76,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.google.android.gms.common.api.Status;
-
 import java.io.OutputStream;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -90,17 +85,9 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
-import com.google.android.material.button.MaterialButton;
 
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
@@ -119,7 +106,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
-    // diffferent req code for handling result depending on why permission was asked
+    // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -127,10 +114,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
     private Button directionButton;
     private Button exploreInsideButton;
+    private Button nextStep;
 
+    private List<Object[]> searchResults = new ArrayList<>();
+    private int searchResultsIndex;
+    private Polyline searchPath;
+    private Marker pathMarker;
+
+    private Button floor1;
+    //private Button floor2;
     private Button floor8;
     private Button floor9;
-
+    private Button floorCC1;
+    private Button floorCC2;
 
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
@@ -142,17 +138,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String activeInfoWindow = null;
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
-    private List<Marker> hall8floorMarkers = new ArrayList<>();
+    private List<Graph> floorGraphs = new ArrayList<>();
+    public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
-    private GroundOverlay googoo;
+    private GroundOverlay hallGroundOverlay;
+    private final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
+    private GroundOverlay ccGroundOverlay;
 
-    private static final List<String> locations = new ArrayList<>(); // Concordia buildings list
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
     private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
+    private String startingBuilding;
+    private String destinationBuilding;
+    private LatLng origin; //origin of directions search
     private Polyline pathPolyline = null; // polyline for displaying the map
     private Dialog setOriginDialog;
     private boolean useMyLocation = true; // whether useMyCurrentLocation button is checked
@@ -160,6 +161,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int travelMode = 1; // 1 = walking (default), 2 = car, 3 = transit, 4 = shuttle
     private BottomNavigationView travelOptionsMenu = null;
     private boolean shuttleAvailable = false;
+
+    private boolean disabilityPreference = false; //false for no disability, true for disability
+    private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
+    private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
+
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,15 +237,261 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
+
         addDirectionButtonListener();
         addExploreInsideButtonListener();
         addPopUpBarListener();
         addfloor8ButtonListener();
         addfloor9ButtonListener();
+        addfloor1ButtonListener();
+        //addfloor2ButtonListener();
+        addfloorCC1ButtonListener();
+        addfloorCC2ButtonListener();
+        addNextStepListener();
 
+        createFloorGraphs();
+        
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
     }
+
+    public List<Object[]> searchForClass(String fromMe, String toMe) {
+        // if we dont find the to me location on the same floor we need to send it to the escalator.
+        LatLng point1 = null;
+        LatLng point2 = null;
+        String floor1 = "";
+        String floor2 = "";
+        Graph graph1 = null;
+        Graph graph2 = null;
+        List<Object[]> results = new ArrayList<>();
+
+        for (Graph graph : floorGraphs)
+        {
+            point1 = graph.searchByClassName(fromMe);
+            if (point1 != null)
+            {
+                graph1 = graph;
+                floor1 = graph.id;
+                break;
+            }
+        }
+
+        for (Graph graph: floorGraphs)
+        {
+            point2 = graph.searchByClassName(toMe);
+            if (point2 != null)
+            {
+                graph2 = graph;
+                floor2 = graph.id;
+                break;
+            }
+        }
+
+        //if either of the points are null then we stop right away.
+        if (point1 == null || point2 == null)
+        {
+            Log.w("ERROR: ", "The location you selected was not found");
+            return null;
+        }
+
+        // we want to check if both of the locations are on the same floor
+        if (floor1.equals(floor2))  //this is an easy search as they are on the same floor
+        {
+            nextStep.setVisibility(VISIBLE);
+            Object[] path = graph1.breathFirstSearch(point1, point2);
+            results.add(path);
+            return results;
+        }
+        else {
+            // we have to get more creative with the search and break it down
+            // we need to search from class -> escalator, then from escalator -> class on the right floor
+            if (disabilityPreference)
+            {
+                nextStep.setVisibility(VISIBLE); // enable the next step button
+                Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ELEVATOR"));
+                Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ELEVATOR"), point2);
+                results.add(path1);
+                results.add(path2);
+                return results;
+            } else
+            {
+                nextStep.setVisibility(VISIBLE); // enable the next step button
+                Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ESCALATOR"));
+                Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ESCALATOR"), point2);
+                results.add(path1);
+                results.add(path2);
+                return results;
+            }
+        }
+    }
+
+    // this method is going to be used to display the search results from the searchForClass method
+    public void displaySearchResults(Object[] results)
+    {
+        LatLng[] dest = new LatLng[results.length];
+        System.arraycopy(results, 0, dest, 0, results.length);
+
+        //List<LatLng> listOfPoints = new ArrayList<>();
+        searchPath.setPoints(Arrays.asList(dest));
+        
+        // get the first point and the last point
+        LatLng point1 = dest[0];
+        LatLng point2 = dest[dest.length - 1];
+        String point1Floor = "a";
+        String point2Floor = "b";
+        String showFloor = "";
+
+        pathMarker = mMap.addMarker(new MarkerOptions()
+                .position(point2)
+                .visible(true));
+
+        // we also need to consider if the point is an elevator/escalator so we need to check both points.
+        for (Graph graph: floorGraphs)
+        {
+            for (Graph.Node node: graph.nodes())
+            {
+                if (point1 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
+                {
+                    point1Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
+                    showFloor = point1Floor;
+                    break;
+                } else if (point2 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
+                {
+                    point2Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
+                    showFloor = point2Floor;
+                    break;
+                }
+            }
+            if (!showFloor.equals(""))  //if they got a new value that isn't the default value we found the floor
+            {
+                break;
+            }
+        }
+
+        // need to determine which floor map to show.
+        switch (showFloor) {
+            case "H-0":
+            case "H-1":
+                showHallButtons();
+                hideCCButtons();
+                floor1.performClick();
+                break;
+            //case "H-2":
+            //    showHallButtons();
+            //    hideCCButtons();
+            //    floor2.performClick();
+            //    break;
+            case "H-8":
+                showHallButtons();
+                hideCCButtons();
+                floor8.performClick();
+                break;
+            case "H-9":
+                showHallButtons();
+                hideCCButtons();
+                floor9.performClick();
+                break;
+            case "CC-1":
+                showCCButtons();
+                hideHallButtons();
+                floorCC1.performClick();
+                break;
+            case "CC-2":
+                showCCButtons();
+                hideHallButtons();
+                floorCC2.performClick();
+                break;
+        }
+    }
+
+    public void createFloorGraphs()
+    {
+        Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
+        //Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
+        Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
+        Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
+        Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
+
+        floorGraphs.add(hall_1_floor);
+        //floorGraphs.add(hall_2_floor);
+        floorGraphs.add(hall_8_floor);
+        floorGraphs.add(hall_9_floor);
+        floorGraphs.add(cc_1_floor);
+        floorGraphs.add(cc_2_floor);
+
+        for (Graph graph : floorGraphs)
+        {
+            for (Graph.Node node: graph.nodes())
+            {
+                if (node.getType() == 0)
+                {
+                    locations.add(node.getRoom());
+                    locationMap.put(node.getRoom(), node.getElement());
+                }
+            }
+        }
+    }
+
+    public void setUpGroundOverlay(String image)
+    {
+        BitmapFactory.Options dimensions = new BitmapFactory.Options();
+        dimensions.inJustDecodeBounds = true;
+        int imgHeightPixels = dimensions.outHeight;
+        float imgHeightInPixels;
+        float imgRotation = -56;
+        float overlaySize = 75;
+        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier(image, "drawable", getPackageName()));
+
+        hallGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                .image(floorPlan)
+                .position(hallOverlaySouthWest, overlaySize)
+                .anchor(0, 1)
+                .bearing(imgRotation));
+    }
+
+    public void addfloor1ButtonListener()
+    {
+        floor1 = (Button) findViewById(R.id.floor1);
+        floor1.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+
+                resetButtonColors();
+                floor1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor1.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall1p");
+
+                //for (Graph graph : floorGraphs)
+                //{
+                //    System.out.println(graph.id);
+                //    if ((graph.id).equals("Hall 1 floor"))
+                //    {
+                //        for (Graph.Node node : graph.nodes())
+                //        {
+                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
+                //        }
+                //    }
+                //}
+            }
+        });
+    }
+
+//    public void addfloor2ButtonListener()
+//    {
+//        floor2 = (Button) findViewById(R.id.floor2);
+//        floor2.setOnClickListener(new View.OnClickListener()
+//        {
+//            public void onClick(View view) {
+//                resetButtonColors();
+//                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+//                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
+//                removeAllFloorOverlays();
+//                setUpGroundOverlay("hall2floor");
+//            }
+//        });
+//    }
 
     public void addfloor8ButtonListener()
     {
@@ -247,91 +499,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor8.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
-                int imgHeightPixels = dimensions.outHeight;
+                resetButtonColors();
+                floor8.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor8.setTextColor(getResources().getColor((R.color.faintGray)));
 
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall8p);
-
-                GroundOverlayOptions goo = new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation);
-
-                googoo = mMap.addGroundOverlay(goo);
-
-
-                // For future reference, this will be necessary in order to remove the overlay once
-                // the app moves away contextually from the inside of the building.
-
-//                hall8.remove();
-
-
-                // Lets try creating a graph for Hall 8th Floor
-                Graph hall_8_floor = createGraph("encryptedhall8nodes");
-                //System.out.println(hall_8_floor.vertices().length);
-
-                // This is temporary to help in placing the markers for each floor
-                //for (LatLng vertices : hall_8_floor.vertices())
-                //{
-//
-//                    Marker polyMarker = mMap.addMarker(new MarkerOptions().position(vertices));
-//                    hall8floorMarkers.add(polyMarker); // add the marker to the list of markers
-//                }
-
-                for (Graph.Node node : hall_8_floor.nodes())
-                {
-                    if (node.getType() > 0) {  // if it is a hall node
-                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        hall8floorMarkers.add(polyMarker);
-                    } else { // if it is a class node
-                        Marker polyMarker = mMap.addMarker(new MarkerOptions().position(node.getElement()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                        hall8floorMarkers.add(polyMarker);
-                    }
-                }
-                for (LatLng vertices : hall_8_floor.vertices())
-                {
-                    if (hall_8_floor.incidentVerticies(vertices) != null)
-                        Log.w("Adjacency List", Arrays.toString(hall_8_floor.incidentVerticies(vertices)));
-                    else
-                        Log.w("Adjacency List", "Failed!");
-                }
-
-                LatLng point1 = hall_8_floor.vertices()[30];  //start
-                LatLng point2 = hall_8_floor.vertices()[70];  //end
-                Log.w("Point 1:", point1.toString());
-                Log.w("Point 2:", point2.toString());
-
-                Object[] path = hall_8_floor.breathFirstSearch(point1, point2);
-
-                if (path != null) {
-                    Log.w("BFS", "Final Path");
-                    for (int i = 0; i < path.length; i++) {
-                        Log.w("BFS", path[i].toString());
-
-                          // lets highlight the path.
-                          for (Marker markers : hall8floorMarkers)
-                          {
-                              if (markers.getPosition().equals(path[i]))
-                                       if (path[i].equals(point1))
-                                       {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));  // start is green
-                                       } else if (path[i].equals(point2))
-                                       {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // end is blue
-                                       } else {
-                                           markers.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)); // path is yellow
-                                       }
-                           }
-                       }
-                  }
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall8p");
             }
         });
     }
@@ -342,27 +515,113 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floor9.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
-                // THis code handles the map overlay of the floor plans.
-                // Map overlay of the Hall image over the building
+                resetButtonColors();
+                floor9.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor9.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall9p");
+            }
+        });
+    }
+
+    public void addfloorCC1ButtonListener()
+    {
+        floorCC1 = (Button) findViewById(R.id.floorCC1);
+        floorCC1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorCC1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorCC1.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
-//        BitmapFactory.decodeResource(getResources(), R.drawable.bluesquare, dimensions);
                 int imgHeightPixels = dimensions.outHeight;
-
                 float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 75;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(R.drawable.hall9p);
+                float imgRotation = 29;
+                float overlaySize = 82;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", "drawable", getPackageName()));
 
-                GroundOverlayOptions goo = new GroundOverlayOptions()
+                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
-                        .position(hallOverlaySouthWest, overlaySize)
+                        .position(ccOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
-                        .bearing(imgRotation);
-//                mMap.addGroundOverlay(goo);
+                        .bearing(imgRotation));
+            }
+        });
+    }
 
-//                GroundOverlay hall9 = mMap.addGroundOverlay(goo);
-                googoo = mMap.addGroundOverlay(goo);
+    public void addfloorCC2ButtonListener()
+    {
+        floorCC2 = (Button) findViewById(R.id.floorCC2);
+        floorCC2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorCC2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorCC2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 29;
+                float overlaySize = 82;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", "drawable", getPackageName()));
+
+                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(ccOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addNextStepListener()
+    {
+        nextStep = (Button) findViewById(R.id.nextStep);
+        nextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (pathMarker != null)
+                {
+                    pathMarker.remove();
+                }
+                searchResultsIndex++; //increment the search result index
+
+                if (searchResultsIndex == searchResults.size())
+                {
+                    if (needMoreDirections)
+                    {
+                        /// NEED TO CHECK THIS OUT
+                        LatLng[] dest = new LatLng[searchResults.get(searchResultsIndex - 1).length];
+                        System.arraycopy(searchResults.get(searchResultsIndex - 1), 0, dest, 0, searchResults.get(searchResultsIndex - 1).length);
+                        origin = dest[dest.length - 1];
+                        startingPoint = startingBuilding + " Building";
+                        getDirections(); // call get directions again to continue getting directions
+                    } else
+                    {
+                        // we want to reset the app back to the initial state
+                        searchResultsIndex = 0;
+                        searchPath.setVisible(false);
+                        nextStep.setVisibility(View.INVISIBLE);
+                    }
+                } else if (searchResultsIndex == 0) {
+                    resetPath();  //erase the path from outdoor directions
+                    exploreInsideButton.performClick();
+                    displaySearchResults(searchResults.get(searchResultsIndex));
+                } else if (searchResultsIndex == 100) {
+                        resetPath();
+                        nextStep.setVisibility(View.INVISIBLE);  //we have reached the end of the search
+                } else
+                {
+                    displaySearchResults(searchResults.get(searchResultsIndex));
+                }
             }
         });
     }
@@ -467,8 +726,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         else { //starting point not current location
-
-            LatLng origin = null;
+            origin = null;
             // if place is not in locationMap, exception will be thrown
             // No need to check for destination as setOrigin only opens when one of the given options is selected
             try{
@@ -479,9 +737,131 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(this, "Invalid starting location", Toast.LENGTH_LONG).show();
             }
 
-            if(startingPoint != null) {
+            if (startingPoint != null)
+            {
                 setOriginDialog.dismiss();
-                drawDirectionsPath(origin, locationMap.get(destination));
+                getDirections();
+            }
+        }
+    }
+
+    public void getDirections()
+    {
+        if(startingPoint != null) {
+            if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+            {
+                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                {
+                    if (needMoreDirections)
+                    {
+                        needMoreDirections = false;
+                        searchResultsIndex = 99;
+                    }
+                    drawDirectionsPath(origin, locationMap.get(destination));
+                } else {                                                                                            //if the destination is a classroom
+                    String buildingName = destination.split("-")[0] + " Building";
+                    String toMe = destination;
+
+                    for (Marker marker : markerBuildings) {
+                        if ((marker.getTitle()).equals(buildingName)) {
+                            searchMarker.setPosition(marker.getPosition());
+                            searchMarker.setVisible(false);
+                        }
+                    }
+                    drawDirectionsPath(origin, locationMap.get(buildingName));
+
+                    if (classToClass)  // if the general search is a class-> class search or just a building->class search
+                    {
+                        needMoreDirections = false;
+                        if (destinationBuilding.equals("H"))
+                        {
+                            searchResults = searchForClass("H-100", toMe);
+                        } else if (destinationBuilding.equals("CC"))
+                        {
+                            searchResults = searchForClass("CC-150", toMe);
+                        }
+                    } else
+                    {
+                        if (startingBuilding.equals("H")) {
+                            searchResults = searchForClass("H-100", toMe);
+                        } else if (startingBuilding.equals("CC")) {
+                            searchResults = searchForClass("CC-150", toMe);
+                        }
+                    }
+                    searchResultsIndex = -1;
+                    searchPath.setVisible(true);
+                }
+            } else //if the starting point is a classroom
+            {
+                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                {
+                    // need to go from class room to exit (we can hard code the exit for H and for CC)
+                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+                    for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                        if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                            searchMarker.setPosition(marker.getPosition());
+                            searchMarker.setVisible(false);
+                        }
+                    }
+                    exploreInsideButton.performClick();
+
+                    if (startingBuilding.equals("H")) {
+                        searchResults = searchForClass(startingPoint, "H-100");
+                    } else if (startingBuilding.equals("CC")) {
+                        searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                    }
+                    searchResultsIndex = -1;
+                    searchPath.setVisible(true);
+
+                    needMoreDirections = true;
+
+                    // need to go from exit to the building. Will be called in the needMoreDirections loop
+
+                } else // if the destination is a classroom (class -> class)
+                {
+                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+                    destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+
+                    if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
+                    {
+                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                                searchMarker.setPosition(marker.getPosition());
+                                searchMarker.setVisible(false);
+                            }
+                        }
+                        exploreInsideButton.performClick();
+                        searchResults = searchForClass(startingPoint, destination);
+                        searchResultsIndex = -1;
+                        searchPath.setVisible(true);
+                    } else //if both classes are in different buildings
+                    {
+                        // go from the class to the building exit
+                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                                searchMarker.setPosition(marker.getPosition());
+                                searchMarker.setVisible(false);
+                            }
+                        }
+                        exploreInsideButton.performClick();
+
+                        if (startingBuilding.equals("H")) {
+                            searchResults = searchForClass(startingPoint, "H-100"); //directions to exit for H building
+                        } else if (startingBuilding.equals("CC")) {
+                            searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                        }
+
+                        searchResultsIndex = -1;
+                        searchPath.setVisible(true);
+
+                        needMoreDirections = true;
+                        classToClass = true;
+
+                        // go from building to building
+
+                        // go from the building entrance to the class
+                    }
+                }
             }
         }
     }
@@ -541,6 +921,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         directionButton = (Button) findViewById(R.id.directionsButton);
         // can add a functionality here that gives us the directions when we press on the button
+
+        directionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TESTING INDOOR DIRECTIONS
+                String fromMe = "CC-215";
+                String toMe = "CC-219";
+                searchResults = searchForClass(fromMe, toMe);
+                searchResultsIndex = 0;
+                searchPath.setVisible(true);
+                displaySearchResults(searchResults.get(searchResultsIndex));
+            }
+        });
     }
 
     // this is the listener for the explore inside button.
@@ -550,8 +943,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (activeInfoWindow != null)
-                {
+                //if (activeInfoWindow != null)
+                //{
                     // we want to remove the building outline from the map so we can see the indoor floor plan
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
@@ -561,14 +954,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         {
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
-                            floor8.setVisibility(VISIBLE);
-                            floor9.setVisibility(VISIBLE);
+
+                            removeAllFloorOverlays();
+
+                            if (poly.getTag().equals("H Building"))
+                            {
+                                showHallButtons();
+                            } else if (poly.getTag().equals("CC Building"))
+                            {
+                                showCCButtons();
+                            }
                         }
                     }
-
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
-                }
+                //}
             };
         });
     }
@@ -612,6 +1012,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void showHallButtons()
+    {
+        floor1.setVisibility(View.VISIBLE);
+        //floor2.setVisibility(View.VISIBLE);
+        floor8.setVisibility(View.VISIBLE);
+        floor9.setVisibility(View.VISIBLE);
+    }
+
+    public void hideHallButtons()
+    {
+        floor1.setVisibility(View.INVISIBLE);
+        //floor2.setVisibility(View.INVISIBLE);
+        floor8.setVisibility(View.INVISIBLE);
+        floor9.setVisibility(View.INVISIBLE);
+    }
+
+    public void showCCButtons()
+    {
+        floorCC1.setVisibility(View.VISIBLE);
+        floorCC2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideCCButtons()
+    {
+        floorCC1.setVisibility(View.INVISIBLE);
+        floorCC2.setVisibility(View.INVISIBLE);
+    }
+
+
+    public void removeAllFloorOverlays(){
+        if (hallGroundOverlay != null){
+            hallGroundOverlay.remove();
+        }
+        if (ccGroundOverlay != null){
+            ccGroundOverlay.remove();
+        }
+    }
+
+    public void resetButtonColors() {
+        floor1.setBackgroundResource(android.R.drawable.btn_default);
+        floor1.setTextColor(getResources().getColor(R.color.black));
+        //floor2.setBackgroundResource(android.R.drawable.btn_default);
+        //floor2.setTextColor(getResources().getColor(R.color.black));
+        floor8.setBackgroundResource(android.R.drawable.btn_default);
+        floor8.setTextColor(getResources().getColor(R.color.black));
+        floor9.setBackgroundResource(android.R.drawable.btn_default);
+        floor9.setTextColor(getResources().getColor(R.color.black));
+        floorCC1.setBackgroundResource(android.R.drawable.btn_default);
+        floorCC1.setTextColor(getResources().getColor(R.color.black));
+        floorCC2.setBackgroundResource(android.R.drawable.btn_default);
+        floorCC2.setTextColor(getResources().getColor(R.color.black));
+    }
 
     /**
      * Manipulates the map once available.
@@ -667,6 +1119,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setInfoWindowAdapter(adapter);
 
         initializeSearchBar();
+
+        searchPath = mMap.addPolyline(new PolylineOptions());
     }
 
     // moves the camera to keep on user's location on any change in its location
@@ -692,12 +1146,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /*
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
     // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
     public void encryptAllInputFiles()
     {
-        //DES encrypter = new DES();
+        DES encrypter = new DES();
         InputStream fis = null;
         OutputStream fos = null;
         String filename = "";
@@ -711,10 +1166,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encryptedFilename = "encrypted_" + filename;
                 fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
                 fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                //encrypter.encryptFile(fis, fos);
+                encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall8nodes"))
+                if (filename.equals("hall1nodes2"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -733,7 +1188,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    } */
 
     private void drawDirectionsPath(LatLng origin, LatLng dest){
         resetPath();
@@ -778,7 +1233,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             pathPolyline = mMap.addPolyline(opts);
             animateCamera(origin, zoomLevel);
             // set starting point and destination to null
-            resetGetDirectionParams();
+            //resetGetDirectionParams();
         }
         catch(Throwable t){
             Log.d(TAG, t.getMessage());
@@ -820,13 +1275,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // this method will be used for creating the floor graphs by reading form a node encrypted text file.
-    public Graph createGraph(String encryptedFileName)
+    public Graph createGraph(String encryptedFileName, boolean isEncrypted)
     {
         FileAccessor useMeToRead = new FileAccessor();
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
         Graph graphName = null;
         // First we need to decrypt the file to have access to the locations
-        useMeToRead.decryptFile(true);
+        useMeToRead.decryptFile(isEncrypted);
 
         // with the decrypted file, we can add the nodes to the graph
         graphName = Graph.addNodesToGraph(useMeToRead.obtainContents());
@@ -845,16 +1300,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                isInfoWindowShown = false;
-                searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
+                // we only want to perform these actions if the marker we clicked on is one of the custom markers.
+                if (markerBuildings.contains(marker))
+                {
+                    isInfoWindowShown = false;
+                    searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
 
-                // move the camera to the marker location
-                animateCamera(marker.getPosition(), zoomLevel);
+                    // move the camera to the marker location
+                    animateCamera(marker.getPosition(), zoomLevel);
 
-                if (!isInfoWindowShown) {
-                    marker.showInfoWindow();
+                    if (!isInfoWindowShown) {
+                        marker.showInfoWindow();
 
-                    activeInfoWindow = marker.getTitle();
+                        activeInfoWindow = marker.getTitle();
 
                     // this sets the parameters for the button that appears on click. (The direction button)
                     directionButton.setVisibility(VISIBLE);
@@ -873,31 +1331,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // this sets the parameters for the pop up bar that appears on click
                     popUpBar.setVisibility(VISIBLE);
 
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
+                        hideHallButtons();
+                        hideCCButtons();
 
+                        removeAllFloorOverlays();
 
-                    if (googoo != null) {
-                        googoo.remove();
-                    }
-
-
-                    isInfoWindowShown = true;
+                        isInfoWindowShown = true;
                 } else {
-                    marker.hideInfoWindow();
-                    directionButton.setVisibility(View.INVISIBLE);
-                    exploreInsideButton.setVisibility(View.INVISIBLE);
-                    popUpBar.setVisibility(View.INVISIBLE);
-                    floor8.setVisibility(View.INVISIBLE);
-                    floor9.setVisibility(View.INVISIBLE);
+                        marker.hideInfoWindow();
+                        directionButton.setVisibility(View.INVISIBLE);
+                        exploreInsideButton.setVisibility(View.INVISIBLE);
+                        popUpBar.setVisibility(View.INVISIBLE);
 
-                    if (googoo != null) {
-                        googoo.remove();
+                        hideHallButtons();
+                        hideCCButtons();
+
+                        removeAllFloorOverlays();
+
+                        isInfoWindowShown = false;
+                        activeInfoWindow = null;
                     }
-
-
-                    isInfoWindowShown = false;
-                    activeInfoWindow = null;
+                } else {
+                    System.out.println(marker.getPosition());
                 }
                 return true;
             }
@@ -910,17 +1365,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
 
-                floor8.setVisibility(View.INVISIBLE);
-                floor9.setVisibility(View.INVISIBLE);
+                hideHallButtons();
+                hideCCButtons();
 
-                if (googoo != null) {
-                    googoo.remove();
-                }
+                removeAllFloorOverlays();
 
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
                 showAllPolygons();
                 showAllMarkers();
+                resetGetDirectionParams();
+
+                //System.out.println(latLng);
             }
         });
     }
@@ -1002,6 +1458,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             polyMarker.setTag(Hall_Building);
             justAddedPolygon.setTag("alpha");
             stylePolygon(justAddedPolygon);
+            justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
             currentBuilding = currentBuilding.getNext();
         }
     }
@@ -1014,7 +1471,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
         return false; // returning false calls the super method, returning true does not
     }
-
 
     private void animateCamera(LatLng latLng, float zoomLevel)
     {
