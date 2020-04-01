@@ -171,14 +171,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override protected void onCreate(Bundle savedInstanceState) {
 
 
-        // Victor's log tests
-        ShuttleInfo testShuttleInfo = new ShuttleInfo();
+//        // Victor's log tests
+//        ShuttleInfo testShuttleInfo = new ShuttleInfo();
+//
+//        //This gets the estimated time in minutes from Loyola to SGW at the current time
+//        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromLoyola() + " minutes");
+//
+//        //This gets the estimated time in minutes from SGW to Loyola at the current time
+//        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromSGW() + " minutes");
 
-        //This gets the estimated time in minutes from Loyola to SGW at the current time
-        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromLoyola() + " minutes");
-
-        //This gets the estimated time in minutes from SGW to Loyola at the current time
-        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromSGW() + " minutes");
+        setmContext(this);
 
 
         super.onCreate(savedInstanceState);
