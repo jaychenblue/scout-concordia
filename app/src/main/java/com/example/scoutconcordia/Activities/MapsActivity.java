@@ -1,7 +1,6 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -18,7 +17,6 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -170,7 +168,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
 
     // Displays the Map
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override protected void onCreate(Bundle savedInstanceState) {
 
 
