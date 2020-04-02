@@ -39,11 +39,23 @@ public class Graph
 
         private boolean equals(Node n1)
         {
+            if(this.element == n1.element){
+                return true;
+            }
+            if(n1.element == null || getClass() != n1.getClass()){
+                return false;
+            }
             return this.element.equals(n1.element);
         }
 
         private boolean equals(LatLng ele)
         {
+            if(this.element == ele){
+                return true;
+            }
+            if(ele == null){
+                return false;
+            }
             return this.element.equals(ele);
         }
 
