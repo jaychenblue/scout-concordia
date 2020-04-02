@@ -123,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker pathMarker;
 
     private Button floor1;
-    //private Button floor2;
+    private Button floor2;
     private Button floor8;
     private Button floor9;
     private Button floorCC1;
@@ -257,7 +257,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
-        //addfloor2ButtonListener();
+        addfloor2ButtonListener();
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
         addNextStepListener();
@@ -389,11 +389,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideCCButtons();
                 floor1.performClick();
                 break;
-            //case "H-2":
-            //    showHallButtons();
-            //    hideCCButtons();
-            //    floor2.performClick();
-            //    break;
+            case "H-2":
+                showHallButtons();
+                hideCCButtons();
+                floor2.performClick();
+                break;
             case "H-8":
                 showHallButtons();
                 hideCCButtons();
@@ -420,14 +420,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void createFloorGraphs()
     {
         Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
-        //Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_2_floor = createGraph("hall2nodes", false);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
         Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
 
         floorGraphs.add(hall_1_floor);
-        //floorGraphs.add(hall_2_floor);
+        floorGraphs.add(hall_2_floor);
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
         floorGraphs.add(cc_1_floor);
@@ -491,20 +491,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-//    public void addfloor2ButtonListener()
-//    {
-//        floor2 = (Button) findViewById(R.id.floor2);
-//        floor2.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View view) {
-//                resetButtonColors();
-//                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-//                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
-//                removeAllFloorOverlays();
-//                setUpGroundOverlay("hall2floor");
-//            }
-//        });
-//    }
+    public void addfloor2ButtonListener()
+    {
+        floor2 = (Button) findViewById(R.id.floor2);
+        floor2.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+                resetButtonColors();
+                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall2floor");
+
+                // This code is for displaying the nodes
+                for (Graph graph : floorGraphs) {
+                    System.out.println(graph.id);
+                    if ((graph.id).equals("Hall 2 floor")) {
+                        for (Graph.Node node : graph.nodes()) {
+                            mMap.addMarker(new MarkerOptions().position(node.getElement()));
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     public void addfloor8ButtonListener()
     {
@@ -968,7 +978,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
 
-                            removeAllFloorOverlays();
+                            //removeAllFloorOverlays();
 
                             if (poly.getTag().equals("H Building"))
                             {
@@ -979,6 +989,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                     }
+                    showHallButtons();
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
                 //}
@@ -1028,7 +1039,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
-        //floor2.setVisibility(View.VISIBLE);
+        floor2.setVisibility(View.VISIBLE);
         floor8.setVisibility(View.VISIBLE);
         floor9.setVisibility(View.VISIBLE);
     }
@@ -1036,7 +1047,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
-        //floor2.setVisibility(View.INVISIBLE);
+        floor2.setVisibility(View.INVISIBLE);
         floor8.setVisibility(View.INVISIBLE);
         floor9.setVisibility(View.INVISIBLE);
     }
@@ -1066,8 +1077,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getResources().getColor(R.color.black));
-        //floor2.setBackgroundResource(android.R.drawable.btn_default);
-        //floor2.setTextColor(getResources().getColor(R.color.black));
+        floor2.setBackgroundResource(android.R.drawable.btn_default);
+        floor2.setTextColor(getResources().getColor(R.color.black));
         floor8.setBackgroundResource(android.R.drawable.btn_default);
         floor8.setTextColor(getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
@@ -1381,7 +1392,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideHallButtons();
                 hideCCButtons();
 
-                removeAllFloorOverlays();
+                //removeAllFloorOverlays();
 
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
@@ -1389,7 +1400,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showAllMarkers();
                 resetGetDirectionParams();
 
-                //System.out.println(latLng);
+                System.out.println(latLng);
             }
         });
     }
@@ -1443,8 +1454,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 po.add((LatLng)currentCoordinate.getEle());
                 currentCoordinate = currentCoordinate.getNext();
             }
-            Polygon justAddedPolygon = mMap.addPolygon(po);
-            polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
+            //Polygon justAddedPolygon = mMap.addPolygon(po);
+            //polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
             int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
@@ -1469,9 +1480,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             BuildingInfo Hall_Building = new BuildingInfo(((BuildingInfo)currentBuilding.getEle()).getName(), ((BuildingInfo)currentBuilding.getEle()).getAddress(), ((BuildingInfo)currentBuilding.getEle()).getOpeningTimes());
             polyMarker.setTag(Hall_Building);
-            justAddedPolygon.setTag("alpha");
-            stylePolygon(justAddedPolygon);
-            justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
+            //justAddedPolygon.setTag("alpha");
+            //stylePolygon(justAddedPolygon);
+            //justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
             currentBuilding = currentBuilding.getNext();
         }
     }
