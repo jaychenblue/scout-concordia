@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import com.example.scoutconcordia.DataStructures.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -79,11 +80,66 @@ public class LinkedListTest {
                      "Entry 2: 3\n",
                      l.toString());
     }
+
+    @Test
+    public void testContains() {
+        assertTrue(l.contains(1));
+        assertTrue(l.contains(2));
+        assertTrue(l.contains(3));
+
+        assertFalse(l.contains(0));
+    }
+
+    @Test
+    public void testIndexOf() {
+        assertEquals(0, l.indexOf(1));
+        assertEquals(1, l.indexOf(2));
+        assertEquals(2, l.indexOf(3));
+
+        assertEquals(-1, l.indexOf(0));
+    }
+
+    @Test
+    public void testToArray() {
+        assertNotNull(l.toArray());
+        assertEquals(1, l.toArray()[0]);
+        assertEquals(2, l.toArray()[1]);
+        assertEquals(3, l.toArray()[2]);
+    }
     
     // test remove object
     @Test
     public void testRemoveOBJ() {
         assertTrue(l.removeOBJ(2));
+    }
+
+    // testing inner Node class
+    @Test
+    public void testNodeGetters() {
+        LinkedList.Node node1 = l.new Node();
+        LinkedList.Node node2 = l.new Node();
+        LinkedList.Node node3 = l.new Node(3, node1, node2); // node1 is after, node2 is before
+
+        assertEquals(3, node3.getEle());
+        assertEquals(node1, node3.getNext());
+        assertEquals(node2, node3.getPrev());
+
+        node1 = null;
+        node2 = null;
+        node3 = null;
+    }
+
+    @Test
+    public void testNodeToString() {
+        LinkedList.Node node1 = l.new Node();
+        LinkedList.Node node2 = l.new Node();
+        LinkedList.Node node3 = l.new Node(3, node1, node2);
+
+        assertEquals("3", node3.toString());
+
+        node1 = null;
+        node2 = null;
+        node3 = null;
     }
     
 }

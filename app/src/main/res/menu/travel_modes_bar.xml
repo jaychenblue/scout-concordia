@@ -23,5 +23,6 @@
         android:id="@+id/shuttle"
         android:icon="@drawable/ic_directions_bus_black_24dp"
         android:title="@string/shuttle"
+        android:enabled="false"
         android:onClick="onShuttleSelected"/>
 </menu>

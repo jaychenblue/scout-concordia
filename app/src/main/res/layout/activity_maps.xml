@@ -58,17 +58,16 @@ tools:context=".Activities.MapsActivity">
         app:menu="@menu/navigation_bar" />
 
     <fragment
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/search"
-        tools:context=".Activities.MapsActivity"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        tools:context=".Activities.MapsActivity" />
 
-	<ToggleButton
+    <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="75dp"
         android:layout_height="30dp"
@@ -142,24 +141,88 @@ tools:context=".Activities.MapsActivity">
 
     </LinearLayout>
 
+    <!--old marginTop 390dp -->
     <Button
         android:id="@+id/floor8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="66dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="4dp"
         android:text="8th Floor"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
 
+    <!-- old marginTop 427dp -->
     <Button
         android:id="@+id/floor9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="123dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="390dp"
+        android:layout_marginEnd="4dp"
         android:text="9th Floor"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/floor1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="313dp"
+        android:layout_marginEnd="5dp"
+        android:text="1st Floor"
+        android:visibility="invisible" />
+<!--
+    <Button
+        android:id="@+id/floor2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="4dp"
+        android:text="2nd Floor"
+        android:visibility="invisible" />
+-->
+    <Button
+        android:id="@+id/floorCC1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="4dp"
+        android:text="CC 1"
+        android:visibility="invisible" />
+
+
+    <Button
+        android:id="@+id/floorCC2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="390dp"
+        android:layout_marginEnd="4dp"
+        android:text="CC 2"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/nextStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="550dp"
+        android:layout_marginLeft="55dp"
+        android:text="Next Step"
+        android:visibility="invisible" />
+
 
 </RelativeLayout>
