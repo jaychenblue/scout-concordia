@@ -94,7 +94,9 @@ public class LinkedList <E>
         
         // Not base case
         Node toBeNext = getNodeFromIndex(index);
-        Node toBeBefore = toBeNext.getPrev();
+        Node toBeBefore = null;
+        if (toBeNext != null)
+            toBeBefore = toBeNext.getPrev();
         Node newOne = new Node(element, toBeNext, toBeBefore);
         toBeBefore.setNext(newOne);
         toBeNext.setPrev(newOne);
