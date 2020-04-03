@@ -135,8 +135,13 @@ public class LinkedList <E>
         if (index >= size || index < 0)
             return null;
         Node toBeRemoved = getNodeFromIndex(index);
-        Node before = toBeRemoved.getPrev();
-        Node after = toBeRemoved.getNext();
+        Node before = null;
+        Node after = null;
+        if (toBeRemoved != null)
+        {
+            before = toBeRemoved.getPrev();
+            after = toBeRemoved.getNext();
+        }
         returnMe = (E)toBeRemoved.getEle();
         toBeRemoved.element = null;
         toBeRemoved.setPrev(null);
