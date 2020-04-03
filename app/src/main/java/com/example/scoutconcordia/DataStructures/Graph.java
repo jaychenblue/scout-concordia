@@ -410,16 +410,23 @@ public class Graph
                     currentClass = namesToInsert.getHead();
                 }
                 if (current != null)
+                {
                     if (i < nmbClassNodes) // i < nmbClassNodes the condition causing the error
                     {
-                        returnMe.insertVertex((LatLng)current.getEle(), 0, (String)currentClass.getEle()); //insert a class node
-                    } else if (i > nmbClassNodes && i < nmbClassNodes + nmbHallNodes) {
-                        returnMe.insertVertex((LatLng)current.getEle(), 1, (String)currentClass.getEle()); //insert a hall node
-                    } else {
-                        returnMe.insertVertex((LatLng)current.getEle(), 2, (String)currentClass.getEle()); //insert a hall node
+                        returnMe.insertVertex((LatLng) current.getEle(), 0, (String) currentClass.getEle()); //insert a class node
                     }
-                currentClass = currentClass.getNext();
-                current = current.getNext();
+                    else if (i > nmbClassNodes && i < nmbClassNodes + nmbHallNodes)
+                    {
+                        returnMe.insertVertex((LatLng) current.getEle(), 1, (String) currentClass.getEle()); //insert a hall node
+                    }
+                    else
+                    {
+                        returnMe.insertVertex((LatLng) current.getEle(), 2, (String) currentClass.getEle()); //insert a hall node
+                    }
+                    current = current.getNext();
+                }
+                if (currentClass != null)
+                    currentClass = currentClass.getNext();
             }
         }
         return returnMe;
