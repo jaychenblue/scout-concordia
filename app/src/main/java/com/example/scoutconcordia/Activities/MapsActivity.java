@@ -420,7 +420,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void createFloorGraphs()
     {
         Graph hall_1_floor = createGraph("hall1nodes", false);
-        Graph hall_2_floor = createGraph("encryptedhall2nodes", true);
+        Graph hall_2_floor = createGraph("hall2nodes", false);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
