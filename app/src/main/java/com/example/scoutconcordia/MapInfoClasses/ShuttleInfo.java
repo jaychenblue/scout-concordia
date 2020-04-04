@@ -3,6 +3,9 @@ package com.example.scoutconcordia.MapInfoClasses;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.scoutconcordia.Activities.MainActivity;
 import com.example.scoutconcordia.Activities.MapsActivity;
@@ -526,13 +529,13 @@ public class ShuttleInfo {
 
     // These methods will handle the retrieval of times from external encrypted txt files,
     // And then convert them into a comprehensible String array which can be used by this class for calculations.
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveMonToThursLoyola() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-            try
+            try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola))
             {
-                InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
                 InputStreamReader readInput = new InputStreamReader(is);
                 StringBuilder sb = new StringBuilder();
                 BufferedReader bfr = new BufferedReader(readInput);
