@@ -1079,6 +1079,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                             else if (poly.getTag().equals("VL Building"))
                             {
+                                LatLng loc2 = veBuildingOverlaySouthWest;
+
+                                for (Polygon poly2 : polygonBuildings)
+                                {
+                                    if (PolyUtil.containsLocation(loc2, poly.getPoints(), true)){
+                                        poly2.setVisible(false);
+                                    }
+                                }
+
+
                                 showVLButtons();
                             }
                         }
