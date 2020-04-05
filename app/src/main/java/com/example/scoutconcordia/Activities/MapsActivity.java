@@ -173,18 +173,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override protected void onCreate(Bundle savedInstanceState) {
 
 
-//        // Victor's log tests
-//        ShuttleInfo testShuttleInfo = new ShuttleInfo();
-//
-//        //This gets the estimated time in minutes from Loyola to SGW at the current time
-//        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromLoyola() + " minutes");
-//
-//        //This gets the estimated time in minutes from SGW to Loyola at the current time
-//        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromSGW() + " minutes");
+
 
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        setmContext(this);
 
         //Toolbar on top of the page
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -272,6 +266,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
+
+
+
     }
 
     public List<Object[]> searchForClass(String fromMe, String toMe) {

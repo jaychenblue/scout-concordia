@@ -59,9 +59,13 @@ public class N_aryTree
             return true;
         }
         
-        public boolean equals(TreeNode n2)
+        @Override public boolean equals(Object n2)
         {
-            return (element.equals(n2.element));
+            if (n2 == null)
+                return false;
+            else if (n2.getClass() != this.getClass())
+                return false;
+            return (element.equals(((TreeNode)n2).element));
         }
     }
     

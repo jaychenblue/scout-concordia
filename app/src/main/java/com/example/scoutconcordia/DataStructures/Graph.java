@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import io.opencensus.trace.Link;
+
 import static android.location.Location.distanceBetween;
 
 
@@ -37,14 +39,15 @@ public class Graph
             adjacencyList = new LinkedList<Node>(this);
         }
 
-        private boolean equals(Node n1)
+        @Override public boolean equals(Object n1)
         {
-            return this.element.equals(n1.element);
-        }
-
-        private boolean equals(LatLng ele)
-        {
-            return this.element.equals(ele);
+            if (n1 == null)
+                return false;
+            else if (n1.getClass() == Node.class)
+                return this.element.equals(((Node)n1).element);
+            else if (n1.getClass() == LatLng.class)
+                return this.element.equals(n1);
+            return false;
         }
 
         private int getId() { return id; }
@@ -410,16 +413,23 @@ public class Graph
                     currentClass = namesToInsert.getHead();
                 }
                 if (current != null)
+                {
                     if (i < nmbClassNodes) // i < nmbClassNodes the condition causing the error
                     {
-                        returnMe.insertVertex((LatLng)current.getEle(), 0, (String)currentClass.getEle()); //insert a class node
-                    } else if (i > nmbClassNodes && i < nmbClassNodes + nmbHallNodes) {
-                        returnMe.insertVertex((LatLng)current.getEle(), 1, (String)currentClass.getEle()); //insert a hall node
-                    } else {
-                        returnMe.insertVertex((LatLng)current.getEle(), 2, (String)currentClass.getEle()); //insert a hall node
+                        returnMe.insertVertex((LatLng) current.getEle(), 0, (String) currentClass.getEle()); //insert a class node
                     }
-                currentClass = currentClass.getNext();
-                current = current.getNext();
+                    else if (i > nmbClassNodes && i < nmbClassNodes + nmbHallNodes)
+                    {
+                        returnMe.insertVertex((LatLng) current.getEle(), 1, (String) currentClass.getEle()); //insert a hall node
+                    }
+                    else
+                    {
+                        returnMe.insertVertex((LatLng) current.getEle(), 2, (String) currentClass.getEle()); //insert a hall node
+                    }
+                    current = current.getNext();
+                }
+                if (currentClass != null)
+                    currentClass = currentClass.getNext();
             }
         }
         return returnMe;
