@@ -150,10 +150,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     private final LatLng veBuildingOverlaySouthWest = new LatLng(45.458849, -73.639018);
-    private final LatLng vlBuildingOverlaySouthWest = new LatLng(45.459114, -73.637831);
+    private final LatLng vlBuildingOverlaySouthWest = new LatLng(45.459106, -73.637831);
     private GroundOverlay hallGroundOverlay;
     private final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
     private GroundOverlay ccGroundOverlay;
+    private GroundOverlay veGroundOverlay;
+    private GroundOverlay vlGroundOverlay;
+
 
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
@@ -261,6 +264,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
         addfloorVE2ButtonListener();
+        addfloorVL1ButtonListener();
+        addfloorVL2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
@@ -616,10 +621,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 int imgHeightPixels = dimensions.outHeight;
                 float imgHeightInPixels;
                 float imgRotation = 29;
-                float overlaySize = 82;
+                float overlaySize = 50;
                 BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", "drawable", getPackageName()));
 
-                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                veGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(veBuildingOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
@@ -630,27 +635,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloorVL1ButtonListener()
     {
-        floorCC1 = (Button) findViewById(R.id.floorCC1);
-        floorCC1.setOnClickListener(new View.OnClickListener() {
+        floorVL1 = (Button) findViewById(R.id.floorVL1);
+        floorVL1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 resetButtonColors();
-                floorCC1.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorCC1.setTextColor(getResources().getColor((R.color.faintGray)));
+                floorVL1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVL1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
 
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
                 int imgHeightPixels = dimensions.outHeight;
                 float imgHeightInPixels;
-                float imgRotation = 29;
-                float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", "drawable", getPackageName()));
+                float imgRotation = 209;
+                float overlaySize = 71;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", "drawable", getPackageName()));
 
-                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
-                        .position(ccOverlaySouthWest, overlaySize)
+                        .position(vlBuildingOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation));
             }
@@ -659,27 +664,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloorVL2ButtonListener()
     {
-        floorCC1 = (Button) findViewById(R.id.floorCC1);
-        floorCC1.setOnClickListener(new View.OnClickListener() {
+        floorVL2 = (Button) findViewById(R.id.floorVL2);
+        floorVL2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 resetButtonColors();
-                floorCC1.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorCC1.setTextColor(getResources().getColor((R.color.faintGray)));
+                floorVL2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVL2.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
 
                 BitmapFactory.Options dimensions = new BitmapFactory.Options();
                 dimensions.inJustDecodeBounds = true;
                 int imgHeightPixels = dimensions.outHeight;
                 float imgHeightInPixels;
-                float imgRotation = 29;
-                float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", "drawable", getPackageName()));
+                float imgRotation = 209;
+                float overlaySize = 71;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", "drawable", getPackageName()));
 
-                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
-                        .position(ccOverlaySouthWest, overlaySize)
+                        .position(vlBuildingOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation));
             }
@@ -1072,6 +1077,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             {
                                 showVEButtons();
                             }
+                            else if (poly.getTag().equals("VL Building"))
+                            {
+                                showVLButtons();
+                                System.out.println("lol");
+                            }
                         }
                     }
                     // we want to zoom in onto the center of the building.
@@ -1146,6 +1156,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floorVE2.setVisibility(View.INVISIBLE);
     }
 
+    public void showVLButtons()
+    {
+        floorVL1.setVisibility(View.VISIBLE);
+        floorVL2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideVLButtons()
+    {
+        floorVL1.setVisibility(View.INVISIBLE);
+        floorVL2.setVisibility(View.INVISIBLE);
+    }
+
     public void showCCButtons()
     {
         floorCC1.setVisibility(View.VISIBLE);
@@ -1165,6 +1187,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         if (ccGroundOverlay != null){
             ccGroundOverlay.remove();
+        }
+        if (vlGroundOverlay != null){
+            vlGroundOverlay.remove();
+        }
+        if (veGroundOverlay != null){
+            veGroundOverlay.remove();
         }
     }
 
@@ -1452,6 +1480,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         hideHallButtons();
                         hideCCButtons();
                         hideVEButtons();
+                        hideVLButtons();
 
                         removeAllFloorOverlays();
 
@@ -1465,6 +1494,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         hideHallButtons();
                         hideCCButtons();
                         hideVEButtons();
+                        hideVLButtons();
 
                         removeAllFloorOverlays();
 
@@ -1488,6 +1518,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideHallButtons();
                 hideCCButtons();
                 hideVEButtons();
+                hideVLButtons();
+
 
                 removeAllFloorOverlays();
 
