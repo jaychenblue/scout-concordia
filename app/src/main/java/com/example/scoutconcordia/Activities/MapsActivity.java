@@ -1080,7 +1080,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             else if (poly.getTag().equals("VL Building"))
                             {
                                 showVLButtons();
-                                System.out.println("lol");
                             }
                         }
                     }
@@ -1209,6 +1208,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floorCC1.setTextColor(getResources().getColor(R.color.black));
         floorCC2.setBackgroundResource(android.R.drawable.btn_default);
         floorCC2.setTextColor(getResources().getColor(R.color.black));
+
+        floorVE2.setBackgroundResource(android.R.drawable.btn_default);
+        floorVE2.setTextColor(getResources().getColor(R.color.black));
+        floorVL1.setBackgroundResource(android.R.drawable.btn_default);
+        floorVL1.setTextColor(getResources().getColor(R.color.black));
+        floorVL2.setBackgroundResource(android.R.drawable.btn_default);
+        floorVL2.setTextColor(getResources().getColor(R.color.black));
     }
 
     /**
