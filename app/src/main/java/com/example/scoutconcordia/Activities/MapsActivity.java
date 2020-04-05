@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1615,5 +1616,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
     }
+
+
+    //inflates the menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
 }
 
