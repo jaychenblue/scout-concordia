@@ -1308,6 +1308,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floorVL1.setTextColor(getResources().getColor(R.color.black));
         floorVL2.setBackgroundResource(android.R.drawable.btn_default);
         floorVL2.setTextColor(getResources().getColor(R.color.black));
+
+        floorMB1.setBackgroundResource(android.R.drawable.btn_default);
+        floorMB1.setTextColor(getResources().getColor(R.color.black));
+        floorMBS2.setBackgroundResource(android.R.drawable.btn_default);
+        floorMBS2.setTextColor(getResources().getColor(R.color.black));
+
     }
 
     /**
