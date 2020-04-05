@@ -272,7 +272,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloorVL1ButtonListener();
         addfloorVL2ButtonListener();
         addfloorMB1ButtonListener();
-//        addfloorMBS2ButtonListener();
+        addfloorMBS2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
@@ -729,31 +729,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addfloorMBS2ButtonListener()
     {
-//        floorVL2 = (Button) findViewById(R.id.floorVL2);
-//        floorVL2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                resetButtonColors();
-//                floorVL2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-//                floorVL2.setTextColor(getResources().getColor((R.color.faintGray)));
-//                removeAllFloorOverlays();
-//
-//                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-//                dimensions.inJustDecodeBounds = true;
-//                int imgHeightPixels = dimensions.outHeight;
-//                float imgHeightInPixels;
-//                float imgRotation = 209;
-//                float overlaySize = 71;
-//                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", "drawable", getPackageName()));
-//
-//                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-//                        .image(floorPlan)
-//                        .position(vlBuildingOverlaySouthWest, overlaySize)
-//                        .anchor(0, 1)
-//                        .bearing(imgRotation));
-//            }
-//        });
+        floorMBS2 = (Button) findViewById(R.id.floorMBS2);
+        floorMBS2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorMBS2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorMBS2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 42;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", "drawable", getPackageName()));
+
+                mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(mbBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
     }
 
     public void addNextStepListener()
@@ -1247,13 +1247,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void showMBButtons()
     {
         floorMB1.setVisibility(View.VISIBLE);
-//        floorMBS2.setVisibility(View.VISIBLE);
+        floorMBS2.setVisibility(View.VISIBLE);
     }
 
     public void hideMBButtons()
     {
         floorMB1.setVisibility(View.INVISIBLE);
-//        floorMBS2.setVisibility(View.INVISIBLE);
+        floorMBS2.setVisibility(View.INVISIBLE);
     }
 
     public void showCCButtons()
