@@ -230,6 +230,7 @@ public class ShuttleInfo {
     // This method checks the time and day and finds the next relevant shuttle bus time, from Loyola.
     // From there, it builds an estimate of how long it would take for the entire trip.
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public double getEstimatedRouteTimeFromLoyola() {
 
 
@@ -565,12 +566,12 @@ public class ShuttleInfo {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveFridayLoyola() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-        try {
-            InputStream is = context.getResources().openRawResource(raw.schedule_friday_loyola);
+        try(InputStream is = context.getResources().openRawResource(raw.schedule_friday_loyola)) {
             InputStreamReader readInput = new InputStreamReader(is);
             StringBuilder sb = new StringBuilder();
             BufferedReader bfr = new BufferedReader(readInput);
@@ -600,12 +601,12 @@ public class ShuttleInfo {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveMonToThursSGW() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-        try {
-            InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
+        try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)) {
             InputStreamReader readInput = new InputStreamReader(is);
             StringBuilder sb = new StringBuilder();
             BufferedReader bfr = new BufferedReader(readInput);
@@ -635,12 +636,12 @@ public class ShuttleInfo {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveFridaySGW() {
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-        try {
-            InputStream is = context.getResources().openRawResource(raw.schedule_friday_sgw);
+        try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)) {
             InputStreamReader readInput = new InputStreamReader(is);
             StringBuilder sb = new StringBuilder();
             BufferedReader bfr = new BufferedReader(readInput);
