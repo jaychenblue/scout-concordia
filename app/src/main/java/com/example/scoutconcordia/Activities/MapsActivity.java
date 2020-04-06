@@ -419,8 +419,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void createFloorGraphs()
     {
-        Graph hall_1_floor = createGraph("hall1nodes", false);
-        Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
+        Graph hall_2_floor = createGraph("encryptedhall2nodes", true);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
@@ -475,18 +475,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
-
-                for (Graph graph : floorGraphs)
-                {
-                    System.out.println(graph.id);
-                    if ((graph.id).equals("Hall 1 floor"))
-                    {
-                        for (Graph.Node node : graph.nodes())
-                        {
-                            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                        }
-                    }
-                }
             }
         });
     }
@@ -502,16 +490,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor2.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall2floor");
-
-                // This code is for displaying the nodes
-                for (Graph graph : floorGraphs) {
-                    System.out.println(graph.id);
-                    if ((graph.id).equals("Hall 2 floor")) {
-                        for (Graph.Node node : graph.nodes()) {
-                            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                        }
-                    }
-                }
             }
         });
     }
@@ -948,13 +926,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// TESTING INDOOR DIRECTIONS
-                //String fromMe = "CC-215";
-                //String toMe = "CC-219";
-                //searchResults = searchForClass(fromMe, toMe);
-                //searchResultsIndex = 0;
-                //searchPath.setVisible(true);
-                //displaySearchResults(searchResults.get(searchResultsIndex));
             }
         });
     }
@@ -966,8 +937,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //if (activeInfoWindow != null)
-                //{
                     // we want to remove the building outline from the map so we can see the indoor floor plan
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
@@ -977,8 +946,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         {
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
-
-                            //removeAllFloorOverlays();
+                            removeAllFloorOverlays();
 
                             if (poly.getTag().equals("H Building"))
                             {
@@ -989,10 +957,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                     }
-                    showHallButtons();
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
-                //}
             };
         });
     }
@@ -1193,7 +1159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall1nodes2"))
+                if (filename.equals("hall2nodes"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -1392,7 +1358,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideHallButtons();
                 hideCCButtons();
 
-                //removeAllFloorOverlays();
+                removeAllFloorOverlays();
 
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
@@ -1400,7 +1366,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showAllMarkers();
                 resetGetDirectionParams();
 
-                System.out.println(latLng);
+                //System.out.println(latLng);
             }
         });
     }
@@ -1454,8 +1420,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 po.add((LatLng)currentCoordinate.getEle());
                 currentCoordinate = currentCoordinate.getNext();
             }
-            //Polygon justAddedPolygon = mMap.addPolygon(po);
-            //polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
+            Polygon justAddedPolygon = mMap.addPolygon(po);
+            polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
             int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
@@ -1480,9 +1446,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             BuildingInfo Hall_Building = new BuildingInfo(((BuildingInfo)currentBuilding.getEle()).getName(), ((BuildingInfo)currentBuilding.getEle()).getAddress(), ((BuildingInfo)currentBuilding.getEle()).getOpeningTimes());
             polyMarker.setTag(Hall_Building);
-            //justAddedPolygon.setTag("alpha");
-            //stylePolygon(justAddedPolygon);
-            //justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
+            justAddedPolygon.setTag("alpha");
+            stylePolygon(justAddedPolygon);
+            justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
             currentBuilding = currentBuilding.getNext();
         }
     }
@@ -1550,14 +1516,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
-
-//    private void viewDowntownCampus() {
-//        animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
-//    }
-//
-//    private void viewLoyolaCampus() {
-//        animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
-//    }
 
     private void toggleCampus()
     {
