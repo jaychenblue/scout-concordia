@@ -173,10 +173,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
 
-
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setmContext(this);
@@ -185,50 +181,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-/**        Places.initialize(this, getString(R.string.google_maps_key));
-        PlacesClient placesClient = Places.createClient(this);
-
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // RectangularBounds bounds = RectangularBounds.newInstance(
-        //         new LatLng(-33.880490, 151.184363),
-        //         new LatLng(-33.858754, 151.229596));
-
-        //autocompleteFragment.setLocationBias(bounds); will return places within this area, may return results outside the aread
-
-        // Select here whatever infortmation you want to retrieve for the selected place
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
-        //the types of places search should display
-        autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
-
-        //restricts searches to Canada only so that we do not get random locations when searching
-        autocompleteFragment.setCountry("CA");
-
-        //autocompleteFragment.set
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                searchMarker.remove();
-                searchMarker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), zoomLevel));
-                mMap.setOnMyLocationChangeListener(null);
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                System.out.println("STATUS CODE: " + status.getStatusMessage());
-            }
-        });
-*/
+        //toggle for different campuses
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -267,8 +229,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
-
-
 
     }
 
@@ -1624,6 +1584,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
+        // Handle item selection
+        switch (menuItem.getItemId()) {
+            case R.id.main_home:
+                break;
+
+            case R.id.main_schedule:
+                Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                startActivity(calendarIntent);
+                MapsActivity.this.overridePendingTransition(0, 0);
+                break;
+
+            case R.id.main_shuttle:
+                Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
+                startActivity(shuttleIntent);
+                MapsActivity.this.overridePendingTransition(0, 0);
+                break;
+
+        }
+        return false;
     }
 
 }
