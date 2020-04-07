@@ -1586,6 +1586,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    //Handling menu clicks
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         // Handle item selection
