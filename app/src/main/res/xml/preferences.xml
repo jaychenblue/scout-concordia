@@ -3,7 +3,7 @@
 
 
     <SwitchPreference
-        android:key="acessibility_settings"
+        android:key="accessibility_settings"
         android:title="Accessibility Settings"
         android:summary="Setting accessibility settings to on ensures an accessible path is displayed."
         />

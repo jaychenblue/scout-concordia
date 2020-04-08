@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.example.scoutconcordia.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.api.services.calendar.model.Setting;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,6 +38,36 @@ public class SettingsActivity extends AppCompatActivity {
 
             getFragmentManager().beginTransaction().add(R.id.fragment_container, new SettingsFragment()).commit();
         }
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
+        bottomNavigationView.setSelectedItemId(R.id.nav_map);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.nav_map:
+                        Intent mapsIntent = new Intent(SettingsActivity.this, MapsActivity.class);
+                        startActivity(mapsIntent);
+                        SettingsActivity.this.overridePendingTransition(0,0);
+                        break;
+
+                    case R.id.nav_schedule:
+                        Intent calendarIntent = new Intent(SettingsActivity.this, CalendarActivity.class);
+                        startActivity(calendarIntent);
+                        SettingsActivity.this.overridePendingTransition(0, 0);
+                        break;
+
+                    case R.id.nav_shuttle:
+                        Intent shuttleIntent = new Intent(SettingsActivity.this, ShuttleScheduleActivity.class);
+                        startActivity(shuttleIntent);
+                        SettingsActivity.this.overridePendingTransition(0, 0);
+                        break;
+                }
+                return false;
+            }
+        });
+
 
     }
 
