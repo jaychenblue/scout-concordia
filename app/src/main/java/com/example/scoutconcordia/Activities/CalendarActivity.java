@@ -599,6 +599,12 @@ public class CalendarActivity extends AppCompatActivity {
             case R.id.main_schedule:
                 break;
 
+            case R.id.main_settings:
+                Intent settingsIntent = new Intent(CalendarActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                CalendarActivity.this.overridePendingTransition(0,0);
+                break;
+
             case R.id.main_shuttle:
                 Intent shuttleIntent = new Intent(CalendarActivity.this, ShuttleScheduleActivity.class);
                 startActivity(shuttleIntent);

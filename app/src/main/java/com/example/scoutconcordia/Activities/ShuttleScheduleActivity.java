@@ -86,6 +86,11 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
             case R.id.main_shuttle:
                break;
 
+            case R.id.main_settings:
+                Intent settingsIntent = new Intent(ShuttleScheduleActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                ShuttleScheduleActivity.this.overridePendingTransition(0,0);
+                break;
         }
         return false;
     }
