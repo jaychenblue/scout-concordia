@@ -1586,9 +1586,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+//    //checks if the accessibility setting is checked
+//    private boolean isChecked=false;
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        MenuItem checkable = menu.findItem(R.id.main_accessibility);
+//        checkable.setChecked(isChecked);
+//        return true;
+//    }
+//
+
     //Handling menu clicks
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
         // Handle item selection
         switch (menuItem.getItemId()) {
             case R.id.main_home:
@@ -1599,6 +1609,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(calendarIntent);
                 MapsActivity.this.overridePendingTransition(0, 0);
                 break;
+
+
 
             case R.id.main_shuttle:
                 Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
