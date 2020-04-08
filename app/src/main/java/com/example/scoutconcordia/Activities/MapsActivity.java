@@ -1610,7 +1610,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 MapsActivity.this.overridePendingTransition(0, 0);
                 break;
 
-
+//            case R.id.settings:
+//                Intent settingsIntent = new Intent(MapsActivity.this, SettingsActivity.class);
+//                startActivity(settingsIntent);
+//                MapsActivity.this.overridePendingTransition(0,0);
+//                break;
 
             case R.id.main_shuttle:
                 Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
