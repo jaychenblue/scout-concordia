@@ -18,6 +18,7 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".Activities.SettingsActivity"></activity>
 
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
@@ -51,7 +52,7 @@
         <activity
             android:name=".Activities.MapsActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.CalendarActivity"
             android:noHistory="true"

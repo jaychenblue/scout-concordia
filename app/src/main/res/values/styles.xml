@@ -15,7 +15,7 @@
     <style name="BottomNavigationViewStyle">
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">10dp</item>
-	</style>
+    </style>
 
     <style name="TravelModesBarStyle">
         <item name="android:textAllCaps">true</item>
@@ -29,5 +29,14 @@
     <style name="MaterialThemeDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/burgandy</item>
     </style>
+
+    <style name="NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>
