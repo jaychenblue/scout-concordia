@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreference
+        android:key="acessibility_settings"
+        android:title="Accessibility Settings"
+        android:summary="Setting accessibility settings to on ensures an accessible path is displayed."
+        />
+
+    <ListPreference
+        android:key="language_preference"
+        android:title="Language"
+        android:summary="Language in which you wish to display the application"
+        android:entries="@array/language_options"
+        android:entryValues="@array/language_values"
+
+        />
+
+</PreferenceScreen>

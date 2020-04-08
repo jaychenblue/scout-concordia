@@ -9,11 +9,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.example.scoutconcordia.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class SettingsActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,15 @@ public class SettingsActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        //set title of page
+        getSupportActionBar().setTitle("Settings");
+
+        if(findViewById(R.id.fragment_container)!= null){
+            if(savedInstanceState !=null)
+                return;
+
+            getFragmentManager().beginTransaction().add(R.id.fragment_container, new SettingsFragment()).commit();
+        }
 
     }
 

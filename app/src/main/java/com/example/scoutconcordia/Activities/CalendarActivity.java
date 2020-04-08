@@ -90,6 +90,10 @@ public class CalendarActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        //set title of page
+        getSupportActionBar().setTitle("Schedule");
+
+
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_calendar);
         bottomNavigationView.setSelectedItemId(R.id.nav_schedule);
