@@ -123,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker pathMarker;
 
     private Button floor1;
-    //private Button floor2;
+    private Button floor2;
     private Button floor8;
     private Button floor9;
     private Button floorCC1;
@@ -251,7 +251,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
-        //addfloor2ButtonListener();
+        addfloor2ButtonListener();
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
         addNextStepListener();
@@ -386,11 +386,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideCCButtons();
                 floor1.performClick();
                 break;
-            //case "H-2":
-            //    showHallButtons();
-            //    hideCCButtons();
-            //    floor2.performClick();
-            //    break;
+            case "H-2":
+                showHallButtons();
+                hideCCButtons();
+                floor2.performClick();
+                break;
             case "H-8":
                 showHallButtons();
                 hideCCButtons();
@@ -417,14 +417,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void createFloorGraphs()
     {
         Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
-        //Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_2_floor = createGraph("encryptedhall2nodes", true);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
         Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
 
         floorGraphs.add(hall_1_floor);
-        //floorGraphs.add(hall_2_floor);
+        floorGraphs.add(hall_2_floor);
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
         floorGraphs.add(cc_1_floor);
@@ -472,36 +472,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
-
-                //for (Graph graph : floorGraphs)
-                //{
-                //    System.out.println(graph.id);
-                //    if ((graph.id).equals("Hall 1 floor"))
-                //    {
-                //        for (Graph.Node node : graph.nodes())
-                //        {
-                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                //        }
-                //    }
-                //}
             }
         });
     }
 
-//    public void addfloor2ButtonListener()
-//    {
-//        floor2 = (Button) findViewById(R.id.floor2);
-//        floor2.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View view) {
-//                resetButtonColors();
-//                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-//                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
-//                removeAllFloorOverlays();
-//                setUpGroundOverlay("hall2floor");
-//            }
-//        });
-//    }
+    public void addfloor2ButtonListener()
+    {
+        floor2 = (Button) findViewById(R.id.floor2);
+        floor2.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+                resetButtonColors();
+                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall2floor");
+            }
+        });
+    }
 
     public void addfloor8ButtonListener()
     {
@@ -935,13 +923,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// TESTING INDOOR DIRECTIONS
-                //String fromMe = "CC-215";
-                //String toMe = "CC-219";
-                //searchResults = searchForClass(fromMe, toMe);
-                //searchResultsIndex = 0;
-                //searchPath.setVisible(true);
-                //displaySearchResults(searchResults.get(searchResultsIndex));
             }
         });
     }
@@ -953,8 +934,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //if (activeInfoWindow != null)
-                //{
                     // we want to remove the building outline from the map so we can see the indoor floor plan
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
@@ -964,7 +943,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         {
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
-
                             removeAllFloorOverlays();
 
                             if (poly.getTag().equals("H Building"))
@@ -978,7 +956,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
-                //}
             };
         });
     }
@@ -1025,7 +1002,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
-        //floor2.setVisibility(View.VISIBLE);
+        floor2.setVisibility(View.VISIBLE);
         floor8.setVisibility(View.VISIBLE);
         floor9.setVisibility(View.VISIBLE);
     }
@@ -1033,7 +1010,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
-        //floor2.setVisibility(View.INVISIBLE);
+        floor2.setVisibility(View.INVISIBLE);
         floor8.setVisibility(View.INVISIBLE);
         floor9.setVisibility(View.INVISIBLE);
     }
@@ -1063,8 +1040,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getResources().getColor(R.color.black));
-        //floor2.setBackgroundResource(android.R.drawable.btn_default);
-        //floor2.setTextColor(getResources().getColor(R.color.black));
+        floor2.setBackgroundResource(android.R.drawable.btn_default);
+        floor2.setTextColor(getResources().getColor(R.color.black));
         floor8.setBackgroundResource(android.R.drawable.btn_default);
         floor8.setTextColor(getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
@@ -1179,7 +1156,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall1nodes2"))
+                if (filename.equals("hall2nodes"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -1536,14 +1513,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
-
-//    private void viewDowntownCampus() {
-//        animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
-//    }
-//
-//    private void viewLoyolaCampus() {
-//        animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
-//    }
 
     private void toggleCampus()
     {
