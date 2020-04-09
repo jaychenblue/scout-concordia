@@ -98,7 +98,10 @@ public class LinkedList <E>
         if (toBeNext != null)
             toBeBefore = toBeNext.getPrev();
         Node newOne = new Node(element, toBeNext, toBeBefore);
-        toBeBefore.setNext(newOne);
+        if (toBeBefore != null)
+        {
+            toBeBefore.setNext(newOne);
+        }
         toBeNext.setPrev(newOne);
         toBeBefore = null;
         toBeNext = null;
