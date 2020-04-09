@@ -1591,8 +1591,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         overridePendingTransition(0, 0);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        Toast.makeText(this, intent.getStringExtra("location"),Toast.LENGTH_LONG).show();
     }
 
     // This sets the context and is called during the onCreate method.

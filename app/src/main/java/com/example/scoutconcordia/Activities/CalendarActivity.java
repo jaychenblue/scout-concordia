@@ -48,6 +48,7 @@ public class CalendarActivity extends AppCompatActivity {
     private GoogleSignInAccount account;
     private GoogleSignInOptions gso;
     private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult)
+    private final int RC_CALENDAR_ACTIVITY = 9003;
     private Calendar service = null;    // Google Calendar Api service
     private ArrayList<String> calendarNames = new ArrayList<>();    // user's google calendars' name list
     private ArrayList<String> calendarIds = new ArrayList<>();    // user's google calendars' Ids list
@@ -320,7 +321,7 @@ public class CalendarActivity extends AppCompatActivity {
                 List<String> items = new ArrayList<String>(Arrays.asList(location, summary, classHours));
                 items.removeAll(Collections.singleton(null));
 
-                directionsDialog(items.toArray(new String[0])).show();
+                directionsDialog(items.toArray(new String[0]), location).show();
             }
         });
     }
@@ -329,7 +330,7 @@ public class CalendarActivity extends AppCompatActivity {
     // Go button to get directions to the location
     // Cancel button to cancel dialog
     // dialog is also cancellable by pressing anywhere on the screen
-    private Dialog directionsDialog(String[] items){
+    private Dialog directionsDialog(String[] items, final String location){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Go to Location")
                 .setItems(items, null)
@@ -343,6 +344,16 @@ public class CalendarActivity extends AppCompatActivity {
                 .setPositiveButton("GO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if(location != null && locations.contains(location)){
+                            Intent mapsIntent = new Intent(CalendarActivity.this, MapsActivity.class);
+                            mapsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            mapsIntent.putExtra("location", location);
+                            startActivity(mapsIntent);
+                            CalendarActivity.this.overridePendingTransition(0, 0);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Invalid location!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
         return builder.create();
