@@ -144,8 +144,8 @@ public class LinkedList <E>
         {
             before = toBeRemoved.getPrev();
             after = toBeRemoved.getNext();
+            returnMe = (E)toBeRemoved.getEle();
         }
-        returnMe = (E)toBeRemoved.getEle();
         toBeRemoved.element = null;
         toBeRemoved.setPrev(null);
         toBeRemoved.setNext(null);
