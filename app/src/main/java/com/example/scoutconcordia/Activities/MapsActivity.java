@@ -137,9 +137,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Marker searchMarker;
     private String activeInfoWindow = null;
-    private List<Polygon> polygonBuildings = new ArrayList<>();
-    private List<Marker> markerBuildings = new ArrayList<>();
-    private List<Graph> floorGraphs = new ArrayList<>();
+    private List<Polygon> polygonBuildings = new ArrayList<>();  // list of polygons, representing all of the campus buildings
+    private List<Marker> markerBuildings = new ArrayList<>();  // List of markers for all of the campus buildings
+    private List<Marker> restaurantMarkers = new ArrayList<>();  // List of markers for all of the restaurants (POI)
+    private List<Graph> floorGraphs = new ArrayList<>();  // List of graphs, representing the graphs used for indoor directions.
     public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
@@ -169,11 +170,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
-
-
-
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setmContext(this);
@@ -260,9 +256,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
-
-
-
     }
 
     public List<Object[]> searchForClass(String fromMe, String toMe) {
@@ -1022,6 +1015,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // method for setting the visibility of the restaurant markers.
+    public void setRestaurantMarkersVisibility(Boolean visibility)
+    {
+        for (Marker mar : restaurantMarkers)
+        {
+            mar.setVisible(visibility);
+        }
+    }
+
     public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
@@ -1112,6 +1114,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationAccessor.setInputStream(getStreamFromFileName("encryptedloyola"));
         locationAccessor.decryptFile(true);
         addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("restaurants_sgw"));
+        locationAccessor.decryptFile(false);
+        addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the SGW campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("restaurants_loyola"));
+        locationAccessor.decryptFile(false);
+        addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the loyola campus
+
+        setRestaurantMarkersVisibility(true);
 
         // Add a marker in Concordia and move the camera
         searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
@@ -1319,27 +1331,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // move the camera to the marker location
                     animateCamera(marker.getPosition(), zoomLevel);
 
-                    if (!isInfoWindowShown) {
+                    if (!isInfoWindowShown)
+                    {
                         marker.showInfoWindow();
 
                         activeInfoWindow = marker.getTitle();
 
-                    // this sets the parameters for the button that appears on click. (The direction button)
-                    directionButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    //directionButtonLayoutParams.topMargin = 200;
-                    //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
-                    directionButton.setLayoutParams(directionButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The direction button)
+                        directionButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        //directionButtonLayoutParams.topMargin = 200;
+                        //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
 
-                    // this sets the parameters for the button that appears on click. (The explore inside button)
-                    exploreInsideButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                    //exploreButtonLayoutParams.topMargin = 200;
-                    //exploreButtonLayoutParams.leftMargin = 400;
-                    exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The explore inside button)
+                        exploreInsideButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        //exploreButtonLayoutParams.topMargin = 200;
+                        //exploreButtonLayoutParams.leftMargin = 400;
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
 
-                    // this sets the parameters for the pop up bar that appears on click
-                    popUpBar.setVisibility(VISIBLE);
+                        // this sets the parameters for the pop up bar that appears on click
+                        popUpBar.setVisibility(VISIBLE);
 
                         hideHallButtons();
                         hideCCButtons();
@@ -1347,7 +1360,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         removeAllFloorOverlays();
 
                         isInfoWindowShown = true;
-                } else {
+                    }
+                    else
+                    {
                         marker.hideInfoWindow();
                         directionButton.setVisibility(View.INVISIBLE);
                         exploreInsideButton.setVisibility(View.INVISIBLE);
@@ -1361,7 +1376,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
                     }
-                } else {
+                }
+                else if (restaurantMarkers.contains(marker))
+                {
+                    isInfoWindowShown = false;
+                    searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
+
+                    // move the camera to the marker location
+                    animateCamera(marker.getPosition(), zoomLevel);
+
+                    if (!isInfoWindowShown)
+                    {
+                        marker.showInfoWindow();
+                        activeInfoWindow = marker.getTitle();
+                        isInfoWindowShown = true;
+                    }
+                }
+                else
+                {
                     System.out.println(marker.getPosition());
                 }
                 return true;
@@ -1470,6 +1502,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             stylePolygon(justAddedPolygon);
             justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
             currentBuilding = currentBuilding.getNext();
+        }
+    }
+
+    private void addRestaurantsToMap(String[] location)
+    {
+        int currentPos = 0;
+        String markerName = "";
+        LatLng markerLocation = null;
+        String markerAddress = "";
+        for (int i = 2; i < location.length - 1; i++)  // skip the first 2 lines of the file and the last line of the file
+        {
+            int posOfhalfway = 0;
+            int posOfEnd = 0;
+            double x_coordinate = 0, y_coordinate = 0;
+            currentPos = location[i].indexOf("{");
+            posOfhalfway = location[i].indexOf(",");
+            posOfEnd = location[i].indexOf("}");
+
+            markerName = location[i].substring(1, currentPos);
+
+            x_coordinate = Double.parseDouble(location[i].substring(currentPos+1,posOfhalfway));
+            y_coordinate = Double.parseDouble(location[i].substring(posOfhalfway+2, posOfEnd));
+            markerLocation = new LatLng(x_coordinate, y_coordinate);
+
+            currentPos = location[i].indexOf("}");
+            markerAddress = location[i].substring(currentPos + 1);
+
+            Marker restaurantMarker = mMap.addMarker(new MarkerOptions()
+                    .position(markerLocation)
+                    .title(markerName)
+                    .visible(false)
+                    .flat(true)
+                    .alpha(1)
+                    .zIndex(44)
+            );
+
+            BuildingInfo restaurantInfo = new BuildingInfo(markerName, markerAddress, "");
+            restaurantMarker.setTag(restaurantInfo);
+
+            // set the icon for the restaurant marker
+            int resID = this.getResources().getIdentifier("restaurant_icon", "drawable", this.getPackageName());
+            Bitmap smallMarker = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), resID), 90, 90, false);
+            BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
+            restaurantMarker.setIcon(smallMarkerIcon);
+
+            restaurantMarkers.add(restaurantMarker);
+
+            Log.w("TESTING: ", "marker name: " + markerName + " " + markerLocation);
         }
     }
 
