@@ -231,6 +231,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        calendarIntent.putStringArrayListExtra("locations", locations);
                         startActivity(calendarIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
                         break;

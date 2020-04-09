@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,6 +55,7 @@ public class CalendarActivity extends AppCompatActivity {
     private String selectedCalendarId = null;   // holds the id of the google calendar that the user selects in single choice dialog
     private java.util.Calendar calendar = java.util.Calendar.getInstance(); // calendar object for creating, mutating (set time, add days) Date objects
     private int[][] tableIds = null; // holds ids of text views (columns)  making up the table layout, [x][y], x is row , y is column
+    public static ArrayList<String> locations = new ArrayList<>();    // Concordia buildings list
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,8 @@ public class CalendarActivity extends AppCompatActivity {
             account = lastSignedInAccount;
             new RetrieveCalendars().execute();
         }
+
+        locations = getIntent().getStringArrayListExtra("locations"); //retrieve location ArrayList passed by MapsActivity
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_calendar);
         bottomNavigationView.setSelectedItemId(R.id.nav_schedule);
