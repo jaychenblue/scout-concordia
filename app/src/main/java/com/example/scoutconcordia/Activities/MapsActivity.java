@@ -649,10 +649,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                setOriginDialog = setOriginDialog();
-                destination = searchBar.getText().toString(); //set destination name, to be used to get LatLng from locationMap
-                searchBar.setText(null);
-                setOriginDialog.show(); // create dialog asking user to select a starting point
+                if (searchBar.getText().toString().equals("restaurants near me"))
+                {
+                    setRestaurantMarkersVisibility(true);
+                }
+                else
+                {
+                    setOriginDialog = setOriginDialog();
+                    destination = searchBar.getText().toString(); //set destination name, to be used to get LatLng from locationMap
+                    searchBar.setText(null);
+                    setOriginDialog.show(); // create dialog asking user to select a starting point
+                }
             }
         });
 
@@ -750,10 +757,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getDirections()
     {
-        if(startingPoint != null) {
-            if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+        String startingPointType = "class"; // can be type class or building
+        String destinationType = "class";  // can be type class or building
+
+        for (int i = 0; i < restaurantMarkers.size(); i++)  // check if either of the points are a restaurant
+        {
+            if (restaurantMarkers.get(i).getTitle().equals(startingPoint))
             {
-                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                startingPointType = "building";
+            }
+            else if (restaurantMarkers.get(i).getTitle().equals(destination))
+            {
+                destinationType = "building";
+            }
+        }
+
+        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building"))  // check if the starting point is a building
+        {
+            startingPointType = "building";
+        }
+
+        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building"))  // check if the destination is a building
+        {
+            destinationType = "building";
+        }
+
+
+        if(startingPoint != null) {
+            if (startingPointType.equals("building")) //if the starting point is a building
+            {
+                if (destinationType.equals("building")) //if the destination is a building
                 {
                     if (needMoreDirections)
                     {
@@ -796,7 +829,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             } else //if the starting point is a classroom
             {
-                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                if (destinationType.equals("building")) //if the destination is a building
                 {
                     // need to go from class room to exit (we can hard code the exit for H and for CC)
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
@@ -1122,8 +1155,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationAccessor.setInputStream(getStreamFromFileName("restaurants_loyola"));
         locationAccessor.decryptFile(false);
         addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the loyola campus
-
-        setRestaurantMarkersVisibility(true);
+        locations.add("restaurants near me");
 
         // Add a marker in Concordia and move the camera
         searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
@@ -1418,6 +1450,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showAllMarkers();
                 resetGetDirectionParams();
 
+                setRestaurantMarkersVisibility(false);
+
                 //System.out.println(latLng);
             }
         });
@@ -1548,6 +1582,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             restaurantMarker.setIcon(smallMarkerIcon);
 
             restaurantMarkers.add(restaurantMarker);
+
+            locations.add(markerName);     // add restaurant name to list for the search bar
+            locationMap.put((markerName), markerLocation);   // add restaurant name and coordinate to the map
 
             Log.w("TESTING: ", "marker name: " + markerName + " " + markerLocation);
         }
