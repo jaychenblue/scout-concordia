@@ -110,6 +110,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
+    private final int RC_CALENDAR_ACTIVITY = 9003;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
@@ -1593,7 +1594,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void onNewIntent(Intent intent){
         super.onNewIntent(intent);
-        Toast.makeText(this, intent.getStringExtra("location"),Toast.LENGTH_LONG).show();
+        if(intent.getIntExtra("requestCode", -1) == RC_CALENDAR_ACTIVITY ) {
+            destination = intent.getStringExtra("location");
+            setOriginDialog = setOriginDialog();
+            setOriginDialog.show();
+        }
     }
 
     // This sets the context and is called during the onCreate method.

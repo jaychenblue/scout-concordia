@@ -347,6 +347,7 @@ public class CalendarActivity extends AppCompatActivity {
                         if(location != null && locations.contains(location)){
                             Intent mapsIntent = new Intent(CalendarActivity.this, MapsActivity.class);
                             mapsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            mapsIntent.putExtra("requestCode", RC_CALENDAR_ACTIVITY);
                             mapsIntent.putExtra("location", location);
                             startActivity(mapsIntent);
                             CalendarActivity.this.overridePendingTransition(0, 0);
