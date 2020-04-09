@@ -79,8 +79,8 @@ public class DES
         {
             if (reader != null)
                 reader.close();
-            return returnMe.toArray();
         }
+        return returnMe.toArray();
     }
 
 //    /** Method for encrypting a file. Requires an input stream and an output stream **/
