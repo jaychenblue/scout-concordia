@@ -110,6 +110,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
+    private final int RC_CALENDAR_ACTIVITY = 9003;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
@@ -140,7 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
     private List<Graph> floorGraphs = new ArrayList<>();
-    public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
+    public static final ArrayList<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -231,6 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        calendarIntent.putStringArrayListExtra("locations", locations);
                         startActivity(calendarIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
                         break;
@@ -1559,8 +1561,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         overridePendingTransition(0, 0);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        if(intent.getIntExtra("requestCode", -1) == RC_CALENDAR_ACTIVITY ) {
+            destination = intent.getStringExtra("location");
+            setOriginDialog = setOriginDialog();
+            setOriginDialog.show();
+        }
     }
 
     // This sets the context and is called during the onCreate method.
