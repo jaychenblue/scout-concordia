@@ -140,7 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
     private List<Graph> floorGraphs = new ArrayList<>();
-    public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
+    public static final ArrayList<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
