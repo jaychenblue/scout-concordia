@@ -8,6 +8,8 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.scoutconcordia.R;
 import com.google.android.gms.auth.GoogleAuthUtil;
@@ -88,6 +91,15 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         locations = getIntent().getStringArrayListExtra("locations"); //retrieve location ArrayList passed by MapsActivity
+
+        //Toolbar on top of the page
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        //set title of page
+        getSupportActionBar().setTitle("Schedule");
+
+
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_calendar);
         bottomNavigationView.setSelectedItemId(R.id.nav_schedule);
@@ -579,6 +591,45 @@ public class CalendarActivity extends AppCompatActivity {
             super.onPostExecute(v);
             displayTable();
         }
+    }
+
+
+    //inflates the menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    //Handling menu clicks
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
+        // Handle item selection
+        switch (menuItem.getItemId()) {
+            case R.id.main_home:
+                Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
+                startActivity(mapIntent);
+                CalendarActivity.this.overridePendingTransition(0, 0);
+                break;
+
+            case R.id.main_schedule:
+                break;
+
+            case R.id.main_settings:
+                Intent settingsIntent = new Intent(CalendarActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                CalendarActivity.this.overridePendingTransition(0,0);
+                break;
+
+            case R.id.main_shuttle:
+                Intent shuttleIntent = new Intent(CalendarActivity.this, ShuttleScheduleActivity.class);
+                startActivity(shuttleIntent);
+                CalendarActivity.this.overridePendingTransition(0, 0);
+                break;
+
+        }
+        return false;
     }
 
 }

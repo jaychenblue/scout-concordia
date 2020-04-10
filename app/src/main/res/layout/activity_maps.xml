@@ -8,7 +8,14 @@ android:name="com.google.android.gms.maps.SupportMapFragment"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".Activities.MapsActivity">
-
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 <!--    <fragment
         android:id="@+id/autocomplete_fragment"
         android:layout_width="match_parent"
@@ -19,7 +26,8 @@ tools:context=".Activities.MapsActivity">
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="10">
+        android:weightSum="10"
+        android:layout_below="@id/my_toolbar">
 
         <TextView
             android:layout_width="wrap_content"

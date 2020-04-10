@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="LockedOrientationActivity"
-    package="com.example.scoutconcordia">
+    package="com.example.scoutconcordia"
+    tools:ignore="LockedOrientationActivity">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -15,12 +15,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:screenOrientation="portrait">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".Activities.SettingsActivity"></activity>
 
-        <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="219414920184"/>
-
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="219414920184" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -35,35 +37,30 @@
 
         <activity
             android:name=".Activities.SplashScreenActivity"
-            android:theme="@style/SplashScreenTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activities.MainActivity"
             android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.MapsActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.CalendarActivity"
             android:noHistory="true"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.ShuttleScheduleActivity"
             android:noHistory="true"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
