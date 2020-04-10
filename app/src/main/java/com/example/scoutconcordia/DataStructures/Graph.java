@@ -84,7 +84,7 @@ public class Graph
         for (int i = 0; i < nodes.length; i++)
         {
             if (nodes[i] != null)
-                if (nodes[i].equals(ele))
+                if (nodes[i].getElement().equals(ele))
                     id = i;
         }
         return id;
