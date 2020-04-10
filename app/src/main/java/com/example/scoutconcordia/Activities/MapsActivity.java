@@ -113,6 +113,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
+    private final int RC_CALENDAR_ACTIVITY = 9003;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
@@ -126,7 +127,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker pathMarker;
 
     private Button floor1;
-    //private Button floor2;
+    private Button floor2;
     private Button floor8;
     private Button floor9;
     private Button floorCC1;
@@ -143,7 +144,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Polygon> polygonBuildings = new ArrayList<>();
     private List<Marker> markerBuildings = new ArrayList<>();
     private List<Graph> floorGraphs = new ArrayList<>();
-    public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
+    public static final ArrayList<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -200,6 +201,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        calendarIntent.putStringArrayListExtra("locations", locations);
                         startActivity(calendarIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
                         break;
@@ -220,7 +222,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
-        //addfloor2ButtonListener();
+        addfloor2ButtonListener();
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
         addNextStepListener();
@@ -353,11 +355,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 hideCCButtons();
                 floor1.performClick();
                 break;
-            //case "H-2":
-            //    showHallButtons();
-            //    hideCCButtons();
-            //    floor2.performClick();
-            //    break;
+            case "H-2":
+                showHallButtons();
+                hideCCButtons();
+                floor2.performClick();
+                break;
             case "H-8":
                 showHallButtons();
                 hideCCButtons();
@@ -384,14 +386,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void createFloorGraphs()
     {
         Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
-        //Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_2_floor = createGraph("encryptedhall2nodes", true);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
         Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
 
         floorGraphs.add(hall_1_floor);
-        //floorGraphs.add(hall_2_floor);
+        floorGraphs.add(hall_2_floor);
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
         floorGraphs.add(cc_1_floor);
@@ -439,36 +441,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
-
-                //for (Graph graph : floorGraphs)
-                //{
-                //    System.out.println(graph.id);
-                //    if ((graph.id).equals("Hall 1 floor"))
-                //    {
-                //        for (Graph.Node node : graph.nodes())
-                //        {
-                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                //        }
-                //    }
-                //}
             }
         });
     }
 
-//    public void addfloor2ButtonListener()
-//    {
-//        floor2 = (Button) findViewById(R.id.floor2);
-//        floor2.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View view) {
-//                resetButtonColors();
-//                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-//                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
-//                removeAllFloorOverlays();
-//                setUpGroundOverlay("hall2floor");
-//            }
-//        });
-//    }
+    public void addfloor2ButtonListener()
+    {
+        floor2 = (Button) findViewById(R.id.floor2);
+        floor2.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+                resetButtonColors();
+                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall2floor");
+            }
+        });
+    }
 
     public void addfloor8ButtonListener()
     {
@@ -902,13 +892,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// TESTING INDOOR DIRECTIONS
-                //String fromMe = "CC-215";
-                //String toMe = "CC-219";
-                //searchResults = searchForClass(fromMe, toMe);
-                //searchResultsIndex = 0;
-                //searchPath.setVisible(true);
-                //displaySearchResults(searchResults.get(searchResultsIndex));
             }
         });
     }
@@ -920,8 +903,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //if (activeInfoWindow != null)
-                //{
                     // we want to remove the building outline from the map so we can see the indoor floor plan
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
@@ -931,7 +912,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         {
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
-
                             removeAllFloorOverlays();
 
                             if (poly.getTag().equals("H Building"))
@@ -945,7 +925,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
-                //}
             };
         });
     }
@@ -992,7 +971,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
-        //floor2.setVisibility(View.VISIBLE);
+        floor2.setVisibility(View.VISIBLE);
         floor8.setVisibility(View.VISIBLE);
         floor9.setVisibility(View.VISIBLE);
     }
@@ -1000,7 +979,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
-        //floor2.setVisibility(View.INVISIBLE);
+        floor2.setVisibility(View.INVISIBLE);
         floor8.setVisibility(View.INVISIBLE);
         floor9.setVisibility(View.INVISIBLE);
     }
@@ -1030,8 +1009,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getResources().getColor(R.color.black));
-        //floor2.setBackgroundResource(android.R.drawable.btn_default);
-        //floor2.setTextColor(getResources().getColor(R.color.black));
+        floor2.setBackgroundResource(android.R.drawable.btn_default);
+        floor2.setTextColor(getResources().getColor(R.color.black));
         floor8.setBackgroundResource(android.R.drawable.btn_default);
         floor8.setTextColor(getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
@@ -1146,7 +1125,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall1nodes2"))
+                if (filename.equals("hall2nodes"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -1504,14 +1483,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-//    private void viewDowntownCampus() {
-//        animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
-//    }
-//
-//    private void viewLoyolaCampus() {
-//        animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
-//    }
-
     private void toggleCampus()
     {
         mMap.setOnMyLocationChangeListener(null);
@@ -1557,8 +1528,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         overridePendingTransition(0, 0);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        if(intent.getIntExtra("requestCode", -1) == RC_CALENDAR_ACTIVITY ) {
+            destination = intent.getStringExtra("location");
+            setOriginDialog = setOriginDialog();
+            setOriginDialog.show();
+        }
     }
 
     // This sets the context and is called during the onCreate method.

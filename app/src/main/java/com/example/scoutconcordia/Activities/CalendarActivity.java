@@ -13,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,6 +51,7 @@ public class CalendarActivity extends AppCompatActivity {
     private GoogleSignInAccount account;
     private GoogleSignInOptions gso;
     private static final int RC_SIGN_IN = 9001; // request code for the signIn intent (onActivityResult)
+    private final int RC_CALENDAR_ACTIVITY = 9003;
     private Calendar service = null;    // Google Calendar Api service
     private ArrayList<String> calendarNames = new ArrayList<>();    // user's google calendars' name list
     private ArrayList<String> calendarIds = new ArrayList<>();    // user's google calendars' Ids list
@@ -56,6 +59,7 @@ public class CalendarActivity extends AppCompatActivity {
     private String selectedCalendarId = null;   // holds the id of the google calendar that the user selects in single choice dialog
     private java.util.Calendar calendar = java.util.Calendar.getInstance(); // calendar object for creating, mutating (set time, add days) Date objects
     private int[][] tableIds = null; // holds ids of text views (columns)  making up the table layout, [x][y], x is row , y is column
+    public static ArrayList<String> locations = new ArrayList<>();    // Concordia buildings list
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,8 @@ public class CalendarActivity extends AppCompatActivity {
             account = lastSignedInAccount;
             new RetrieveCalendars().execute();
         }
+
+        locations = getIntent().getStringArrayListExtra("locations"); //retrieve location ArrayList passed by MapsActivity
 
         //Toolbar on top of the page
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -327,7 +333,7 @@ public class CalendarActivity extends AppCompatActivity {
                 List<String> items = new ArrayList<String>(Arrays.asList(location, summary, classHours));
                 items.removeAll(Collections.singleton(null));
 
-                directionsDialog(items.toArray(new String[0])).show();
+                directionsDialog(items.toArray(new String[0]), location).show();
             }
         });
     }
@@ -336,7 +342,7 @@ public class CalendarActivity extends AppCompatActivity {
     // Go button to get directions to the location
     // Cancel button to cancel dialog
     // dialog is also cancellable by pressing anywhere on the screen
-    private Dialog directionsDialog(String[] items){
+    private Dialog directionsDialog(String[] items, final String location){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Go to Location")
                 .setItems(items, null)
@@ -350,6 +356,17 @@ public class CalendarActivity extends AppCompatActivity {
                 .setPositiveButton("GO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if(location != null && locations.contains(location)){
+                            Intent mapsIntent = new Intent(CalendarActivity.this, MapsActivity.class);
+                            mapsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            mapsIntent.putExtra("requestCode", RC_CALENDAR_ACTIVITY);
+                            mapsIntent.putExtra("location", location);
+                            startActivity(mapsIntent);
+                            CalendarActivity.this.overridePendingTransition(0, 0);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Invalid location!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
         return builder.create();
