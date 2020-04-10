@@ -99,9 +99,6 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
 
             case R.id.main_settings:
-                Intent settingsIntent = new Intent(SettingsActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
-                SettingsActivity.this.overridePendingTransition(0,0);
                 break;
 
             case R.id.main_shuttle:
