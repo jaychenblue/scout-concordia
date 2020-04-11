@@ -1421,6 +1421,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     {
                         marker.showInfoWindow();
                         activeInfoWindow = marker.getTitle();
+                        directionButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
+
+                        exploreInsideButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+
+                        popUpBar.setVisibility(VISIBLE);
                         isInfoWindowShown = true;
                     }
                 }
@@ -1542,7 +1551,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addRestaurantsToMap(String[] location)
     {
         int currentPos = 0;
-        String markerName = "";
+        //String markerName = "";
+        String markerNameWithLocation = "";
         LatLng markerLocation = null;
         String markerAddress = "";
         for (int i = 2; i < location.length - 1; i++)  // skip the first 2 lines of the file and the last line of the file
@@ -1550,11 +1560,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             int posOfhalfway = 0;
             int posOfEnd = 0;
             double x_coordinate = 0, y_coordinate = 0;
-            currentPos = location[i].indexOf("{");
+
             posOfhalfway = location[i].indexOf(",");
             posOfEnd = location[i].indexOf("}");
 
-            markerName = location[i].substring(1, currentPos);
+            //currentPos = location[i].indexOf("(");
+            //markerName = location[i].substring(1, currentPos);
+            currentPos = location[i].indexOf("{");
+            markerNameWithLocation = location[i].substring(1, currentPos);
 
             x_coordinate = Double.parseDouble(location[i].substring(currentPos+1,posOfhalfway));
             y_coordinate = Double.parseDouble(location[i].substring(posOfhalfway+2, posOfEnd));
@@ -1565,14 +1578,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             Marker restaurantMarker = mMap.addMarker(new MarkerOptions()
                     .position(markerLocation)
-                    .title(markerName)
+                    .title(markerNameWithLocation)
                     .visible(false)
                     .flat(true)
                     .alpha(1)
                     .zIndex(44)
             );
 
-            BuildingInfo restaurantInfo = new BuildingInfo(markerName, markerAddress, "");
+            BuildingInfo restaurantInfo = new BuildingInfo(markerNameWithLocation, markerAddress, "");
             restaurantMarker.setTag(restaurantInfo);
 
             // set the icon for the restaurant marker
@@ -1583,10 +1596,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             restaurantMarkers.add(restaurantMarker);
 
-            locations.add(markerName);     // add restaurant name to list for the search bar
-            locationMap.put((markerName), markerLocation);   // add restaurant name and coordinate to the map
-
-            Log.w("TESTING: ", "marker name: " + markerName + " " + markerLocation);
+            locations.add(markerNameWithLocation);     // add restaurant name to list for the search bar
+            locationMap.put((markerNameWithLocation), markerLocation);   // add restaurant name and coordinate to the map
         }
     }
 
