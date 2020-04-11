@@ -961,13 +961,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //// TESTING INDOOR DIRECTIONS
-                //String fromMe = "CC-215";
-                //String toMe = "CC-219";
-                //searchResults = searchForClass(fromMe, toMe);
-                //searchResultsIndex = 0;
-                //searchPath.setVisible(true);
-                //displaySearchResults(searchResults.get(searchResultsIndex));
+                setOriginDialog = setOriginDialog();
+                destination = searchMarker.getTitle(); //set destination name
+                setOriginDialog.show();
             }
         });
     }
