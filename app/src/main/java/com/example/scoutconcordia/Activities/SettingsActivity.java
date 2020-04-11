@@ -63,6 +63,9 @@ public class SettingsActivity extends AppCompatActivity {
                         startActivity(shuttleIntent);
                         SettingsActivity.this.overridePendingTransition(0, 0);
                         break;
+
+                    default:
+                        break;
                 }
                 return false;
             }
@@ -106,6 +109,9 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(shuttleIntent);
                 SettingsActivity.this.overridePendingTransition(0, 0);
                 break;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
 
         }
         return false;
