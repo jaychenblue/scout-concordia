@@ -1156,6 +1156,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     } */
 
+    /**
+     * This is the method that draw the outdoor direction path between 2 points.
+     * @param origin This is the first paramter to drawDirectionsPath method.
+     * @param dest This is the second paramter to drawDirectionsPath method.
+     * @return void.
+     * @exception catch Throwable error.
+     */
     private void drawDirectionsPath(LatLng origin, LatLng dest){
         resetPath();
         List<LatLng> path = new ArrayList();
@@ -1208,14 +1215,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         catch(Throwable t){
             Log.d(TAG, t.getMessage());
         }
+
+        //to rounding up integers when it is 0
         int estimatedTime = new BigDecimal(time/60).setScale(0, RoundingMode.HALF_UP).intValue();
+        //cases that  different travel mode was selected
         if(mode.toString().equals("driving") || mode.toString().equals("walking") || mode.toString().equals("transit")){
-//            Toast.makeText(MapsActivity.this, "estimated time in "+ estimatedTime + "mins",  Toast.LENGTH_LONG).show();
             if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
             {
                 if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
                 {
-//                    Toast.makeText(MapsActivity.this, "from:  " + startingPoint + "to: " + destination, Toast.LENGTH_LONG).show();
                     from.setText("From " + startingPoint);
                     from.setVisibility(View.VISIBLE);
                     to.setText("To " + destination);
