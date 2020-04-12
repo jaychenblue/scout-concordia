@@ -153,8 +153,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
     private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
-    private String startingBuilding;
-    private String destinationBuilding;
+    private String startingBuilding;  // The letter of the building. ex: "H"
+    private String destinationBuilding;  // The letter of the building. ex: "H"
     private LatLng origin; //origin of directions search
     private Polyline pathPolyline = null; // polyline for displaying the map
     private Dialog setOriginDialog;
@@ -167,6 +167,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean disabilityPreference = false; //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
+    private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -760,7 +761,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String startingPointType = "class"; // can be type class or building
         String destinationType = "class";  // can be type class or building
 
-        for (int i = 0; i < restaurantMarkers.size(); i++)  // check if either of the points are a restaurant
+        for (int i = 0; i < restaurantMarkers.size(); i++)  // Check if either the destination or the starting point is a restaurant
         {
             if (restaurantMarkers.get(i).getTitle().equals(startingPoint))
             {
@@ -774,19 +775,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building"))  // check if the starting point is a building
         {
+            startingBuilding = startingPoint.split(" ")[0];
             startingPointType = "building";
         }
 
         if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building"))  // check if the destination is a building
         {
+            destinationBuilding = destination.split(" ")[0];
             destinationType = "building";
         }
 
-
         if(startingPoint != null) {
-            if (startingPointType.equals("building")) //if the starting point is a building
+            if (startingPointType.equals("building") || startingPoint.equals("building")) //if the starting point is a building
             {
-                if (destinationType.equals("building")) //if the destination is a building
+                if (destinationType.equals("building")) //if the destination is a building  (building -> building)
                 {
                     if (needMoreDirections)
                     {
@@ -794,17 +796,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         searchResultsIndex = 99;
                     }
                     drawDirectionsPath(origin, locationMap.get(destination));
-                } else {                                                                                            //if the destination is a classroom
-                    String buildingName = destination.split("-")[0] + " Building";
+                }
+                else //if the destination is a classroom  (building -> classroom)
+                {
+                    destinationBuilding = destination.split("-")[0];
+                    String destinationBuildingName = destination.split("-")[0] + " Building";
                     String toMe = destination;
 
-                    for (Marker marker : markerBuildings) {
-                        if ((marker.getTitle()).equals(buildingName)) {
+                    for (Marker marker : markerBuildings)
+                    {
+                        if ((marker.getTitle()).equals(destinationBuildingName))
+                        {
                             searchMarker.setPosition(marker.getPosition());
                             searchMarker.setVisible(false);
                         }
                     }
-                    drawDirectionsPath(origin, locationMap.get(buildingName));
+                    drawDirectionsPath(origin, locationMap.get(destinationBuildingName));  //draws the path from the start building to the destination building (This takes care of the building to building part)
 
                     if (classToClass)  // if the general search is a class-> class search or just a building->class search
                     {
@@ -812,48 +819,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (destinationBuilding.equals("H"))
                         {
                             searchResults = searchForClass("H-100", toMe);
-                        } else if (destinationBuilding.equals("CC"))
+                        }
+                        else if (destinationBuilding.equals("CC"))
                         {
                             searchResults = searchForClass("CC-150", toMe);
                         }
-                    } else
+                    }
+                    else
                     {
-                        if (startingBuilding.equals("H")) {
-                            searchResults = searchForClass("H-100", toMe);
-                        } else if (startingBuilding.equals("CC")) {
-                            searchResults = searchForClass("CC-150", toMe);
+                        if (destinationBuilding.equals("H"))
+                        {
+                            searchResults = searchForClass("H-100", toMe);  // search from the front door of the destination building to the destination classroom
+                        }
+                        else if (destinationBuilding.equals("CC"))
+                        {
+                            searchResults = searchForClass("CC-150", toMe);   // search from the front door of the destination building to the destination classroom
                         }
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
                 }
-            } else //if the starting point is a classroom
+            }
+            else //if the starting point is a classroom
             {
-                if (destinationType.equals("building")) //if the destination is a building
+                if (destinationType.equals("building")) //if the destination is a building  (classroom -> building)
                 {
                     // need to go from class room to exit (we can hard code the exit for H and for CC)
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
                     for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                        if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                        if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                        {
                             searchMarker.setPosition(marker.getPosition());
                             searchMarker.setVisible(false);
                         }
                     }
                     exploreInsideButton.performClick();
 
-                    if (startingBuilding.equals("H")) {
+                    if (startingBuilding.equals("H"))
+                    {
                         searchResults = searchForClass(startingPoint, "H-100");
-                    } else if (startingBuilding.equals("CC")) {
+                    }
+                    else if (startingBuilding.equals("CC"))
+                    {
                         searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
-
                     needMoreDirections = true;
-
                     // need to go from exit to the building. Will be called in the needMoreDirections loop
-
-                } else // if the destination is a classroom (class -> class)
+                }
+                else // if the destination is a classroom (class -> class)
                 {
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
                     destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
@@ -861,7 +876,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
                     {
                         for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                            {
                                 searchMarker.setPosition(marker.getPosition());
                                 searchMarker.setVisible(false);
                             }
@@ -870,20 +886,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         searchResults = searchForClass(startingPoint, destination);
                         searchResultsIndex = -1;
                         searchPath.setVisible(true);
-                    } else //if both classes are in different buildings
+                    }
+                    else //if both classes are in different buildings
                     {
                         // go from the class to the building exit
-                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                        for (Marker marker : markerBuildings)   //set the marker onto the desired building
+                        {
+                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                            {
                                 searchMarker.setPosition(marker.getPosition());
                                 searchMarker.setVisible(false);
                             }
                         }
                         exploreInsideButton.performClick();
 
-                        if (startingBuilding.equals("H")) {
+                        if (startingBuilding.equals("H"))
+                        {
                             searchResults = searchForClass(startingPoint, "H-100"); //directions to exit for H building
-                        } else if (startingBuilding.equals("CC")) {
+                        }
+                        else if (startingBuilding.equals("CC"))
+                        {
                             searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                         }
 
@@ -1650,8 +1672,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(task.isSuccessful())
                     {
                         Location currentLocation = (Location) task.getResult();
-                        LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        drawDirectionsPath(currentLatLng, locationMap.get(destination));
+                        // we will assume that the starting point is a building as there is no way to determine which floor someone is on
+                        // we also need to look at the destination to find where we are going. (this will be a building we know)
+                        origin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        startingPoint = "building";
+                        startingBuilding = "building";
+
+                        getDirections();
                     }
                 }
             });
