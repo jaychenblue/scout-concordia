@@ -74,6 +74,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Inflates the menu resource defined in an xml file
+     * @param menu specific menu defined in an xml file
+     * @return boolean - return true to display the menu
+     */
 
     //inflates the menu
     @Override
@@ -83,8 +88,12 @@ public class SettingsActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Handles menu clicks
+     * @param menuItem item in menu
+     * @return boolean Return false to allow normal menu processing to proceed, true to consume it here.
+     */
 
-    //Handling menu clicks
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         // Handle item selection
