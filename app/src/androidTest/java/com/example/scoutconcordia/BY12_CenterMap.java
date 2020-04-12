@@ -42,7 +42,7 @@ public class BY12_CenterMap {
 
     @Test
     public void bY12_CenterMap() throws InterruptedException {
-//        Thread.sleep(2500);
+//        Thread.sleep(2500); //removed thread.sleep as indicated from the sonarqueb applyication
         ViewInteraction imageView = onView(
                 allOf(withContentDescription("My Location"),
                         childAtPosition(
