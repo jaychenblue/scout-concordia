@@ -8,7 +8,14 @@ android:name="com.google.android.gms.maps.SupportMapFragment"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".Activities.MapsActivity">
-
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 <!--    <fragment
         android:id="@+id/autocomplete_fragment"
         android:layout_width="match_parent"
@@ -19,7 +26,8 @@ tools:context=".Activities.MapsActivity">
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="10">
+        android:weightSum="10"
+        android:layout_below="@id/my_toolbar">
 
         <TextView
             android:layout_width="wrap_content"
@@ -134,26 +142,24 @@ tools:context=".Activities.MapsActivity">
 
     </LinearLayout>
 
-    <!--old marginTop 390dp -->
     <Button
         android:id="@+id/floor8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="352dp"
+        android:layout_marginTop="390dp"
         android:layout_marginEnd="4dp"
         android:text="8th Floor"
         android:visibility="invisible" />
 
-    <!-- old marginTop 427dp -->
     <Button
         android:id="@+id/floor9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="390dp"
+        android:layout_marginTop="427dp"
         android:layout_marginEnd="4dp"
         android:text="9th Floor"
         android:visibility="invisible" />
@@ -168,7 +174,7 @@ tools:context=".Activities.MapsActivity">
         android:layout_marginEnd="5dp"
         android:text="1st Floor"
         android:visibility="invisible" />
-<!--
+
     <Button
         android:id="@+id/floor2"
         android:layout_width="wrap_content"
@@ -180,7 +186,7 @@ tools:context=".Activities.MapsActivity">
         android:layout_marginEnd="4dp"
         android:text="2nd Floor"
         android:visibility="invisible" />
--->
+
     <Button
         android:id="@+id/floorCC1"
         android:layout_width="wrap_content"

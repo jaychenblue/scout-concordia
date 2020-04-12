@@ -83,7 +83,7 @@ public class DES
         return returnMe.toArray();
     }
 
-    /** Method for encrypting a file. Requires an input stream and an output stream **/
+//    /** Method for encrypting a file. Requires an input stream and an output stream **/
 //    public void encryptFile(InputStream readFromMe, OutputStream writeToMe)
 //    {
 //        Scanner reader = null;

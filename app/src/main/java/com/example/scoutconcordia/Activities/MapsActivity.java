@@ -1,6 +1,8 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -21,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -103,13 +106,14 @@ import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
     // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
+    private final int RC_CALENDAR_ACTIVITY = 9003;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
@@ -123,7 +127,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker pathMarker;
 
     private Button floor1;
-    //private Button floor2;
+    private Button floor2;
     private Button floor8;
     private Button floor9;
     private Button floorCC1;
@@ -175,62 +179,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         setmContext(this);
 
+        //Toolbar on top of the page
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-/**        Places.initialize(this, getString(R.string.google_maps_key));
-        PlacesClient placesClient = Places.createClient(this);
-
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // RectangularBounds bounds = RectangularBounds.newInstance(
-        //         new LatLng(-33.880490, 151.184363),
-        //         new LatLng(-33.858754, 151.229596));
-
-        //autocompleteFragment.setLocationBias(bounds); will return places within this area, may return results outside the aread
-
-        // Select here whatever infortmation you want to retrieve for the selected place
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
-        //the types of places search should display
-        autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
-
-        //restricts searches to Canada only so that we do not get random locations when searching
-        autocompleteFragment.setCountry("CA");
-
-        //autocompleteFragment.set
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                searchMarker.remove();
-                searchMarker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), zoomLevel));
-                mMap.setOnMyLocationChangeListener(null);
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                System.out.println("STATUS CODE: " + status.getStatusMessage());
-            }
-        });
-*/
-        // lets encrypt all of the files before using them
-        //encryptAllInputFiles();
-
+        //toggle for different campuses
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.nav_map:
-                        break;
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        calendarIntent.putStringArrayListExtra("locations", locations);
                         startActivity(calendarIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
                         break;
@@ -239,6 +209,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
                         startActivity(shuttleIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
+                        break;
+
+                    default:
                         break;
                 }
                 return false;
@@ -251,12 +224,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
-        //addfloor2ButtonListener();
+        addfloor2ButtonListener();
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
+        
+        // lets encrypt all of the files before using them
+        //encryptAllInputFiles();
+
     }
 
     public List<Object[]> searchForClass(String fromMe, String toMe) {
@@ -380,11 +357,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideCCButtons();
                 floor1.performClick();
                 break;
-            //case "H-2":
-            //    showHallButtons();
-            //    hideCCButtons();
-            //    floor2.performClick();
-            //    break;
+            case "H-2":
+                showHallButtons();
+                hideCCButtons();
+                floor2.performClick();
+                break;
             case "H-8":
                 showHallButtons();
                 hideCCButtons();
@@ -411,14 +388,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void createFloorGraphs()
     {
         Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
-        //Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_2_floor = createGraph("encryptedhall2nodes", true);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
         Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
 
         floorGraphs.add(hall_1_floor);
-        //floorGraphs.add(hall_2_floor);
+        floorGraphs.add(hall_2_floor);
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
         floorGraphs.add(cc_1_floor);
@@ -466,36 +443,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
-
-                //for (Graph graph : floorGraphs)
-                //{
-                //    System.out.println(graph.id);
-                //    if ((graph.id).equals("Hall 1 floor"))
-                //    {
-                //        for (Graph.Node node : graph.nodes())
-                //        {
-                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                //        }
-                //    }
-                //}
             }
         });
     }
 
-//    public void addfloor2ButtonListener()
-//    {
-//        floor2 = (Button) findViewById(R.id.floor2);
-//        floor2.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View view) {
-//                resetButtonColors();
-//                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-//                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
-//                removeAllFloorOverlays();
-//                setUpGroundOverlay("hall2floor");
-//            }
-//        });
-//    }
+    public void addfloor2ButtonListener()
+    {
+        floor2 = (Button) findViewById(R.id.floor2);
+        floor2.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+                resetButtonColors();
+                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall2floor");
+            }
+        });
+    }
 
     public void addfloor8ButtonListener()
     {
@@ -997,8 +962,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //if (activeInfoWindow != null)
-                //{
                     // we want to remove the building outline from the map so we can see the indoor floor plan
                     LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
@@ -1008,7 +971,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         {
                             poly.setVisible(false);  // hide the polygon
                             searchMarker.setVisible(false);  // hide the marker
-
                             removeAllFloorOverlays();
 
                             if (poly.getTag().equals("H Building"))
@@ -1022,7 +984,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     // we want to zoom in onto the center of the building.
                     animateCamera(loc, 19.0f);
-                //}
             };
         });
     }
@@ -1078,7 +1039,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
-        //floor2.setVisibility(View.VISIBLE);
+        floor2.setVisibility(View.VISIBLE);
         floor8.setVisibility(View.VISIBLE);
         floor9.setVisibility(View.VISIBLE);
     }
@@ -1086,7 +1047,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
-        //floor2.setVisibility(View.INVISIBLE);
+        floor2.setVisibility(View.INVISIBLE);
         floor8.setVisibility(View.INVISIBLE);
         floor9.setVisibility(View.INVISIBLE);
     }
@@ -1116,8 +1077,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getResources().getColor(R.color.black));
-        //floor2.setBackgroundResource(android.R.drawable.btn_default);
-        //floor2.setTextColor(getResources().getColor(R.color.black));
+        floor2.setBackgroundResource(android.R.drawable.btn_default);
+        floor2.setTextColor(getResources().getColor(R.color.black));
         floor8.setBackgroundResource(android.R.drawable.btn_default);
         floor8.setTextColor(getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
@@ -1236,7 +1197,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("restaurants_sgw"))
+                if (filename.equals("hall2nodes"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -1682,14 +1643,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-//    private void viewDowntownCampus() {
-//        animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
-//    }
-//
-//    private void viewLoyolaCampus() {
-//        animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
-//    }
-
     private void toggleCampus()
     {
         mMap.setOnMyLocationChangeListener(null);
@@ -1735,8 +1688,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         overridePendingTransition(0, 0);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        if(intent.getIntExtra("requestCode", -1) == RC_CALENDAR_ACTIVITY ) {
+            destination = intent.getStringExtra("location");
+            setOriginDialog = setOriginDialog();
+            setOriginDialog.show();
+        }
     }
 
     // This sets the context and is called during the onCreate method.
@@ -1754,5 +1712,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
     }
+
+
+    //inflates the menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+//    //checks if the accessibility setting is checked
+//    private boolean isChecked=false;
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        MenuItem checkable = menu.findItem(R.id.main_accessibility);
+//        checkable.setChecked(isChecked);
+//        return true;
+//    }
+//
+
+    //Handling menu clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Handle item selection
+        switch (menuItem.getItemId()) {
+            case R.id.main_home:
+                break;
+
+            case R.id.main_schedule:
+                Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                startActivity(calendarIntent);
+                MapsActivity.this.overridePendingTransition(0, 0);
+                break;
+
+            case R.id.main_settings:
+                Intent settingsIntent = new Intent(MapsActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                MapsActivity.this.overridePendingTransition(0,0);
+                break;
+
+            case R.id.main_shuttle:
+                Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
+                startActivity(shuttleIntent);
+                MapsActivity.this.overridePendingTransition(0, 0);
+                break;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
+
+        }
+        return false;
+    }
+
 }
 
