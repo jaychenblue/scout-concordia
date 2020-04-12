@@ -82,6 +82,8 @@ import java.io.InputStream;
 
 import java.io.OutputStream;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -102,6 +104,9 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
+
+import org.joda.time.DateTime;
+
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -170,6 +175,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean disabilityPreference = false; //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
+
+    private TextView travelTime;  //estimated travel time
+    private TextView from;    //outdoor building start point
+    private TextView to;      //outdoor building destination
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -1155,11 +1164,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
 
         DirectionsApiRequest request = DirectionsApi.newRequest(context);
+        float time = 0;
+        from = (TextView) findViewById((R.id.from));
+        to = (TextView) findViewById((R.id.to));
+        travelTime = (TextView) findViewById((R.id.estimatedTravelTime));
         TravelMode mode = getTraveMode();
         if(mode != null) {
             request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
         }
-
         try {
             DirectionsResult res = request.await();
             // adds coordinates of each step on the first route give to the List<LatLng> for drawing the polyline
@@ -1168,6 +1180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (route.legs != null) {
                     for (int i = 0; i < route.legs.length; i++) { //loop through all the legs
                         DirectionsLeg leg = route.legs[i];
+                        time = time + leg.duration.inSeconds;
                         if (leg.steps != null) {
                             for (int j = 0; j < leg.steps.length; j++) {    // loop through all the steps
                                 DirectionsStep step = leg.steps[j];
@@ -1194,6 +1207,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         catch(Throwable t){
             Log.d(TAG, t.getMessage());
+        }
+        int estimatedTime = new BigDecimal(time/60).setScale(0, RoundingMode.HALF_UP).intValue();
+        if(mode.toString().equals("driving") || mode.toString().equals("walking") || mode.toString().equals("transit")){
+//            Toast.makeText(MapsActivity.this, "estimated time in "+ estimatedTime + "mins",  Toast.LENGTH_LONG).show();
+            if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+            {
+                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                {
+//                    Toast.makeText(MapsActivity.this, "from:  " + startingPoint + "to: " + destination, Toast.LENGTH_LONG).show();
+                    from.setText("From " + startingPoint);
+                    from.setVisibility(View.VISIBLE);
+                    to.setText("To " + destination);
+                    to.setVisibility(View.VISIBLE);
+                }
+            }
+
+            travelTime.setText("~" + String.valueOf(estimatedTime) + " mins");
+            travelTime.setVisibility(View.VISIBLE);
+
+
         }
     }
 
