@@ -215,6 +215,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 */
+        // lets encrypt all of the files before using them
+        //encryptAllInputFiles();
+
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
@@ -254,9 +257,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addNextStepListener();
 
         createFloorGraphs();
-        
-        // lets encrypt all of the files before using them
-        //encryptAllInputFiles();
     }
 
     public List<Object[]> searchForClass(String fromMe, String toMe) {
@@ -1166,12 +1166,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationAccessor.decryptFile(true);
         addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
         locationAccessor.resetObject();
-        locationAccessor.setInputStream(getStreamFromFileName("restaurants_sgw"));
-        locationAccessor.decryptFile(false);
+        locationAccessor.setInputStream(getStreamFromFileName("encrypted_restaurants_sgw"));
+        locationAccessor.decryptFile(true);
         addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the SGW campus
         locationAccessor.resetObject();
-        locationAccessor.setInputStream(getStreamFromFileName("restaurants_loyola"));
-        locationAccessor.decryptFile(false);
+        locationAccessor.setInputStream(getStreamFromFileName("encrypted_restaurants_loyola"));
+        locationAccessor.decryptFile(true);
         addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the loyola campus
         locations.add("restaurants near me");
 
@@ -1213,7 +1213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /*
+/*
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
     // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
@@ -1236,7 +1236,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall1nodes2"))
+                if (filename.equals("restaurants_sgw"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
