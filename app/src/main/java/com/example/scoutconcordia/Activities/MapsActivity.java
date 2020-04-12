@@ -196,8 +196,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.nav_map:
-                        break;
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
@@ -210,6 +208,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
                         startActivity(shuttleIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
+                        break;
+
+                    default:
                         break;
                 }
                 return false;
@@ -1597,6 +1598,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(shuttleIntent);
                 MapsActivity.this.overridePendingTransition(0, 0);
                 break;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
 
         }
         return false;
