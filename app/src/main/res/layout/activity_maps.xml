@@ -124,7 +124,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="3" >
+            android:weightSum="3"
+            android:layout_gravity="bottom">
 
             <TextView
                 android:id="@+id/from"
@@ -134,7 +135,8 @@
                 android:textColor="@color/burgundy"
                 android:background="@color/white"
                 android:textFontWeight="500"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textAlignment="center"/>
 
             <TextView
                 android:id="@+id/to"
@@ -144,7 +146,8 @@
                 android:textColor="@color/burgundy"
                 android:background="@color/white"
                 android:textFontWeight="500"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textAlignment="center"/>
 
             <TextView
                 android:id="@+id/estimatedTravelTime"
@@ -154,7 +157,8 @@
                 android:textColor="@color/burgundy"
                 android:background="@color/white"
                 android:textFontWeight="500"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:textAlignment="center"/>
         </LinearLayout>
 
         <Button
