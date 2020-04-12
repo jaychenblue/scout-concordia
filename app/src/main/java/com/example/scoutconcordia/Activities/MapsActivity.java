@@ -1176,22 +1176,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locations.add("restaurants near me");
 
         // Add a marker in Concordia and move the camera
-        searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
         // Refresh to fix Map not displaying properly
         toggleCampus();
         toggleButton.setChecked(false);
         getCurrentLocation();
-
         setClickListeners(); // sets the polygon listeners
-
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
-
         initializeSearchBar();
-
         searchPath = mMap.addPolyline(new PolylineOptions());
     }
 
@@ -1476,9 +1471,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showAllPolygons();
                 showAllMarkers();
                 resetGetDirectionParams();
-
+                resetPath();  //erase the path from outdoor directions
                 setRestaurantMarkersVisibility(false);
-
                 //System.out.println(latLng);
             }
         });
