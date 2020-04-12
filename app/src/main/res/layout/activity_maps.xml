@@ -113,53 +113,12 @@
 
 
     <LinearLayout
+        android:id="@+id/explore_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_above="@id/nav_bar_activity_maps"
         android:layout_alignRight="@id/map">
-
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:layout_gravity="bottom">
-
-            <TextView
-                android:id="@+id/from"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:textColor="@color/burgundy"
-                android:background="@color/white"
-                android:textFontWeight="500"
-                android:layout_weight="1"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:id="@+id/to"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:textColor="@color/burgundy"
-                android:background="@color/white"
-                android:textFontWeight="500"
-                android:layout_weight="1"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:id="@+id/estimatedTravelTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:textColor="@color/burgundy"
-                android:background="@color/white"
-                android:textFontWeight="500"
-                android:layout_weight="1"
-                android:textAlignment="center"/>
-        </LinearLayout>
 
         <Button
             android:id="@+id/directionsButton"
@@ -183,7 +142,50 @@
             android:background="@drawable/shadow_toggle"
             android:layout_marginRight="22pt"
             android:padding="5dp"/>
+    </LinearLayout>
 
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@id/nav_bar_activity_maps"
+        tools:ignore="BottomAppBar"
+        android:weightSum="3"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="@color/burgundy"
+            android:background="@color/white"
+            android:textFontWeight="500"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="@color/burgundy"
+            android:background="@color/white"
+            android:textFontWeight="500"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/estimatedTravelTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="@color/burgundy"
+            android:background="@color/white"
+            android:textFontWeight="500"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
     </LinearLayout>
 
     <Button

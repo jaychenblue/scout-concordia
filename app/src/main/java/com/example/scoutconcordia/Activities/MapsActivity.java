@@ -1366,6 +1366,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showAllMarkers();
                 resetGetDirectionParams();
 
+                from.setVisibility(View.INVISIBLE);
+                to.setVisibility(View.INVISIBLE);
+                travelTime.setVisibility(View.INVISIBLE);
                 //System.out.println(latLng);
             }
         });
