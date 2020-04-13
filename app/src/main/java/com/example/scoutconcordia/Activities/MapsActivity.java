@@ -138,6 +138,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button floorCC1;
     private Button floorCC2;
 
+    private Button floorVE2;
+    private Button floorVL1;
+    private Button floorVL2;
+
+    private Button floorMB1;
+    private Button floorMBS2;
+
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
     private boolean isInfoWindowShown = false;
@@ -155,9 +162,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
+    private final LatLng veBuildingOverlaySouthWest = new LatLng(45.458849, -73.639018);
+    private final LatLng vlBuildingOverlaySouthWest = new LatLng(45.459106, -73.637831);
+    private final LatLng mbBuildingOverlaySouthWest = new LatLng(45.494962, -73.578783);
     private GroundOverlay hallGroundOverlay;
     private final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
     private GroundOverlay ccGroundOverlay;
+    private GroundOverlay veGroundOverlay;
+    private GroundOverlay vlGroundOverlay;
+    private GroundOverlay mbGroundOverlay;
+
 
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
@@ -236,6 +250,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addfloor2ButtonListener();
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
+        addfloorVE2ButtonListener();
+        addfloorVL1ButtonListener();
+        addfloorVL2ButtonListener();
+        addfloorMB1ButtonListener();
+        addfloorMBS2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
@@ -554,6 +573,151 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
                         .position(ccOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorVE2ButtonListener()
+    {
+        floorVE2 = (Button) findViewById(R.id.floorVE2);
+        floorVE2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorVE2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVE2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 29;
+                float overlaySize = 50;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", "drawable", getPackageName()));
+
+                veGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(veBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorVL1ButtonListener()
+    {
+        floorVL1 = (Button) findViewById(R.id.floorVL1);
+        floorVL1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorVL1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVL1.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 209;
+                float overlaySize = 71;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", "drawable", getPackageName()));
+
+                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(vlBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorVL2ButtonListener()
+    {
+        floorVL2 = (Button) findViewById(R.id.floorVL2);
+        floorVL2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorVL2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVL2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 209;
+                float overlaySize = 71;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", "drawable", getPackageName()));
+
+                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(vlBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorMB1ButtonListener()
+    {
+        floorMB1 = (Button) findViewById(R.id.floorMB1);
+        floorMB1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorMB1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorMB1.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 42;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_01", "drawable", getPackageName()));
+
+                mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(mbBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorMBS2ButtonListener()
+    {
+        floorMBS2 = (Button) findViewById(R.id.floorMBS2);
+        floorMBS2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorMBS2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorMBS2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 42;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", "drawable", getPackageName()));
+
+                mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(mbBuildingOverlaySouthWest, overlaySize)
                         .anchor(0, 1)
                         .bearing(imgRotation));
             }
@@ -985,9 +1149,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (poly.getTag().equals("H Building"))
                         {
                             showHallButtons();
-                        } else if (poly.getTag().equals("CC Building"))
+                        }
+                        else if (poly.getTag().equals("CC Building"))
                         {
                             showCCButtons();
+                        }
+                        else if (poly.getTag().equals("VE Building"))
+                        {
+                            showVEButtons();
+                        }
+                        else if (poly.getTag().equals("VL Building"))
+                        {
+                            LatLng ve_location = new LatLng(45.458850, -73.638660);
+
+                            for (Polygon poly2 : polygonBuildings)
+                            {
+                                if (PolyUtil.containsLocation(ve_location, poly2.getPoints(), true)){
+                                    poly2.setVisible(false);
+                                }
+                            }
+                            showVLButtons();
+                        }
+                        else if (poly.getTag().equals("MB Building"))
+                        {
+                            showMBButtons();
+
                         }
                     }
                 }
@@ -1061,6 +1247,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floor9.setVisibility(View.INVISIBLE);
     }
 
+    public void showVEButtons()
+    {
+        floorVE2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideVEButtons()
+    {
+        floorVE2.setVisibility(View.INVISIBLE);
+    }
+
+    public void showVLButtons()
+    {
+        floorVL1.setVisibility(View.VISIBLE);
+        floorVL2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideVLButtons()
+    {
+        floorVL1.setVisibility(View.INVISIBLE);
+        floorVL2.setVisibility(View.INVISIBLE);
+    }
+
+    public void showMBButtons()
+    {
+        floorMB1.setVisibility(View.VISIBLE);
+        floorMBS2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideMBButtons()
+    {
+        floorMB1.setVisibility(View.INVISIBLE);
+        floorMBS2.setVisibility(View.INVISIBLE);
+    }
+
     public void showCCButtons()
     {
         floorCC1.setVisibility(View.VISIBLE);
@@ -1081,6 +1301,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ccGroundOverlay != null){
             ccGroundOverlay.remove();
         }
+        if (vlGroundOverlay != null){
+            vlGroundOverlay.remove();
+        }
+        if (veGroundOverlay != null){
+            veGroundOverlay.remove();
+        }
+        if (mbGroundOverlay != null){
+            mbGroundOverlay.remove();
+        }
+
     }
 
     public void resetButtonColors() {
@@ -1096,6 +1326,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorCC1.setTextColor(getResources().getColor(R.color.black));
         floorCC2.setBackgroundResource(android.R.drawable.btn_default);
         floorCC2.setTextColor(getResources().getColor(R.color.black));
+
+        floorVE2.setBackgroundResource(android.R.drawable.btn_default);
+        floorVE2.setTextColor(getResources().getColor(R.color.black));
+        floorVL1.setBackgroundResource(android.R.drawable.btn_default);
+        floorVL1.setTextColor(getResources().getColor(R.color.black));
+        floorVL2.setBackgroundResource(android.R.drawable.btn_default);
+        floorVL2.setTextColor(getResources().getColor(R.color.black));
+
+        floorMB1.setBackgroundResource(android.R.drawable.btn_default);
+        floorMB1.setTextColor(getResources().getColor(R.color.black));
+        floorMBS2.setBackgroundResource(android.R.drawable.btn_default);
+        floorMBS2.setTextColor(getResources().getColor(R.color.black));
+
     }
 
     /**
@@ -1404,6 +1647,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         hideHallButtons();
                         hideCCButtons();
+                        hideVEButtons();
+                        hideVLButtons();
+                        hideMBButtons();
 
                         removeAllFloorOverlays();
 
@@ -1418,6 +1664,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         hideHallButtons();
                         hideCCButtons();
+                        hideVEButtons();
+                        hideVLButtons();
+                        hideMBButtons();
+
 
                         removeAllFloorOverlays();
 
@@ -1466,6 +1716,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 hideHallButtons();
                 hideCCButtons();
+                hideVEButtons();
+                hideVLButtons();
+                hideMBButtons();
+
+
 
                 removeAllFloorOverlays();
 
