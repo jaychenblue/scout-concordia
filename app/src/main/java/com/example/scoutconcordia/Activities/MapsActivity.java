@@ -1,6 +1,7 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -19,6 +20,7 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -1480,6 +1482,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @return void.
      * @exception catch Throwable error.
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void drawDirectionsPath(LatLng origin, LatLng dest){
         resetPath();
         List<LatLng> path = new ArrayList();
@@ -1556,8 +1559,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             travelTime.setVisibility(View.VISIBLE);
 
             ShuttleInfo getShuttleEstimate = new ShuttleInfo();
-            String shuttleEstimateText = getShuttleEstimate.getEstimatedRouteTimeFromSGW();
-            shuttleTime.setText(shuttleEstimateText);
+            shuttleTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromLoyola());
             shuttleTime.setVisibility(View.VISIBLE);
         }
 

@@ -41,6 +41,7 @@ public class ShuttleInfo {
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String getEstimatedRouteTimeFromSGW() {
 
 
