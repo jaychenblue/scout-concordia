@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:map="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:name="com.google.android.gms.maps.SupportMapFragment"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".Activities.MapsActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MapsActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -16,11 +16,7 @@ tools:context=".Activities.MapsActivity">
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-<!--    <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />-->
+
     <LinearLayout
         android:id="@+id/search"
         android:orientation="horizontal"
@@ -99,6 +95,7 @@ tools:context=".Activities.MapsActivity">
         android:onClick="onFindYourWayButtonClick"
         />
 -->
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
@@ -110,7 +107,9 @@ tools:context=".Activities.MapsActivity">
         tools:ignore="BottomAppBar"
         android:visibility="invisible" />
 
+
     <LinearLayout
+        android:id="@+id/explore_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -139,7 +138,50 @@ tools:context=".Activities.MapsActivity">
             android:background="@drawable/shadow_toggle"
             android:layout_marginRight="22pt"
             android:padding="5dp"/>
+    </LinearLayout>
 
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@id/nav_bar_activity_maps"
+        tools:ignore="BottomAppBar"
+        android:weightSum="3"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="@color/burgundy"
+            android:background="@color/white"
+            android:textFontWeight="500"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="@color/burgundy"
+            android:background="@color/white"
+            android:textFontWeight="500"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/estimatedTravelTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="@color/burgundy"
+            android:background="@color/white"
+            android:textFontWeight="500"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
     </LinearLayout>
 
     <Button
