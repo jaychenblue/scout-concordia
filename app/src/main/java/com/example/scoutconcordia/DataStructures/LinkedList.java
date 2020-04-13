@@ -102,7 +102,10 @@ public class LinkedList <E>
         {
             toBeBefore.setNext(newOne);
         }
-        toBeNext.setPrev(newOne);
+        if (toBeNext != null)
+        {
+            toBeNext.setPrev(newOne);
+        }
         toBeBefore = null;
         toBeNext = null;
         newOne = null;
