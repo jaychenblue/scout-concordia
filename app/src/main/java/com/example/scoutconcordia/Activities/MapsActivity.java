@@ -146,10 +146,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Marker searchMarker;
     private String activeInfoWindow = null;
-    private List<Polygon> polygonBuildings = new ArrayList<>();
-    private List<Marker> markerBuildings = new ArrayList<>();
-    private List<Graph> floorGraphs = new ArrayList<>();
-    public static final ArrayList<String> locations = new ArrayList<>();    // Concordia buildings list
+    private List<Polygon> polygonBuildings = new ArrayList<>();  // list of polygons, representing all of the campus buildings
+    private List<Marker> markerBuildings = new ArrayList<>();  // List of markers for all of the campus buildings
+    private List<Marker> restaurantMarkers = new ArrayList<>();  // List of markers for all of the restaurants (POI)
+    private List<Graph> floorGraphs = new ArrayList<>();  // List of graphs, representing the graphs used for indoor directions.
+    public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
@@ -161,8 +162,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
     private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
-    private String startingBuilding;
-    private String destinationBuilding;
+    private String startingBuilding;  // The letter of the building. ex: "H"
+    private String destinationBuilding;  // The letter of the building. ex: "H"
     private LatLng origin; //origin of directions search
     private Polyline pathPolyline = null; // polyline for displaying the map
     private Dialog setOriginDialog;
@@ -175,6 +176,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean disabilityPreference = false; //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
+    private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
 
     private TextView travelTime;  //estimated travel time
     private TextView from;    //outdoor building start point
@@ -182,7 +184,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setmContext(this);
@@ -208,7 +209,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
-                        calendarIntent.putStringArrayListExtra("locations", locations);
+                        calendarIntent.putStringArrayListExtra("locations", (ArrayList<String>) locations);
                         startActivity(calendarIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
                         break;
@@ -623,10 +624,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                setOriginDialog = setOriginDialog();
-                destination = searchBar.getText().toString(); //set destination name, to be used to get LatLng from locationMap
-                searchBar.setText(null);
-                setOriginDialog.show(); // create dialog asking user to select a starting point
+                if (searchBar.getText().toString().equals("restaurants near me"))
+                {
+                    setRestaurantMarkersVisibility(true);
+                }
+                else
+                {
+                    setOriginDialog = setOriginDialog();
+                    destination = searchBar.getText().toString(); //set destination name, to be used to get LatLng from locationMap
+                    searchBar.setText(null);
+                    setOriginDialog.show(); // create dialog asking user to select a starting point
+                }
             }
         });
 
@@ -724,10 +732,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void getDirections()
     {
-        if(startingPoint != null) {
-            if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+        String startingPointType = "class"; // can be type class or building
+        String destinationType = "class";  // can be type class or building
+
+        for (int i = 0; i < restaurantMarkers.size(); i++)  // Check if either the destination or the starting point is a restaurant
+        {
+            if (restaurantMarkers.get(i).getTitle().equals(startingPoint))
             {
-                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                startingPointType = "building";
+            }
+            else if (restaurantMarkers.get(i).getTitle().equals(destination))
+            {
+                destinationType = "building";
+            }
+        }
+
+        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building"))  // check if the starting point is a building
+        {
+            startingBuilding = startingPoint.split(" ")[0];
+            startingPointType = "building";
+        }
+
+        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building"))  // check if the destination is a building
+        {
+            destinationBuilding = destination.split(" ")[0];
+            destinationType = "building";
+        }
+
+        if(startingPoint != null) {
+            if (startingPointType.equals("building") || startingPoint.equals("building")) //if the starting point is a building
+            {
+                if (destinationType.equals("building")) //if the destination is a building  (building -> building)
                 {
                     if (needMoreDirections)
                     {
@@ -735,17 +770,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         searchResultsIndex = 99;
                     }
                     drawDirectionsPath(origin, locationMap.get(destination));
-                } else {                                                                                            //if the destination is a classroom
-                    String buildingName = destination.split("-")[0] + " Building";
+                }
+                else //if the destination is a classroom  (building -> classroom)
+                {
+                    destinationBuilding = destination.split("-")[0];
+                    String destinationBuildingName = destination.split("-")[0] + " Building";
                     String toMe = destination;
 
-                    for (Marker marker : markerBuildings) {
-                        if ((marker.getTitle()).equals(buildingName)) {
+                    for (Marker marker : markerBuildings)
+                    {
+                        if ((marker.getTitle()).equals(destinationBuildingName))
+                        {
                             searchMarker.setPosition(marker.getPosition());
                             searchMarker.setVisible(false);
                         }
                     }
-                    drawDirectionsPath(origin, locationMap.get(buildingName));
+                    drawDirectionsPath(origin, locationMap.get(destinationBuildingName));  //draws the path from the start building to the destination building (This takes care of the building to building part)
 
                     if (classToClass)  // if the general search is a class-> class search or just a building->class search
                     {
@@ -753,48 +793,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (destinationBuilding.equals("H"))
                         {
                             searchResults = searchForClass("H-100", toMe);
-                        } else if (destinationBuilding.equals("CC"))
+                        }
+                        else if (destinationBuilding.equals("CC"))
                         {
                             searchResults = searchForClass("CC-150", toMe);
                         }
-                    } else
+                    }
+                    else
                     {
-                        if (startingBuilding.equals("H")) {
-                            searchResults = searchForClass("H-100", toMe);
-                        } else if (startingBuilding.equals("CC")) {
-                            searchResults = searchForClass("CC-150", toMe);
+                        if (destinationBuilding.equals("H"))
+                        {
+                            searchResults = searchForClass("H-100", toMe);  // search from the front door of the destination building to the destination classroom
+                        }
+                        else if (destinationBuilding.equals("CC"))
+                        {
+                            searchResults = searchForClass("CC-150", toMe);   // search from the front door of the destination building to the destination classroom
                         }
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
                 }
-            } else //if the starting point is a classroom
+            }
+            else //if the starting point is a classroom
             {
-                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                if (destinationType.equals("building")) //if the destination is a building  (classroom -> building)
                 {
                     // need to go from class room to exit (we can hard code the exit for H and for CC)
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
                     for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                        if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                        if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                        {
                             searchMarker.setPosition(marker.getPosition());
                             searchMarker.setVisible(false);
                         }
                     }
                     exploreInsideButton.performClick();
 
-                    if (startingBuilding.equals("H")) {
+                    if (startingBuilding.equals("H"))
+                    {
                         searchResults = searchForClass(startingPoint, "H-100");
-                    } else if (startingBuilding.equals("CC")) {
+                    }
+                    else if (startingBuilding.equals("CC"))
+                    {
                         searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
-
                     needMoreDirections = true;
-
                     // need to go from exit to the building. Will be called in the needMoreDirections loop
-
-                } else // if the destination is a classroom (class -> class)
+                }
+                else // if the destination is a classroom (class -> class)
                 {
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
                     destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
@@ -802,7 +850,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
                     {
                         for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                            {
                                 searchMarker.setPosition(marker.getPosition());
                                 searchMarker.setVisible(false);
                             }
@@ -811,20 +860,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         searchResults = searchForClass(startingPoint, destination);
                         searchResultsIndex = -1;
                         searchPath.setVisible(true);
-                    } else //if both classes are in different buildings
+                    }
+                    else //if both classes are in different buildings
                     {
                         // go from the class to the building exit
-                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                        for (Marker marker : markerBuildings)   //set the marker onto the desired building
+                        {
+                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                            {
                                 searchMarker.setPosition(marker.getPosition());
                                 searchMarker.setVisible(false);
                             }
                         }
                         exploreInsideButton.performClick();
 
-                        if (startingBuilding.equals("H")) {
+                        if (startingBuilding.equals("H"))
+                        {
                             searchResults = searchForClass(startingPoint, "H-100"); //directions to exit for H building
-                        } else if (startingBuilding.equals("CC")) {
+                        }
+                        else if (startingBuilding.equals("CC"))
+                        {
                             searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                         }
 
@@ -902,6 +957,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setOriginDialog = setOriginDialog();
+                destination = searchMarker.getTitle(); //set destination name
+                setOriginDialog.show();
             }
         });
     }
@@ -975,6 +1033,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         for (Marker mar : markerBuildings) {
             mar.setVisible(true);
+        }
+    }
+
+    // method for setting the visibility of the restaurant markers.
+    public void setRestaurantMarkersVisibility(Boolean visibility)
+    {
+        for (Marker mar : restaurantMarkers)
+        {
+            mar.setVisible(visibility);
         }
     }
 
@@ -1068,24 +1135,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationAccessor.setInputStream(getStreamFromFileName("encryptedloyola"));
         locationAccessor.decryptFile(true);
         addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("encrypted_restaurants_sgw"));
+        locationAccessor.decryptFile(true);
+        addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the SGW campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("encrypted_restaurants_loyola"));
+        locationAccessor.decryptFile(true);
+        addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the loyola campus
+        locations.add("restaurants near me");
 
         // Add a marker in Concordia and move the camera
-        searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
         // Refresh to fix Map not displaying properly
         toggleCampus();
         toggleButton.setChecked(false);
         getCurrentLocation();
-
         setClickListeners(); // sets the polygon listeners
-
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
-
         initializeSearchBar();
-
         searchPath = mMap.addPolyline(new PolylineOptions());
     }
 
@@ -1112,7 +1183,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /*
+/*
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
     // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
@@ -1308,7 +1379,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // move the camera to the marker location
                     animateCamera(marker.getPosition(), zoomLevel);
 
-                    if (!isInfoWindowShown) {
+                    if (!isInfoWindowShown)
+                    {
                         marker.showInfoWindow();
 
                         activeInfoWindow = marker.getTitle();
@@ -1336,7 +1408,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         removeAllFloorOverlays();
 
                         isInfoWindowShown = true;
-                    } else {
+                    }
+                    else
+                    {
                         marker.hideInfoWindow();
                         directionButton.setVisibility(View.INVISIBLE);
                         exploreInsideButton.setVisibility(View.INVISIBLE);
@@ -1350,7 +1424,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
                     }
-                } else {
+                }
+                else if (restaurantMarkers.contains(marker))
+                {
+                    isInfoWindowShown = false;
+                    searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
+
+                    // move the camera to the marker location
+                    animateCamera(marker.getPosition(), zoomLevel);
+
+                    if (!isInfoWindowShown)
+                    {
+                        marker.showInfoWindow();
+                        activeInfoWindow = marker.getTitle();
+                        directionButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
+
+                        exploreInsideButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+
+                        popUpBar.setVisibility(VISIBLE);
+                        isInfoWindowShown = true;
+                    }
+                }
+                else
+                {
                     System.out.println(marker.getPosition());
                 }
                 return true;
@@ -1374,6 +1474,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showAllPolygons();
                 showAllMarkers();
                 resetGetDirectionParams();
+                resetPath();  //erase the path from outdoor directions
+                setRestaurantMarkersVisibility(false);
 
                 from.setVisibility(View.INVISIBLE);
                 to.setVisibility(View.INVISIBLE);
@@ -1465,6 +1567,59 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void addRestaurantsToMap(String[] location)
+    {
+        int currentPos = 0;
+        //String markerName = "";
+        String markerNameWithLocation = "";
+        LatLng markerLocation = null;
+        String markerAddress = "";
+        for (int i = 2; i < location.length - 1; i++)  // skip the first 2 lines of the file and the last line of the file
+        {
+            int posOfhalfway = 0;
+            int posOfEnd = 0;
+            double x_coordinate = 0, y_coordinate = 0;
+
+            posOfhalfway = location[i].indexOf(",");
+            posOfEnd = location[i].indexOf("}");
+
+            //currentPos = location[i].indexOf("(");
+            //markerName = location[i].substring(1, currentPos);
+            currentPos = location[i].indexOf("{");
+            markerNameWithLocation = location[i].substring(1, currentPos);
+
+            x_coordinate = Double.parseDouble(location[i].substring(currentPos+1,posOfhalfway));
+            y_coordinate = Double.parseDouble(location[i].substring(posOfhalfway+2, posOfEnd));
+            markerLocation = new LatLng(x_coordinate, y_coordinate);
+
+            currentPos = location[i].indexOf("}");
+            markerAddress = location[i].substring(currentPos + 1);
+
+            Marker restaurantMarker = mMap.addMarker(new MarkerOptions()
+                    .position(markerLocation)
+                    .title(markerNameWithLocation)
+                    .visible(false)
+                    .flat(true)
+                    .alpha(1)
+                    .zIndex(44)
+            );
+
+            BuildingInfo restaurantInfo = new BuildingInfo(markerNameWithLocation, markerAddress, "");
+            restaurantMarker.setTag(restaurantInfo);
+
+            // set the icon for the restaurant marker
+            int resID = this.getResources().getIdentifier("restaurant_icon", "drawable", this.getPackageName());
+            Bitmap smallMarker = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), resID), 90, 90, false);
+            BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
+            restaurantMarker.setIcon(smallMarkerIcon);
+
+            restaurantMarkers.add(restaurantMarker);
+
+            locations.add(markerNameWithLocation);     // add restaurant name to list for the search bar
+            locationMap.put((markerNameWithLocation), markerLocation);   // add restaurant name and coordinate to the map
+        }
+    }
+
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
     // when user gesture moves the camera). Check onCameraMoveStarted listener method
@@ -1518,8 +1673,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if(task.isSuccessful())
                     {
                         Location currentLocation = (Location) task.getResult();
-                        LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        drawDirectionsPath(currentLatLng, locationMap.get(destination));
+                        // we will assume that the starting point is a building as there is no way to determine which floor someone is on
+                        // we also need to look at the destination to find where we are going. (this will be a building we know)
+                        origin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        startingPoint = "building";
+                        startingBuilding = "building";
+
+                        getDirections();
                     }
                 }
             });
