@@ -102,7 +102,10 @@ public class LinkedList <E>
         {
             toBeBefore.setNext(newOne);
         }
-        toBeNext.setPrev(newOne);
+        if (toBeNext != null)
+        {
+            toBeNext.setPrev(newOne);
+        }
         toBeBefore = null;
         toBeNext = null;
         newOne = null;
@@ -145,10 +148,10 @@ public class LinkedList <E>
             before = toBeRemoved.getPrev();
             after = toBeRemoved.getNext();
             returnMe = (E)toBeRemoved.getEle();
+            toBeRemoved.element = null;
+            toBeRemoved.setPrev(null);
+            toBeRemoved.setNext(null);
         }
-        toBeRemoved.element = null;
-        toBeRemoved.setPrev(null);
-        toBeRemoved.setNext(null);
         toBeRemoved = null;
         if (before != null)
             before.setNext(after);
