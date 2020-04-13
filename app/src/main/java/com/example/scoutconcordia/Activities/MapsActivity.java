@@ -200,7 +200,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
-                        calendarIntent.putStringArrayListExtra("locations", locations);
+                        calendarIntent.putStringArrayListExtra("locations", (ArrayList<String>) locations);
                         startActivity(calendarIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
                         break;
