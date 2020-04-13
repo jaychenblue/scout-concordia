@@ -195,6 +195,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView travelTime;  //estimated travel time
     private TextView from;    //outdoor building start point
     private TextView to;      //outdoor building destination
+    private TextView shuttleTime;  //estimated travel time
+
+
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -1489,6 +1492,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         from = (TextView) findViewById((R.id.from));
         to = (TextView) findViewById((R.id.to));
         travelTime = (TextView) findViewById((R.id.estimatedTravelTime));
+        shuttleTime = (TextView) findViewById(R.id.estimatedShuttleTime);
         TravelMode mode = getTraveMode();
         if(mode != null) {
             request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
@@ -1550,7 +1554,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             travelTime.setText("~" + String.valueOf(estimatedTime) + " mins");
             travelTime.setVisibility(View.VISIBLE);
+
+            ShuttleInfo getShuttleEstimate = new ShuttleInfo();
+            String shuttleEstimateText = getShuttleEstimate.getEstimatedRouteTimeFromSGW();
+            shuttleTime.setText(shuttleEstimateText);
+            shuttleTime.setVisibility(View.VISIBLE);
         }
+
     }
 
     private TravelMode getTraveMode(){
@@ -1735,6 +1745,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 from.setVisibility(View.INVISIBLE);
                 to.setVisibility(View.INVISIBLE);
                 travelTime.setVisibility(View.INVISIBLE);
+                shuttleTime.setVisibility(View.INVISIBLE);
                 //System.out.println(latLng);
             }
         });

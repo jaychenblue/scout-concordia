@@ -41,7 +41,7 @@ public class ShuttleInfo {
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
 
-    public double getEstimatedRouteTimeFromSGW() {
+    public String getEstimatedRouteTimeFromSGW() {
 
 
         Calendar cal = Calendar.getInstance();
@@ -121,7 +121,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
 
 
                 break;
@@ -139,7 +139,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursSGW()[indexPosition] + ". ";
 
                 break;
 
@@ -154,7 +154,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursSGW()[indexPosition] + ". ";
 
                 break;
 
@@ -169,7 +169,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursSGW()[indexPosition] + ". ";
 
                 break;
 
@@ -185,7 +185,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveFridaySGW()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveFridaySGW()[indexPosition] + ". ";
 
                 break;
 
@@ -206,24 +206,30 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursSGW()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
 
 
                 break;
+
 
         }
 
         // The shuttle time is hardcoded at 30 minutes, because of fluctuations, it is an estimation
         double estimatedTime = Math.round((((nextShuttleTime - timeOfDay) * 60) + 30) * 100.0) / 100.0;
 
-        String overallEstimation = "The estimated route time is: " + estimatedTime;
+        String overallEstimation = " Route estimate is: " + estimatedTime + " mins";
 
         System.out.println((messageToUser + "\n" + overallEstimation + " minutes"));
 
 //            return (messageToUser + "\n" + overallEstimation);
 
-        return estimatedTime;
+        if ((today.equals("Saturday")) || today.equals("Sunday")) {
+            overallEstimation = "";
+        }
 
+        String tellUser = messageToUser + overallEstimation;
+
+        return tellUser;
     }
 
 
@@ -231,7 +237,7 @@ public class ShuttleInfo {
     // From there, it builds an estimate of how long it would take for the entire trip.
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public double getEstimatedRouteTimeFromLoyola() {
+    public String getEstimatedRouteTimeFromLoyola() {
 
 
         Calendar cal = Calendar.getInstance();
@@ -315,7 +321,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
 
 
                 break;
@@ -333,7 +339,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
 
                 break;
 
@@ -348,7 +354,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
 
                 break;
 
@@ -363,7 +369,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
 
                 break;
 
@@ -379,7 +385,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "Today is " + today + ". The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveFridayLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next shuttle is at: " + retrieveFridayLoyola()[indexPosition] + ". ";
 
                 break;
 
@@ -400,7 +406,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The current time is: " + timeString + " (" + timeOfDay + ")" + " and the next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + " (" + nextShuttleTime + ")";
+                messageToUser = "The next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
 
 
                 break;
@@ -411,13 +417,19 @@ public class ShuttleInfo {
         // The shuttle time is hardcoded at 30 minutes, because of fluctuations, it is an estimation
         double estimatedTime = Math.round((((nextShuttleTime - timeOfDay) * 60) + 30) * 100.0) / 100.0;
 
-        String overallEstimation = "The estimated route time is: " + estimatedTime;
+        String overallEstimation = " Route estimate is: " + estimatedTime + " mins";
 
         System.out.println((messageToUser + "\n" + overallEstimation + " minutes"));
 
 //            return (messageToUser + "\n" + overallEstimation);
 
-        return estimatedTime;
+        if ((today.equals("Saturday")) || today.equals("Sunday")) {
+            overallEstimation = "";
+        }
+
+        String tellUser = messageToUser + overallEstimation;
+
+        return tellUser;
 
     }
 
