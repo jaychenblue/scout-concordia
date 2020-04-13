@@ -82,6 +82,8 @@ import java.io.InputStream;
 
 import java.io.OutputStream;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -102,6 +104,9 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
+
+import org.joda.time.DateTime;
+
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -171,6 +176,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
 
+    private TextView travelTime;  //estimated travel time
+    private TextView from;    //outdoor building start point
+    private TextView to;      //outdoor building destination
+
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
 
@@ -229,7 +238,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addNextStepListener();
 
         createFloorGraphs();
-        
+
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
 
@@ -313,7 +322,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //List<LatLng> listOfPoints = new ArrayList<>();
         searchPath.setPoints(Arrays.asList(dest));
-        
+
         // get the first point and the last point
         LatLng point1 = dest[0];
         LatLng point2 = dest[dest.length - 1];
@@ -584,8 +593,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     exploreInsideButton.performClick();
                     displaySearchResults(searchResults.get(searchResultsIndex));
                 } else if (searchResultsIndex == 100) {
-                        resetPath();
-                        nextStep.setVisibility(View.INVISIBLE);  //we have reached the end of the search
+                    resetPath();
+                    nextStep.setVisibility(View.INVISIBLE);  //we have reached the end of the search
                 } else
                 {
                     displaySearchResults(searchResults.get(searchResultsIndex));
@@ -658,10 +667,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                 startingPoint = startingLocation.getText().toString();
-                 if(!enableShuttle(dialogView, locationsInDifferentCampuses(startingPoint, destination))){
-                     setModeToWalkIfShuttleSelected();
-                 }
+                startingPoint = startingLocation.getText().toString();
+                if(!enableShuttle(dialogView, locationsInDifferentCampuses(startingPoint, destination))){
+                    setModeToWalkIfShuttleSelected();
+                }
             }
         });
         return builder.create();
@@ -698,7 +707,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // if place is not in locationMap, exception will be thrown
             // No need to check for destination as setOrigin only opens when one of the given options is selected
             try{
-               origin = locationMap.get(startingPoint);
+                origin = locationMap.get(startingPoint);
             }
             catch(Throwable t){
                 Log.d(TAG, ""+t.getMessage());
@@ -904,28 +913,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    // we want to remove the building outline from the map so we can see the indoor floor plan
-                    LatLng loc = searchMarker.getPosition();  // this is the location of the marker
+                // we want to remove the building outline from the map so we can see the indoor floor plan
+                LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
-                    // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
-                    for (Polygon poly : polygonBuildings) {
-                        if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
+                // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
+                for (Polygon poly : polygonBuildings) {
+                    if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
+                    {
+                        poly.setVisible(false);  // hide the polygon
+                        searchMarker.setVisible(false);  // hide the marker
+                        removeAllFloorOverlays();
+
+                        if (poly.getTag().equals("H Building"))
                         {
-                            poly.setVisible(false);  // hide the polygon
-                            searchMarker.setVisible(false);  // hide the marker
-                            removeAllFloorOverlays();
-
-                            if (poly.getTag().equals("H Building"))
-                            {
-                                showHallButtons();
-                            } else if (poly.getTag().equals("CC Building"))
-                            {
-                                showCCButtons();
-                            }
+                            showHallButtons();
+                        } else if (poly.getTag().equals("CC Building"))
+                        {
+                            showCCButtons();
                         }
                     }
-                    // we want to zoom in onto the center of the building.
-                    animateCamera(loc, 19.0f);
+                }
+                // we want to zoom in onto the center of the building.
+                animateCamera(loc, 19.0f);
             };
         });
     }
@@ -1147,6 +1156,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     } */
 
+    /**
+     * This is the method that draw the outdoor direction path between 2 points.
+     * @param origin This is the first paramter to drawDirectionsPath method.
+     * @param dest This is the second paramter to drawDirectionsPath method.
+     * @return void.
+     * @exception catch Throwable error.
+     */
     private void drawDirectionsPath(LatLng origin, LatLng dest){
         resetPath();
         List<LatLng> path = new ArrayList();
@@ -1155,11 +1171,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
 
         DirectionsApiRequest request = DirectionsApi.newRequest(context);
+        float time = 0;
+        from = (TextView) findViewById((R.id.from));
+        to = (TextView) findViewById((R.id.to));
+        travelTime = (TextView) findViewById((R.id.estimatedTravelTime));
         TravelMode mode = getTraveMode();
         if(mode != null) {
             request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
         }
-
         try {
             DirectionsResult res = request.await();
             // adds coordinates of each step on the first route give to the List<LatLng> for drawing the polyline
@@ -1168,6 +1187,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (route.legs != null) {
                     for (int i = 0; i < route.legs.length; i++) { //loop through all the legs
                         DirectionsLeg leg = route.legs[i];
+                        time = time + leg.duration.inSeconds;
                         if (leg.steps != null) {
                             for (int j = 0; j < leg.steps.length; j++) {    // loop through all the steps
                                 DirectionsStep step = leg.steps[j];
@@ -1194,6 +1214,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         catch(Throwable t){
             Log.d(TAG, t.getMessage());
+        }
+
+        //to rounding up integers when it is 0
+        int estimatedTime = new BigDecimal(time/60).setScale(0, RoundingMode.HALF_UP).intValue();
+        //cases that  different travel mode was selected
+        if(mode.toString().equals("driving") || mode.toString().equals("walking") || mode.toString().equals("transit")){
+            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+            {
+                to.setText("To " + destination);
+                to.setVisibility(View.VISIBLE);
+            }
+            if(useMyLocation){
+                from.setText("From Current");
+                from.setVisibility(View.VISIBLE);
+            }
+            else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+            {
+                from.setText("From " + startingPoint);
+                from.setVisibility(View.VISIBLE);
+            }
+            travelTime.setText("~" + String.valueOf(estimatedTime) + " mins");
+            travelTime.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1271,22 +1313,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         activeInfoWindow = marker.getTitle();
 
-                    // this sets the parameters for the button that appears on click. (The direction button)
-                    directionButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    //directionButtonLayoutParams.topMargin = 200;
-                    //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
-                    directionButton.setLayoutParams(directionButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The direction button)
+                        directionButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        //directionButtonLayoutParams.topMargin = 200;
+                        //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
 
-                    // this sets the parameters for the button that appears on click. (The explore inside button)
-                    exploreInsideButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                    //exploreButtonLayoutParams.topMargin = 200;
-                    //exploreButtonLayoutParams.leftMargin = 400;
-                    exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The explore inside button)
+                        exploreInsideButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        //exploreButtonLayoutParams.topMargin = 200;
+                        //exploreButtonLayoutParams.leftMargin = 400;
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
 
-                    // this sets the parameters for the pop up bar that appears on click
-                    popUpBar.setVisibility(VISIBLE);
+                        // this sets the parameters for the pop up bar that appears on click
+                        popUpBar.setVisibility(VISIBLE);
 
                         hideHallButtons();
                         hideCCButtons();
@@ -1294,7 +1336,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         removeAllFloorOverlays();
 
                         isInfoWindowShown = true;
-                } else {
+                    } else {
                         marker.hideInfoWindow();
                         directionButton.setVisibility(View.INVISIBLE);
                         exploreInsideButton.setVisibility(View.INVISIBLE);
@@ -1333,6 +1375,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showAllMarkers();
                 resetGetDirectionParams();
 
+                from.setVisibility(View.INVISIBLE);
+                to.setVisibility(View.INVISIBLE);
+                travelTime.setVisibility(View.INVISIBLE);
                 //System.out.println(latLng);
             }
         });
