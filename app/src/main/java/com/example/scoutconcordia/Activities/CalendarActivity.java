@@ -113,13 +113,13 @@ public class CalendarActivity extends AppCompatActivity {
                         CalendarActivity.this.overridePendingTransition(0, 0);
                         break;
 
-                    case R.id.nav_schedule:
-                        break;
-
                     case R.id.nav_shuttle:
                         Intent shuttleIntent = new Intent(CalendarActivity.this, ShuttleScheduleActivity.class);
                         startActivity(shuttleIntent);
                         CalendarActivity.this.overridePendingTransition(0, 0);
+                        break;
+
+                    default:
                         break;
                 }
                 return false;
@@ -627,6 +627,9 @@ public class CalendarActivity extends AppCompatActivity {
                 startActivity(shuttleIntent);
                 CalendarActivity.this.overridePendingTransition(0, 0);
                 break;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
 
         }
         return false;
