@@ -94,10 +94,18 @@ public class LinkedList <E>
         
         // Not base case
         Node toBeNext = getNodeFromIndex(index);
-        Node toBeBefore = toBeNext.getPrev();
+        Node toBeBefore = null;
+        if (toBeNext != null)
+            toBeBefore = toBeNext.getPrev();
         Node newOne = new Node(element, toBeNext, toBeBefore);
-        toBeBefore.setNext(newOne);
-        toBeNext.setPrev(newOne);
+        if (toBeBefore != null)
+        {
+            toBeBefore.setNext(newOne);
+        }
+        if (toBeNext != null)
+        {
+            toBeNext.setPrev(newOne);
+        }
         toBeBefore = null;
         toBeNext = null;
         newOne = null;
@@ -133,12 +141,17 @@ public class LinkedList <E>
         if (index >= size || index < 0)
             return null;
         Node toBeRemoved = getNodeFromIndex(index);
-        Node before = toBeRemoved.getPrev();
-        Node after = toBeRemoved.getNext();
-        returnMe = (E)toBeRemoved.getEle();
-        toBeRemoved.element = null;
-        toBeRemoved.setPrev(null);
-        toBeRemoved.setNext(null);
+        Node before = null;
+        Node after = null;
+        if (toBeRemoved != null)
+        {
+            before = toBeRemoved.getPrev();
+            after = toBeRemoved.getNext();
+            returnMe = (E)toBeRemoved.getEle();
+            toBeRemoved.element = null;
+            toBeRemoved.setPrev(null);
+            toBeRemoved.setNext(null);
+        }
         toBeRemoved = null;
         if (before != null)
             before.setNext(after);

@@ -1,6 +1,8 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -21,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -79,6 +82,8 @@ import java.io.InputStream;
 
 import java.io.OutputStream;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,17 +104,21 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
+
+import org.joda.time.DateTime;
+
 import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
     private float zoomLevel = 16.0f;
     // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
+    private final int RC_CALENDAR_ACTIVITY = 9003;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
@@ -123,11 +132,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Marker pathMarker;
 
     private Button floor1;
-    //private Button floor2;
+    private Button floor2;
     private Button floor8;
     private Button floor9;
     private Button floorCC1;
     private Button floorCC2;
+
+    private Button floorVE2;
+    private Button floorVL1;
+    private Button floorVL2;
+
+    private Button floorMB1;
+    private Button floorMBS2;
 
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
@@ -137,23 +153,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Marker searchMarker;
     private String activeInfoWindow = null;
-    private List<Polygon> polygonBuildings = new ArrayList<>();
-    private List<Marker> markerBuildings = new ArrayList<>();
-    private List<Graph> floorGraphs = new ArrayList<>();
+    private List<Polygon> polygonBuildings = new ArrayList<>();  // list of polygons, representing all of the campus buildings
+    private List<Marker> markerBuildings = new ArrayList<>();  // List of markers for all of the campus buildings
+    private List<Marker> restaurantMarkers = new ArrayList<>();  // List of markers for all of the restaurants (POI)
+    private List<Graph> floorGraphs = new ArrayList<>();  // List of graphs, representing the graphs used for indoor directions.
     public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
     private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
+    private final LatLng veBuildingOverlaySouthWest = new LatLng(45.458849, -73.639018);
+    private final LatLng vlBuildingOverlaySouthWest = new LatLng(45.459106, -73.637831);
+    private final LatLng mbBuildingOverlaySouthWest = new LatLng(45.494962, -73.578783);
     private GroundOverlay hallGroundOverlay;
     private final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
     private GroundOverlay ccGroundOverlay;
+    private GroundOverlay veGroundOverlay;
+    private GroundOverlay vlGroundOverlay;
+    private GroundOverlay mbGroundOverlay;
+
 
     private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
     private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
-    private String startingBuilding;
-    private String destinationBuilding;
+    private String startingBuilding;  // The letter of the building. ex: "H"
+    private String destinationBuilding;  // The letter of the building. ex: "H"
     private LatLng origin; //origin of directions search
     private Polyline pathPolyline = null; // polyline for displaying the map
     private Dialog setOriginDialog;
@@ -166,77 +190,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean disabilityPreference = false; //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
+    private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
+
+    private TextView travelTime;  //estimated travel time
+    private TextView from;    //outdoor building start point
+    private TextView to;      //outdoor building destination
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
-
-
-        // Victor's log tests
-        ShuttleInfo testShuttleInfo = new ShuttleInfo();
-
-        //This gets the estimated time in minutes from Loyola to SGW at the current time
-        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromLoyola() + " minutes");
-
-        //This gets the estimated time in minutes from SGW to Loyola at the current time
-        Log.w("ShuttleInfo", "ESTIMATED TIME IS:  " + testShuttleInfo.getEstimatedRouteTimeFromSGW() + " minutes");
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        setmContext(this);
+
+        //Toolbar on top of the page
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-/**        Places.initialize(this, getString(R.string.google_maps_key));
-        PlacesClient placesClient = Places.createClient(this);
-
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        // RectangularBounds bounds = RectangularBounds.newInstance(
-        //         new LatLng(-33.880490, 151.184363),
-        //         new LatLng(-33.858754, 151.229596));
-
-        //autocompleteFragment.setLocationBias(bounds); will return places within this area, may return results outside the aread
-
-        // Select here whatever infortmation you want to retrieve for the selected place
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
-        //the types of places search should display
-        autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
-
-        //restricts searches to Canada only so that we do not get random locations when searching
-        autocompleteFragment.setCountry("CA");
-
-        //autocompleteFragment.set
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                searchMarker.remove();
-                searchMarker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), zoomLevel));
-                mMap.setOnMyLocationChangeListener(null);
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                System.out.println("STATUS CODE: " + status.getStatusMessage());
-            }
-        });
-*/
+        //toggle for different campuses
         addListenerOnToggle();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.nav_map:
-                        break;
 
                     case R.id.nav_schedule:
                         Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                        calendarIntent.putStringArrayListExtra("locations", (ArrayList<String>) locations);
                         startActivity(calendarIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
                         break;
@@ -245,6 +232,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
                         startActivity(shuttleIntent);
                         MapsActivity.this.overridePendingTransition(0, 0);
+                        break;
+
+                    default:
                         break;
                 }
                 return false;
@@ -257,15 +247,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
-        //addfloor2ButtonListener();
+        addfloor2ButtonListener();
         addfloorCC1ButtonListener();
         addfloorCC2ButtonListener();
+        addfloorVE2ButtonListener();
+        addfloorVL1ButtonListener();
+        addfloorVL2ButtonListener();
+        addfloorMB1ButtonListener();
+        addfloorMBS2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
-        
+
         // lets encrypt all of the files before using them
         //encryptAllInputFiles();
+
     }
 
     public List<Object[]> searchForClass(String fromMe, String toMe) {
@@ -346,7 +342,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //List<LatLng> listOfPoints = new ArrayList<>();
         searchPath.setPoints(Arrays.asList(dest));
-        
+
         // get the first point and the last point
         LatLng point1 = dest[0];
         LatLng point2 = dest[dest.length - 1];
@@ -389,11 +385,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 hideCCButtons();
                 floor1.performClick();
                 break;
-            //case "H-2":
-            //    showHallButtons();
-            //    hideCCButtons();
-            //    floor2.performClick();
-            //    break;
+            case "H-2":
+                showHallButtons();
+                hideCCButtons();
+                floor2.performClick();
+                break;
             case "H-8":
                 showHallButtons();
                 hideCCButtons();
@@ -420,14 +416,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void createFloorGraphs()
     {
         Graph hall_1_floor = createGraph("encryptedhall1nodes", true);
-        //Graph hall_2_floor = createGraph("hall2nodes", false);
+        Graph hall_2_floor = createGraph("encryptedhall2nodes", true);
         Graph hall_8_floor = createGraph("encryptedhall8nodes", true);
         Graph hall_9_floor = createGraph("encryptedhall9nodes", true);
         Graph cc_1_floor = createGraph("encryptedcc1nodes", true);
         Graph cc_2_floor = createGraph("encryptedcc2nodes", true);
 
         floorGraphs.add(hall_1_floor);
-        //floorGraphs.add(hall_2_floor);
+        floorGraphs.add(hall_2_floor);
         floorGraphs.add(hall_8_floor);
         floorGraphs.add(hall_9_floor);
         floorGraphs.add(cc_1_floor);
@@ -475,36 +471,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
-
-                //for (Graph graph : floorGraphs)
-                //{
-                //    System.out.println(graph.id);
-                //    if ((graph.id).equals("Hall 1 floor"))
-                //    {
-                //        for (Graph.Node node : graph.nodes())
-                //        {
-                //            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                //        }
-                //    }
-                //}
             }
         });
     }
 
-//    public void addfloor2ButtonListener()
-//    {
-//        floor2 = (Button) findViewById(R.id.floor2);
-//        floor2.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View view) {
-//                resetButtonColors();
-//                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-//                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
-//                removeAllFloorOverlays();
-//                setUpGroundOverlay("hall2floor");
-//            }
-//        });
-//    }
+    public void addfloor2ButtonListener()
+    {
+        floor2 = (Button) findViewById(R.id.floor2);
+        floor2.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view) {
+                resetButtonColors();
+                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+                setUpGroundOverlay("hall2floor");
+            }
+        });
+    }
 
     public void addfloor8ButtonListener()
     {
@@ -595,6 +579,151 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    public void addfloorVE2ButtonListener()
+    {
+        floorVE2 = (Button) findViewById(R.id.floorVE2);
+        floorVE2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorVE2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVE2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 29;
+                float overlaySize = 50;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", "drawable", getPackageName()));
+
+                veGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(veBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorVL1ButtonListener()
+    {
+        floorVL1 = (Button) findViewById(R.id.floorVL1);
+        floorVL1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorVL1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVL1.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 209;
+                float overlaySize = 71;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", "drawable", getPackageName()));
+
+                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(vlBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorVL2ButtonListener()
+    {
+        floorVL2 = (Button) findViewById(R.id.floorVL2);
+        floorVL2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorVL2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorVL2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = 209;
+                float overlaySize = 71;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", "drawable", getPackageName()));
+
+                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(vlBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorMB1ButtonListener()
+    {
+        floorMB1 = (Button) findViewById(R.id.floorMB1);
+        floorMB1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorMB1.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorMB1.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 42;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_01", "drawable", getPackageName()));
+
+                mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(mbBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
+    public void addfloorMBS2ButtonListener()
+    {
+        floorMBS2 = (Button) findViewById(R.id.floorMBS2);
+        floorMBS2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                resetButtonColors();
+                floorMBS2.setBackgroundColor(getResources().getColor(R.color.burgandy));
+                floorMBS2.setTextColor(getResources().getColor((R.color.faintGray)));
+                removeAllFloorOverlays();
+
+                BitmapFactory.Options dimensions = new BitmapFactory.Options();
+                dimensions.inJustDecodeBounds = true;
+                int imgHeightPixels = dimensions.outHeight;
+                float imgHeightInPixels;
+                float imgRotation = -56;
+                float overlaySize = 42;
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", "drawable", getPackageName()));
+
+                mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
+                        .image(floorPlan)
+                        .position(mbBuildingOverlaySouthWest, overlaySize)
+                        .anchor(0, 1)
+                        .bearing(imgRotation));
+            }
+        });
+    }
+
     public void addNextStepListener()
     {
         nextStep = (Button) findViewById(R.id.nextStep);
@@ -629,8 +758,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     exploreInsideButton.performClick();
                     displaySearchResults(searchResults.get(searchResultsIndex));
                 } else if (searchResultsIndex == 100) {
-                        resetPath();
-                        nextStep.setVisibility(View.INVISIBLE);  //we have reached the end of the search
+                    resetPath();
+                    nextStep.setVisibility(View.INVISIBLE);  //we have reached the end of the search
                 } else
                 {
                     displaySearchResults(searchResults.get(searchResultsIndex));
@@ -659,10 +788,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                setOriginDialog = setOriginDialog();
-                destination = searchBar.getText().toString(); //set destination name, to be used to get LatLng from locationMap
-                searchBar.setText(null);
-                setOriginDialog.show(); // create dialog asking user to select a starting point
+                if (searchBar.getText().toString().equals("restaurants near me"))
+                {
+                    setRestaurantMarkersVisibility(true);
+                }
+                else
+                {
+                    setOriginDialog = setOriginDialog();
+                    destination = searchBar.getText().toString(); //set destination name, to be used to get LatLng from locationMap
+                    searchBar.setText(null);
+                    setOriginDialog.show(); // create dialog asking user to select a starting point
+                }
             }
         });
 
@@ -703,10 +839,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         startingLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                 startingPoint = startingLocation.getText().toString();
-                 if(!enableShuttle(dialogView, locationsInDifferentCampuses(startingPoint, destination))){
-                     setModeToWalkIfShuttleSelected();
-                 }
+                startingPoint = startingLocation.getText().toString();
+                if(!enableShuttle(dialogView, locationsInDifferentCampuses(startingPoint, destination))){
+                    setModeToWalkIfShuttleSelected();
+                }
             }
         });
         return builder.create();
@@ -743,7 +879,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // if place is not in locationMap, exception will be thrown
             // No need to check for destination as setOrigin only opens when one of the given options is selected
             try{
-               origin = locationMap.get(startingPoint);
+                origin = locationMap.get(startingPoint);
             }
             catch(Throwable t){
                 Log.d(TAG, ""+t.getMessage());
@@ -760,10 +896,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getDirections()
     {
-        if(startingPoint != null) {
-            if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+        String startingPointType = "class"; // can be type class or building
+        String destinationType = "class";  // can be type class or building
+
+        for (int i = 0; i < restaurantMarkers.size(); i++)  // Check if either the destination or the starting point is a restaurant
+        {
+            if (restaurantMarkers.get(i).getTitle().equals(startingPoint))
             {
-                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                startingPointType = "building";
+            }
+            else if (restaurantMarkers.get(i).getTitle().equals(destination))
+            {
+                destinationType = "building";
+            }
+        }
+
+        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building"))  // check if the starting point is a building
+        {
+            startingBuilding = startingPoint.split(" ")[0];
+            startingPointType = "building";
+        }
+
+        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building"))  // check if the destination is a building
+        {
+            destinationBuilding = destination.split(" ")[0];
+            destinationType = "building";
+        }
+
+        if(startingPoint != null) {
+            if (startingPointType.equals("building") || startingPoint.equals("building")) //if the starting point is a building
+            {
+                if (destinationType.equals("building")) //if the destination is a building  (building -> building)
                 {
                     if (needMoreDirections)
                     {
@@ -771,17 +934,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         searchResultsIndex = 99;
                     }
                     drawDirectionsPath(origin, locationMap.get(destination));
-                } else {                                                                                            //if the destination is a classroom
-                    String buildingName = destination.split("-")[0] + " Building";
+                }
+                else //if the destination is a classroom  (building -> classroom)
+                {
+                    destinationBuilding = destination.split("-")[0];
+                    String destinationBuildingName = destination.split("-")[0] + " Building";
                     String toMe = destination;
 
-                    for (Marker marker : markerBuildings) {
-                        if ((marker.getTitle()).equals(buildingName)) {
+                    for (Marker marker : markerBuildings)
+                    {
+                        if ((marker.getTitle()).equals(destinationBuildingName))
+                        {
                             searchMarker.setPosition(marker.getPosition());
                             searchMarker.setVisible(false);
                         }
                     }
-                    drawDirectionsPath(origin, locationMap.get(buildingName));
+                    drawDirectionsPath(origin, locationMap.get(destinationBuildingName));  //draws the path from the start building to the destination building (This takes care of the building to building part)
 
                     if (classToClass)  // if the general search is a class-> class search or just a building->class search
                     {
@@ -789,48 +957,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (destinationBuilding.equals("H"))
                         {
                             searchResults = searchForClass("H-100", toMe);
-                        } else if (destinationBuilding.equals("CC"))
+                        }
+                        else if (destinationBuilding.equals("CC"))
                         {
                             searchResults = searchForClass("CC-150", toMe);
                         }
-                    } else
+                    }
+                    else
                     {
-                        if (startingBuilding.equals("H")) {
-                            searchResults = searchForClass("H-100", toMe);
-                        } else if (startingBuilding.equals("CC")) {
-                            searchResults = searchForClass("CC-150", toMe);
+                        if (destinationBuilding.equals("H"))
+                        {
+                            searchResults = searchForClass("H-100", toMe);  // search from the front door of the destination building to the destination classroom
+                        }
+                        else if (destinationBuilding.equals("CC"))
+                        {
+                            searchResults = searchForClass("CC-150", toMe);   // search from the front door of the destination building to the destination classroom
                         }
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
                 }
-            } else //if the starting point is a classroom
+            }
+            else //if the starting point is a classroom
             {
-                if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+                if (destinationType.equals("building")) //if the destination is a building  (classroom -> building)
                 {
                     // need to go from class room to exit (we can hard code the exit for H and for CC)
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
                     for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                        if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                        if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                        {
                             searchMarker.setPosition(marker.getPosition());
                             searchMarker.setVisible(false);
                         }
                     }
                     exploreInsideButton.performClick();
 
-                    if (startingBuilding.equals("H")) {
+                    if (startingBuilding.equals("H"))
+                    {
                         searchResults = searchForClass(startingPoint, "H-100");
-                    } else if (startingBuilding.equals("CC")) {
+                    }
+                    else if (startingBuilding.equals("CC"))
+                    {
                         searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
-
                     needMoreDirections = true;
-
                     // need to go from exit to the building. Will be called in the needMoreDirections loop
-
-                } else // if the destination is a classroom (class -> class)
+                }
+                else // if the destination is a classroom (class -> class)
                 {
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
                     destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
@@ -838,7 +1014,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
                     {
                         for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                            {
                                 searchMarker.setPosition(marker.getPosition());
                                 searchMarker.setVisible(false);
                             }
@@ -847,20 +1024,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         searchResults = searchForClass(startingPoint, destination);
                         searchResultsIndex = -1;
                         searchPath.setVisible(true);
-                    } else //if both classes are in different buildings
+                    }
+                    else //if both classes are in different buildings
                     {
                         // go from the class to the building exit
-                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building")) {
+                        for (Marker marker : markerBuildings)   //set the marker onto the desired building
+                        {
+                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                            {
                                 searchMarker.setPosition(marker.getPosition());
                                 searchMarker.setVisible(false);
                             }
                         }
                         exploreInsideButton.performClick();
 
-                        if (startingBuilding.equals("H")) {
+                        if (startingBuilding.equals("H"))
+                        {
                             searchResults = searchForClass(startingPoint, "H-100"); //directions to exit for H building
-                        } else if (startingBuilding.equals("CC")) {
+                        }
+                        else if (startingBuilding.equals("CC"))
+                        {
                             searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
                         }
 
@@ -938,13 +1121,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TESTING INDOOR DIRECTIONS
-                String fromMe = "CC-215";
-                String toMe = "CC-219";
-                searchResults = searchForClass(fromMe, toMe);
-                searchResultsIndex = 0;
-                searchPath.setVisible(true);
-                displaySearchResults(searchResults.get(searchResultsIndex));
+                setOriginDialog = setOriginDialog();
+                destination = searchMarker.getTitle(); //set destination name
+                setOriginDialog.show();
             }
         });
     }
@@ -956,32 +1135,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //if (activeInfoWindow != null)
-                //{
-                    // we want to remove the building outline from the map so we can see the indoor floor plan
-                    LatLng loc = searchMarker.getPosition();  // this is the location of the marker
+                // we want to remove the building outline from the map so we can see the indoor floor plan
+                LatLng loc = searchMarker.getPosition();  // this is the location of the marker
 
-                    // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
-                    for (Polygon poly : polygonBuildings) {
-                        if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
+                // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
+                for (Polygon poly : polygonBuildings) {
+                    if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
+                    {
+                        poly.setVisible(false);  // hide the polygon
+                        searchMarker.setVisible(false);  // hide the marker
+                        removeAllFloorOverlays();
+
+                        if (poly.getTag().equals("H Building"))
                         {
-                            poly.setVisible(false);  // hide the polygon
-                            searchMarker.setVisible(false);  // hide the marker
+                            showHallButtons();
+                        }
+                        else if (poly.getTag().equals("CC Building"))
+                        {
+                            showCCButtons();
+                        }
+                        else if (poly.getTag().equals("VE Building"))
+                        {
+                            showVEButtons();
+                        }
+                        else if (poly.getTag().equals("VL Building"))
+                        {
+                            LatLng ve_location = new LatLng(45.458850, -73.638660);
 
-                            removeAllFloorOverlays();
-
-                            if (poly.getTag().equals("H Building"))
+                            for (Polygon poly2 : polygonBuildings)
                             {
-                                showHallButtons();
-                            } else if (poly.getTag().equals("CC Building"))
-                            {
-                                showCCButtons();
+                                if (PolyUtil.containsLocation(ve_location, poly2.getPoints(), true)){
+                                    poly2.setVisible(false);
+                                }
                             }
+                            showVLButtons();
+                        }
+                        else if (poly.getTag().equals("MB Building"))
+                        {
+                            showMBButtons();
+
                         }
                     }
-                    // we want to zoom in onto the center of the building.
-                    animateCamera(loc, 19.0f);
-                //}
+                }
+                // we want to zoom in onto the center of the building.
+                animateCamera(loc, 19.0f);
             };
         });
     }
@@ -1025,10 +1222,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // method for setting the visibility of the restaurant markers.
+    public void setRestaurantMarkersVisibility(Boolean visibility)
+    {
+        for (Marker mar : restaurantMarkers)
+        {
+            mar.setVisible(visibility);
+        }
+    }
+
     public void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
-        //floor2.setVisibility(View.VISIBLE);
+        floor2.setVisibility(View.VISIBLE);
         floor8.setVisibility(View.VISIBLE);
         floor9.setVisibility(View.VISIBLE);
     }
@@ -1036,9 +1242,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
-        //floor2.setVisibility(View.INVISIBLE);
+        floor2.setVisibility(View.INVISIBLE);
         floor8.setVisibility(View.INVISIBLE);
         floor9.setVisibility(View.INVISIBLE);
+    }
+
+    public void showVEButtons()
+    {
+        floorVE2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideVEButtons()
+    {
+        floorVE2.setVisibility(View.INVISIBLE);
+    }
+
+    public void showVLButtons()
+    {
+        floorVL1.setVisibility(View.VISIBLE);
+        floorVL2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideVLButtons()
+    {
+        floorVL1.setVisibility(View.INVISIBLE);
+        floorVL2.setVisibility(View.INVISIBLE);
+    }
+
+    public void showMBButtons()
+    {
+        floorMB1.setVisibility(View.VISIBLE);
+        floorMBS2.setVisibility(View.VISIBLE);
+    }
+
+    public void hideMBButtons()
+    {
+        floorMB1.setVisibility(View.INVISIBLE);
+        floorMBS2.setVisibility(View.INVISIBLE);
     }
 
     public void showCCButtons()
@@ -1061,13 +1301,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ccGroundOverlay != null){
             ccGroundOverlay.remove();
         }
+        if (vlGroundOverlay != null){
+            vlGroundOverlay.remove();
+        }
+        if (veGroundOverlay != null){
+            veGroundOverlay.remove();
+        }
+        if (mbGroundOverlay != null){
+            mbGroundOverlay.remove();
+        }
+
     }
 
     public void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getResources().getColor(R.color.black));
-        //floor2.setBackgroundResource(android.R.drawable.btn_default);
-        //floor2.setTextColor(getResources().getColor(R.color.black));
+        floor2.setBackgroundResource(android.R.drawable.btn_default);
+        floor2.setTextColor(getResources().getColor(R.color.black));
         floor8.setBackgroundResource(android.R.drawable.btn_default);
         floor8.setTextColor(getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
@@ -1076,6 +1326,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         floorCC1.setTextColor(getResources().getColor(R.color.black));
         floorCC2.setBackgroundResource(android.R.drawable.btn_default);
         floorCC2.setTextColor(getResources().getColor(R.color.black));
+
+        floorVE2.setBackgroundResource(android.R.drawable.btn_default);
+        floorVE2.setTextColor(getResources().getColor(R.color.black));
+        floorVL1.setBackgroundResource(android.R.drawable.btn_default);
+        floorVL1.setTextColor(getResources().getColor(R.color.black));
+        floorVL2.setBackgroundResource(android.R.drawable.btn_default);
+        floorVL2.setTextColor(getResources().getColor(R.color.black));
+
+        floorMB1.setBackgroundResource(android.R.drawable.btn_default);
+        floorMB1.setTextColor(getResources().getColor(R.color.black));
+        floorMBS2.setBackgroundResource(android.R.drawable.btn_default);
+        floorMBS2.setTextColor(getResources().getColor(R.color.black));
+
     }
 
     /**
@@ -1115,24 +1378,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationAccessor.setInputStream(getStreamFromFileName("encryptedloyola"));
         locationAccessor.decryptFile(true);
         addLocationsToMap(locationAccessor.obtainContents()); //adds the polygons for the Loyola campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("encrypted_restaurants_sgw"));
+        locationAccessor.decryptFile(true);
+        addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the SGW campus
+        locationAccessor.resetObject();
+        locationAccessor.setInputStream(getStreamFromFileName("encrypted_restaurants_loyola"));
+        locationAccessor.decryptFile(true);
+        addRestaurantsToMap(locationAccessor.obtainContents());  //adds the restaurants to the loyola campus
+        locations.add("restaurants near me");
 
         // Add a marker in Concordia and move the camera
-        searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).title("Marker in Concordia"));
         float zoomLevel = 16.0f; // max 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(concordiaLatLngDowntownCampus, zoomLevel));
         // Refresh to fix Map not displaying properly
         toggleCampus();
         toggleButton.setChecked(false);
         getCurrentLocation();
-
         setClickListeners(); // sets the polygon listeners
-
         //Set custom InfoWindow Adapter
         CustomInfoWindow adapter = new CustomInfoWindow(MapsActivity.this);
         mMap.setInfoWindowAdapter(adapter);
-
         initializeSearchBar();
-
         searchPath = mMap.addPolyline(new PolylineOptions());
     }
 
@@ -1159,7 +1426,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /*
+/*
     // This is the method that will be used to encrypt all of the input files during the app startup.
     // This method encrypts all of the files that are in the "filestoencrypt" file
     // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
@@ -1182,7 +1449,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 encrypter.encryptFile(fis, fos);
 
                 // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall1nodes2"))
+                if (filename.equals("hall2nodes"))
                 {
                     fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
                    Scanner readEncrypted = new Scanner(fis);
@@ -1203,6 +1470,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     } */
 
+    /**
+     * This is the method that draw the outdoor direction path between 2 points.
+     * @param origin This is the first paramter to drawDirectionsPath method.
+     * @param dest This is the second paramter to drawDirectionsPath method.
+     * @return void.
+     * @exception catch Throwable error.
+     */
     private void drawDirectionsPath(LatLng origin, LatLng dest){
         resetPath();
         List<LatLng> path = new ArrayList();
@@ -1211,11 +1485,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
 
         DirectionsApiRequest request = DirectionsApi.newRequest(context);
+        float time = 0;
+        from = (TextView) findViewById((R.id.from));
+        to = (TextView) findViewById((R.id.to));
+        travelTime = (TextView) findViewById((R.id.estimatedTravelTime));
         TravelMode mode = getTraveMode();
         if(mode != null) {
             request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
         }
-
         try {
             DirectionsResult res = request.await();
             // adds coordinates of each step on the first route give to the List<LatLng> for drawing the polyline
@@ -1224,6 +1501,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (route.legs != null) {
                     for (int i = 0; i < route.legs.length; i++) { //loop through all the legs
                         DirectionsLeg leg = route.legs[i];
+                        time = time + leg.duration.inSeconds;
                         if (leg.steps != null) {
                             for (int j = 0; j < leg.steps.length; j++) {    // loop through all the steps
                                 DirectionsStep step = leg.steps[j];
@@ -1250,6 +1528,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         catch(Throwable t){
             Log.d(TAG, t.getMessage());
+        }
+
+        //to rounding up integers when it is 0
+        int estimatedTime = new BigDecimal(time/60).setScale(0, RoundingMode.HALF_UP).intValue();
+        //cases that  different travel mode was selected
+        if(mode.toString().equals("driving") || mode.toString().equals("walking") || mode.toString().equals("transit")){
+            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+            {
+                to.setText("To " + destination);
+                to.setVisibility(View.VISIBLE);
+            }
+            if(useMyLocation){
+                from.setText("From Current");
+                from.setVisibility(View.VISIBLE);
+            }
+            else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+            {
+                from.setText("From " + startingPoint);
+                from.setVisibility(View.VISIBLE);
+            }
+            travelTime.setText("~" + String.valueOf(estimatedTime) + " mins");
+            travelTime.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1322,35 +1622,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     // move the camera to the marker location
                     animateCamera(marker.getPosition(), zoomLevel);
 
-                    if (!isInfoWindowShown) {
+                    if (!isInfoWindowShown)
+                    {
                         marker.showInfoWindow();
 
                         activeInfoWindow = marker.getTitle();
 
-                    // this sets the parameters for the button that appears on click. (The direction button)
-                    directionButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                    //directionButtonLayoutParams.topMargin = 200;
-                    //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
-                    directionButton.setLayoutParams(directionButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The direction button)
+                        directionButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        //directionButtonLayoutParams.topMargin = 200;
+                        //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
 
-                    // this sets the parameters for the button that appears on click. (The explore inside button)
-                    exploreInsideButton.setVisibility(VISIBLE);
-                    LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                    //exploreButtonLayoutParams.topMargin = 200;
-                    //exploreButtonLayoutParams.leftMargin = 400;
-                    exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+                        // this sets the parameters for the button that appears on click. (The explore inside button)
+                        exploreInsideButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        //exploreButtonLayoutParams.topMargin = 200;
+                        //exploreButtonLayoutParams.leftMargin = 400;
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
 
-                    // this sets the parameters for the pop up bar that appears on click
-                    popUpBar.setVisibility(VISIBLE);
+                        // this sets the parameters for the pop up bar that appears on click
+                        popUpBar.setVisibility(VISIBLE);
 
                         hideHallButtons();
                         hideCCButtons();
+                        hideVEButtons();
+                        hideVLButtons();
+                        hideMBButtons();
 
                         removeAllFloorOverlays();
 
                         isInfoWindowShown = true;
-                } else {
+                    }
+                    else
+                    {
                         marker.hideInfoWindow();
                         directionButton.setVisibility(View.INVISIBLE);
                         exploreInsideButton.setVisibility(View.INVISIBLE);
@@ -1358,13 +1664,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         hideHallButtons();
                         hideCCButtons();
+                        hideVEButtons();
+                        hideVLButtons();
+                        hideMBButtons();
+
 
                         removeAllFloorOverlays();
 
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
                     }
-                } else {
+                }
+                else if (restaurantMarkers.contains(marker))
+                {
+                    isInfoWindowShown = false;
+                    searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
+
+                    // move the camera to the marker location
+                    animateCamera(marker.getPosition(), zoomLevel);
+
+                    if (!isInfoWindowShown)
+                    {
+                        marker.showInfoWindow();
+                        activeInfoWindow = marker.getTitle();
+                        directionButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
+                        directionButton.setLayoutParams(directionButtonLayoutParams);
+
+                        exploreInsideButton.setVisibility(VISIBLE);
+                        LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
+                        exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
+
+                        popUpBar.setVisibility(VISIBLE);
+                        isInfoWindowShown = true;
+                    }
+                }
+                else
+                {
                     System.out.println(marker.getPosition());
                 }
                 return true;
@@ -1380,6 +1716,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 hideHallButtons();
                 hideCCButtons();
+                hideVEButtons();
+                hideVLButtons();
+                hideMBButtons();
+
+
 
                 removeAllFloorOverlays();
 
@@ -1388,7 +1729,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showAllPolygons();
                 showAllMarkers();
                 resetGetDirectionParams();
+                resetPath();  //erase the path from outdoor directions
+                setRestaurantMarkersVisibility(false);
 
+                from.setVisibility(View.INVISIBLE);
+                to.setVisibility(View.INVISIBLE);
+                travelTime.setVisibility(View.INVISIBLE);
                 //System.out.println(latLng);
             }
         });
@@ -1476,6 +1822,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void addRestaurantsToMap(String[] location)
+    {
+        int currentPos = 0;
+        //String markerName = "";
+        String markerNameWithLocation = "";
+        LatLng markerLocation = null;
+        String markerAddress = "";
+        for (int i = 2; i < location.length - 1; i++)  // skip the first 2 lines of the file and the last line of the file
+        {
+            int posOfhalfway = 0;
+            int posOfEnd = 0;
+            double x_coordinate = 0, y_coordinate = 0;
+
+            posOfhalfway = location[i].indexOf(",");
+            posOfEnd = location[i].indexOf("}");
+
+            //currentPos = location[i].indexOf("(");
+            //markerName = location[i].substring(1, currentPos);
+            currentPos = location[i].indexOf("{");
+            markerNameWithLocation = location[i].substring(1, currentPos);
+
+            x_coordinate = Double.parseDouble(location[i].substring(currentPos+1,posOfhalfway));
+            y_coordinate = Double.parseDouble(location[i].substring(posOfhalfway+2, posOfEnd));
+            markerLocation = new LatLng(x_coordinate, y_coordinate);
+
+            currentPos = location[i].indexOf("}");
+            markerAddress = location[i].substring(currentPos + 1);
+
+            Marker restaurantMarker = mMap.addMarker(new MarkerOptions()
+                    .position(markerLocation)
+                    .title(markerNameWithLocation)
+                    .visible(false)
+                    .flat(true)
+                    .alpha(1)
+                    .zIndex(44)
+            );
+
+            BuildingInfo restaurantInfo = new BuildingInfo(markerNameWithLocation, markerAddress, "");
+            restaurantMarker.setTag(restaurantInfo);
+
+            // set the icon for the restaurant marker
+            int resID = this.getResources().getIdentifier("restaurant_icon", "drawable", this.getPackageName());
+            Bitmap smallMarker = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), resID), 90, 90, false);
+            BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
+            restaurantMarker.setIcon(smallMarkerIcon);
+
+            restaurantMarkers.add(restaurantMarker);
+
+            locations.add(markerNameWithLocation);     // add restaurant name to list for the search bar
+            locationMap.put((markerNameWithLocation), markerLocation);   // add restaurant name and coordinate to the map
+        }
+    }
+
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
     // so the camera can stay on the user's location ( camera is disabled to stay on user's location
     // when user gesture moves the camera). Check onCameraMoveStarted listener method
@@ -1529,8 +1928,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if(task.isSuccessful())
                     {
                         Location currentLocation = (Location) task.getResult();
-                        LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        drawDirectionsPath(currentLatLng, locationMap.get(destination));
+                        // we will assume that the starting point is a building as there is no way to determine which floor someone is on
+                        // we also need to look at the destination to find where we are going. (this will be a building we know)
+                        origin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        startingPoint = "building";
+                        startingBuilding = "building";
+
+                        getDirections();
                     }
                 }
             });
@@ -1539,14 +1943,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             e.printStackTrace();
         }
     }
-
-//    private void viewDowntownCampus() {
-//        animateCamera(concordiaLatLngDowntownCampus, zoomLevel);
-//    }
-//
-//    private void viewLoyolaCampus() {
-//        animateCamera(concordiaLatLngLoyolaCampus, zoomLevel);
-//    }
 
     private void toggleCampus()
     {
@@ -1593,8 +1989,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         overridePendingTransition(0, 0);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        if(intent.getIntExtra("requestCode", -1) == RC_CALENDAR_ACTIVITY ) {
+            destination = intent.getStringExtra("location");
+            setOriginDialog = setOriginDialog();
+            setOriginDialog.show();
+        }
     }
 
     // This sets the context and is called during the onCreate method.
@@ -1612,5 +2013,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         return getResources().openRawResource(getResources().getIdentifier(fileName, "raw", getPackageName()));
     }
+
+
+    //inflates the menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+//    //checks if the accessibility setting is checked
+//    private boolean isChecked=false;
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        MenuItem checkable = menu.findItem(R.id.main_accessibility);
+//        checkable.setChecked(isChecked);
+//        return true;
+//    }
+//
+
+    //Handling menu clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Handle item selection
+        switch (menuItem.getItemId()) {
+            case R.id.main_home:
+                break;
+
+            case R.id.main_schedule:
+                Intent calendarIntent = new Intent(MapsActivity.this, CalendarActivity.class);
+                startActivity(calendarIntent);
+                MapsActivity.this.overridePendingTransition(0, 0);
+                break;
+
+            case R.id.main_settings:
+                Intent settingsIntent = new Intent(MapsActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                MapsActivity.this.overridePendingTransition(0,0);
+                break;
+
+            case R.id.main_shuttle:
+                Intent shuttleIntent = new Intent(MapsActivity.this, ShuttleScheduleActivity.class);
+                startActivity(shuttleIntent);
+                MapsActivity.this.overridePendingTransition(0, 0);
+                break;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
+
+        }
+        return false;
+    }
+
 }
 

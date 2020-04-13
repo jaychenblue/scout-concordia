@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.CalendarActivity">
+
+
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="top"
         android:scrollbars="vertical"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        android:layout_below="@id/my_toolbar">
         <HorizontalScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -2833,6 +2836,16 @@
             </RelativeLayout>
         </HorizontalScrollView>
     </ScrollView>
+    <androidx.appcompat.widget.Toolbar
+        android:layout_gravity="top"
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:ignore="MissingConstraints" />
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar_activity_calendar"
         android:layout_width="wrap_content"
