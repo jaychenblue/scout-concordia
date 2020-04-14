@@ -27,8 +27,8 @@
     <string name="hello_first_fragment">Bonjour premier fragment</string>
     <string name="hello_second_fragment">Bonjour deuxième fragment. Arg: %1$s</string>
 
-    <string name="CourseSchedule">Horaire</string>
-    <string name="ShuttleBus">Navette</string>
+    <string name="CourseSchedule">Horaire Scolaire</string>
+    <string name="ShuttleBus">Horaire de Navette</string>
     <string name="setting_title">Paramètres</string>
 
     <string name="weekday">Lundi - Jeudi</string>
