@@ -1559,7 +1559,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             travelTime.setVisibility(View.VISIBLE);
 
             ShuttleInfo getShuttleEstimate = new ShuttleInfo();
-            shuttleTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromLoyola());
+            shuttleTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
             shuttleTime.setVisibility(View.VISIBLE);
         }
 

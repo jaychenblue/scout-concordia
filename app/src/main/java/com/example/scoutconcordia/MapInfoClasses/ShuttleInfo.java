@@ -122,7 +122,7 @@ public class ShuttleInfo {
                     }
                 }
 
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
+                messageToUser = "The next shuttle is at: " + retrieveMonToThursSGW()[indexPosition] + ". ";
 
 
                 break;
