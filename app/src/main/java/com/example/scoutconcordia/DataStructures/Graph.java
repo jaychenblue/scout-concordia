@@ -11,8 +11,7 @@ public class Graph
     private int numberOfNodes;
     private Node[] nodes;
     private N_aryTree breathFirstSearchResults;
-    /** Represents the name of the floor that the Graph is being used for
-     */
+    /** Represents the name of the floor that the Graph is being used for */
     public String id;
 
     /** Inner class representing a Node of the Graph. */
