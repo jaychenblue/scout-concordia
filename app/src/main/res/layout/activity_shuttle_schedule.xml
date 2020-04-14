@@ -81,7 +81,7 @@
                         android:id="@+id/HeaderTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Departures/partir "
+                        android:text="@string/Departures"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/white"
                         android:background="@color/colorPrimary"
@@ -100,7 +100,7 @@
                         android:id="@+id/HeaderTextView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Monday/Lundi - Thursday/Jeudi"
+                        android:text="@string/weekday"
                         android:layout_gravity="center"
                         android:textStyle="bold"
                         android:textColor="@color/white"
@@ -116,7 +116,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="From/à partir de: Loyola"
+                        android:text="@string/FromLoyola"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:textColor="@color/white"
@@ -126,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="From/à partir de: S.G.W"
+                        android:text="@string/ArrivingSGW"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:textColor="@color/white"
@@ -450,7 +450,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:text="Departures/départs:"
+                        android:text="@string/departures"
                         android:textColor="@color/white"
                         android:gravity="center"/>
 
@@ -459,7 +459,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:text="(11:30 - 20:00)"
+                        android:text="@string/string_halfhour"
                         android:textColor="@color/white"
                         android:gravity="center"/>
 
@@ -698,7 +698,7 @@
                         android:id="@+id/HeaderTextView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Friday/Vendredi"
+                        android:text="@string/Friday"
                         android:gravity="center"
                         android:textStyle="bold"
                         android:textColor="@color/white"
@@ -715,7 +715,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:text="From/à partir de: Loyola"
+                        android:text="@string/FromLoyola"
                         android:textColor="@color/white"
                         android:gravity="center"/>
 
@@ -724,7 +724,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textStyle="bold"
-                        android:text="From/à partir de: S.G.W"
+                        android:text="@string/ArrivingSGW"
                         android:textColor="@color/white"
                         android:gravity="center"/>
 

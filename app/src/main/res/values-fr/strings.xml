@@ -17,4 +17,33 @@
     <string name="use_my_location">Utilise Ma Location</string>
     <string name="invalid_search_hint">Aucun emplacement correspondant trouvé!</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Premier fragment</string>
+    <string name="second_fragment_label">Deuxième fragment</string>
+    <string name="next">Suivant</string>
+    <string name="previous">Précédent</string>
+
+    <string name="hello_first_fragment">Bonjour premier fragment</string>
+    <string name="hello_second_fragment">Bonjour deuxième fragment. Arg: %1$s</string>
+
+    <string name="CourseSchedule">Horaire</string>
+    <string name="ShuttleBus">Navette</string>
+    <string name="setting_title">Paramètres</string>
+
+    <string name="weekday">Lundi - Jeudi</string>
+    <string name="FromLoyola">Partir de Loyola</string>
+    <string name="ArrivingSGW">Arrivée à SGW</string>
+    <string name="departures">Départs:</string>
+    <string name="string_halfhour">Chaque 30 min.</string>
+    <string name="Friday">Vendredi</string>
+    <string name="Departures">Départs</string>
+    <string name="hint">Trouver une salle de classe ou un bâtiment</string>
+    <string name="ExploreInside">Intérieur</string>
+    <string name="string_getdirections">obtenir des directions</string>
+    <string name="summary">La définition des paramètres d\'accessibilité sur on garantit qu\'un chemin accessible est affiché.</string>
+    <string name="string_nextstep">L\'étape suivante</string>
+    <string name="AccessibilitySettings">Paramètres d\'accessibilité</string>
+
+
 </resources>

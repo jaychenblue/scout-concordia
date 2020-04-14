@@ -24,7 +24,7 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         //set title of page
-        getSupportActionBar().setTitle("Shuttle Bus Schedule");
+        getSupportActionBar().setTitle("ScoutConcordia");
 
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_shuttle_schedule);
