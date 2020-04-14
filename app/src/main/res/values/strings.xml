@@ -26,6 +26,23 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="CourseSchedule" >Course Schedule</string>
+    <string name="ShuttleBus" >Shuttle Bus Schedule</string>
+    <string name="setting_title" >Settings</string>
+
+    <string name="weekday">Monday - Thursday</string>
+    <string name="FromLoyola">From Loyola</string>
+    <string name="ArrivingSGW">Arriving at S.G.W"</string>
+    <string name="departures">Departures:</string>
+    <string name="string_halfhour">Every 30 min.</string>
+    <string name="Friday">Friday</string>
+    <string name="Departures">Departures</string>
+    <string name="hint">Find a classroom or building</string>
+    <string name="ExploreInside">Explore Inside</string>
+    <string name="string_getdirections">Get Directions</string>
+    <string name="summary">Setting accessibility settings to on ensures an accessible path is displayed.</string>
+    <string name="string_nextstep">Next Step</string>
+    <string name="AccessibilitySettings">Accessibility Settings</string>
 
 
     <string-array name="language_options">

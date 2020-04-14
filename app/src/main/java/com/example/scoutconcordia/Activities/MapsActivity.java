@@ -249,6 +249,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addDirectionButtonListener();
         addExploreInsideButtonListener();
         addPopUpBarListener();
+        addFromListener();
+        addTravelTimeListener();
+        addToListener();
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
@@ -1211,6 +1214,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // can add functionality here if we click on the pop up bar
     }
 
+    private void addFromListener()
+    {
+        from = findViewById(R.id.from);
+    }
+
+    private void addToListener()
+    {
+        to = findViewById(R.id.to);
+    }
+
+    private void addTravelTimeListener()
+    {
+        travelTime = findViewById(R.id.estimatedTravelTime);
+    }
+
     // method for hiding all of the markers on the map
     public void hideAllMarkers()
     {
@@ -1725,15 +1743,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onMapClick(LatLng latLng) {
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
+                from.setVisibility(View.INVISIBLE);
+                to.setVisibility(View.INVISIBLE);
+                travelTime.setVisibility(View.INVISIBLE);
 
                 hideHallButtons();
                 hideCCButtons();
                 hideVEButtons();
                 hideVLButtons();
                 hideMBButtons();
-
-
-
                 removeAllFloorOverlays();
 
                 popUpBar.setVisibility(View.INVISIBLE);

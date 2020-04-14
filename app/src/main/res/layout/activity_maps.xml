@@ -34,7 +34,7 @@
         <AutoCompleteTextView
             android:id="@+id/search_bar"
             android:backgroundTint="@android:color/transparent"
-            android:hint="Find a classroom or building"
+            android:hint="@string/hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -120,7 +120,7 @@
             android:id="@+id/directionsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Get Directions"
+            android:text="@string/string_getdirections"
             android:visibility="invisible"
             android:textColor="@color/white"
             android:background="@drawable/shadow_toggle"
@@ -132,7 +132,7 @@
             android:id="@+id/exploreInsideButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Explore Inside"
+            android:text="@string/ExploreInside"
             android:visibility="invisible"
             android:textColor="@color/white"
             android:background="@drawable/shadow_toggle"
@@ -334,7 +334,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="550dp"
         android:layout_marginLeft="55dp"
-        android:text="Next Step"
+        android:text="@string/string_nextstep"
         android:visibility="invisible" />
 
     <TextView

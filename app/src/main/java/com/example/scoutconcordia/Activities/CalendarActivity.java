@@ -97,7 +97,7 @@ public class CalendarActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         //set title of page
-        getSupportActionBar().setTitle("Schedule");
+        getSupportActionBar().setTitle("ScoutConcordia");
 
 
 
