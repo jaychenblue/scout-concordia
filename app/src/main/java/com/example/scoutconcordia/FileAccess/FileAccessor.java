@@ -2,29 +2,33 @@ package com.example.scoutconcordia.FileAccess;
 
 import android.content.res.Resources;
 import android.util.Log;
-
 import com.example.scoutconcordia.DataStructures.LinkedList;
-
 import java.io.InputStream;
 import java.util.Scanner;
 
+/** Class used to read and access files from the res/raw/ folder. */
 public class FileAccessor
 {
     InputStream fileInput;
     Object[] contents;
-    
+
+    /** Default constructor that initializes the fileInput and its contents to null. */
     public FileAccessor()
     {
         fileInput = null;
         contents = null;
     }
-    
+
     public void setInputStream(InputStream fileInput)
     {
         this.fileInput = fileInput;
     }
     
     // Used first to be able to read the file
+
+    /** Used to decrypt a file from the input stream
+     * @param isEncrypted Boolean signaling if the file being used as input is encrypted or not.
+     */
     public void decryptFile(boolean isEncrypted)
     {
         DES decrypter = new DES();
@@ -52,8 +56,10 @@ public class FileAccessor
             Log.println(Log.WARN, "FileAccessor", "The input file could not be located");
         }
     }
-    
-    // returns an array with every line as a string from the file
+
+    /** Obtains the contents of the input stream and returns them as an array of strings.
+     * @return An array of strings representing the contents of the file.
+     */
     public String[] obtainContents()
     {
         String[] returnMe = new String[contents.length];
@@ -64,7 +70,7 @@ public class FileAccessor
         return returnMe;
     }
     
-    // used when done to make sure no information is potentially leaked
+    /** This method is used when done to make sure no information is potentially leaked. */
     public void resetObject()
     {
         fileInput = null;
