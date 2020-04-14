@@ -14,7 +14,7 @@
     <string name="shuttle">Navette</string>
     <string name="search_hint">Rechercher une salle de classe ou un bâtiment</string>
     <string name="search_starting_location_hint">Rechercher un lieu de départ</string>
-    <string name="use_my_location">Utilise Ma Location</string>
+    <string name="use_my_location">Utiliser Ma Location</string>
     <string name="invalid_search_hint">Aucun emplacement correspondant trouvé!</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
     <string name="title_activity_settings">SettingsActivity</string>
@@ -35,13 +35,13 @@
     <string name="FromLoyola">Partir de Loyola</string>
     <string name="ArrivingSGW">Arrivée à SGW</string>
     <string name="departures">Départs:</string>
-    <string name="string_halfhour">Chaque 30 min.</string>
+    <string name="string_halfhour">Toutes les 30 min.</string>
     <string name="Friday">Vendredi</string>
     <string name="Departures">Départs</string>
     <string name="hint">Trouver une salle de classe ou un bâtiment</string>
     <string name="ExploreInside">Intérieur</string>
-    <string name="string_getdirections">obtenir des directions</string>
-    <string name="summary">La définition des paramètres d\'accessibilité sur on garantit qu\'un chemin accessible est affiché.</string>
+    <string name="string_getdirections">Obtenir des directions</string>
+    <string name="summary">L\'activation des paramètres d\'accessibilité garantit qu\'un chemin accessible sera affiché.</string>
     <string name="string_nextstep">L\'étape suivante</string>
     <string name="AccessibilitySettings">Paramètres d\'accessibilité</string>
 
