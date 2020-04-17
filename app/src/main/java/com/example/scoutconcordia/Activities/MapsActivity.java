@@ -1576,10 +1576,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             travelTime.setText("~" + String.valueOf(estimatedTime) + " mins");
             travelTime.setVisibility(View.VISIBLE);
 
-            ShuttleInfo getShuttleEstimate = new ShuttleInfo();
-            shuttleTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
-            shuttleTime.setVisibility(View.VISIBLE);
+            if (!(mode.toString().equals("driving")) && !(mode.toString().equals("walking"))){
+                ShuttleInfo getShuttleEstimate = new ShuttleInfo();
+                shuttleTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
+                shuttleTime.setVisibility(View.VISIBLE);
+            }
+            else {
+                shuttleTime.setVisibility(View.INVISIBLE);
+
+            }
         }
+
 
     }
 
@@ -1593,8 +1600,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mode = TravelMode.DRIVING;
                 break;
             case 3:
-            case 4:
                 mode = TravelMode.TRANSIT;
+                break;
+            case 4:
+                mode = TravelMode.UNKNOWN;
                 break;
         }
         return mode;
