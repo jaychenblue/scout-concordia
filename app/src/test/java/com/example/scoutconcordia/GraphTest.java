@@ -170,4 +170,24 @@ public class GraphTest {
         node1 = null;
     }
 
+    @Test
+    public void testNodeEquals() {
+        Graph.Node node1 = g.new Node(coordinate1, 0, 1, "H-907");
+        Graph.Node node2 = g.new Node(coordinate1, 0, 1, "H-907");
+        Graph.Node node3 = null;
+        LatLng node4 = new LatLng(45.494619, -73.577376);
+        String node5 = "random string";
+
+        assertEquals(false, node1.equals(node3)); //check if the comparing node is null
+        assertEquals(true, node1.equals(node2)); // check if the node.element is the same
+        assertEquals(true, node1.equals(node4));  //check if the LatLng is the same
+        assertEquals(false, node1.equals(node5)); //should return false as it is comparing to a garbage value
+
+        node1 = null;
+        node2 = null;
+        node3 = null;
+        node4 = null;
+        node5 = null;
+    }
+
 }
