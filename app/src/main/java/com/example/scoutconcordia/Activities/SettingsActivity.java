@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         //set title of page
-        getSupportActionBar().setTitle("Settings");
+        getSupportActionBar().setTitle("ScoutConcordia");
 
         if(findViewById(R.id.fragment_container)!= null){
             if(savedInstanceState !=null)

@@ -9,17 +9,17 @@
 
          <item
             android:id="@+id/main_schedule"
-            android:title="Course Schedule" />
+            android:title="@string/CourseSchedule" />
 
         <item
             android:id="@+id/main_shuttle"
             android:icon="@drawable/ic_directions_bus_black_24dp"
-            android:title="Shuttle Bus" />
+            android:title="@string/ShuttleBus"/>
 
-         <item
+        <item
         android:id="@+id/main_settings"
         android:icon="@drawable/settings"
-        android:title="Settings"
+        android:title="@string/setting_title"
         app:showAsAction="always"/>
 
 
