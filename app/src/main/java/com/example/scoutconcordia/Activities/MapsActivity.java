@@ -1424,6 +1424,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setInfoWindowAdapter(adapter);
         initializeSearchBar();
         searchPath = mMap.addPolyline(new PolylineOptions());
+        searchMarker = mMap.addMarker(new MarkerOptions().position(concordiaLatLngDowntownCampus).visible(false));
     }
 
     // moves the camera to keep on user's location on any change in its location
