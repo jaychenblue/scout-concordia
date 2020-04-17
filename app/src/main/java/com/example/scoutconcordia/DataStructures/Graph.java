@@ -50,14 +50,14 @@ public class Graph
             return false;
         }
 
-        private int getId() { return id; }
-        private void setId(int id) { this.id = id; }
-        private void setElement(LatLng element) { this.element = element; }
-        private boolean isTraversed() { return traversed; }
-        private void setTraversed(boolean traversed) { this.traversed = traversed; }
+        //private int getId() { return id; }
+        //private void setId(int id) { this.id = id; }
+        //private void setElement(LatLng element) { this.element = element; }
         public int getType() { return type; }
         public LatLng getElement() { return element; }
         public String getRoom() {return room;}
+        private boolean isTraversed() { return traversed; }
+        private void setTraversed(boolean traversed) { this.traversed = traversed; }
     }
 
     /** Creates a Graph with a specified size.
