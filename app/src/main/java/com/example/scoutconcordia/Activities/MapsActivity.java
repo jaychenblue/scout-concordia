@@ -196,6 +196,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private TextView travelTime;  //estimated travel time
 
+    /**
+     * Defining all literals that are used multiple times as constants as to reduce potential errors
+     * if the code ever needs to be modified
+     */
+
+    private static final String DRAWABLE = "drawable";
+
+
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -451,7 +459,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         float imgHeightInPixels;
         float imgRotation = -56;
         float overlaySize = 75;
-        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier(image, "drawable", getPackageName()));
+        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier(image, DRAWABLE, getPackageName()));
 
         hallGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                 .image(floorPlan)
@@ -539,7 +547,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 29;
                 float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", DRAWABLE, getPackageName()));
 
                 ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -568,7 +576,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 29;
                 float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", DRAWABLE, getPackageName()));
 
                 ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -597,7 +605,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 29;
                 float overlaySize = 50;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", DRAWABLE, getPackageName()));
 
                 veGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -626,7 +634,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 209;
                 float overlaySize = 71;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", DRAWABLE, getPackageName()));
 
                 vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -655,7 +663,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 209;
                 float overlaySize = 71;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", DRAWABLE, getPackageName()));
 
                 vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -684,7 +692,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = -56;
                 float overlaySize = 42;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_01", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_01", DRAWABLE, getPackageName()));
 
                 mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -713,7 +721,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = -56;
                 float overlaySize = 42;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", DRAWABLE, getPackageName()));
 
                 mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -1794,7 +1802,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Polygon justAddedPolygon = mMap.addPolygon(po);
             polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
-            int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
+            int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), DRAWABLE, this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
                     .position(((BuildingInfo)currentBuilding.getEle()).getCenter())
                     .title(((BuildingInfo)currentBuilding.getEle()).getName())
@@ -1865,7 +1873,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             restaurantMarker.setTag(restaurantInfo);
 
             // set the icon for the restaurant marker
-            int resID = this.getResources().getIdentifier("restaurant_icon", "drawable", this.getPackageName());
+            int resID = this.getResources().getIdentifier("restaurant_icon", DRAWABLE, this.getPackageName());
             Bitmap smallMarker = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), resID), 90, 90, false);
             BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
             restaurantMarker.setIcon(smallMarkerIcon);
