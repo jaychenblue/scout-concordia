@@ -14,7 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class N_aryTreeTest {
+public class N_aryTreeTest
+{
 
     LatLng coordinate1, coordinate2, coordinate3;
     LatLng escalatorHall1, hallwayHall1a, hallwayHall1b, classH100;
@@ -24,7 +25,8 @@ public class N_aryTreeTest {
     LinkedList<N_aryTree.TreeNode> l;
 
     @BeforeEach
-    public void beforeEach() throws Exception {
+    public void beforeEach() throws Exception
+    {
         coordinate1 = new LatLng(45.494619, -73.577376); // SGW
         coordinate2 = new LatLng(45.458423, -73.640460); // Loyola
         coordinate3 = new LatLng(45.496827, -73.578849); // Hall building
@@ -36,7 +38,8 @@ public class N_aryTreeTest {
     }
 
     @AfterEach
-    public void afterEach() throws Exception {
+    public void afterEach() throws Exception
+    {
         coordinate1 = null;
         coordinate2 = null;
         coordinate3 = null;
@@ -49,7 +52,8 @@ public class N_aryTreeTest {
     // === tests for nested TreeNode class ===
 
     @Test
-    public void testGetters() {
+    public void testGetters()
+    {
         node2.setParent(node1);
         assertEquals(node1, node2.getParent());
 
@@ -64,12 +68,14 @@ public class N_aryTreeTest {
     }
 
     @Test
-    public void testAddToChildren() {
+    public void testAddToChildren()
+    {
         assertTrue(node1.addToChildren(coordinate3));
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals()
+    {
         // node 1 and node 2/3 have different elements
         assertFalse(node1.equals(node2));
         assertFalse(node1.equals(node3));
@@ -81,12 +87,14 @@ public class N_aryTreeTest {
     // ... end of tests for nested TreeNode class ...
 
     @Test
-    public void testGetHead() {
+    public void testGetHead()
+    {
         assertNotNull(tree.getHead());
     }
 
     @Test
-    public void testFindSpecifiedNode() {
+    public void testFindSpecifiedNode()
+    {
         assertNull(tree.findSpecifiedNode(null, null));
 
         assertNotNull(tree.findSpecifiedNode(node1, coordinate1)); // should find itself
@@ -115,7 +123,8 @@ public class N_aryTreeTest {
     }
 
     @Test
-    public void testGetPath() {
+    public void testGetPath()
+    {
         assertNull(tree.getPath(null, null));
 
         node1.setElement(coordinate1);

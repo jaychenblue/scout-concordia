@@ -16,27 +16,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GraphTest {
+public class GraphTest
+{
 
     Graph g;
     LatLng coordinate1, coordinate2;
 
     @BeforeEach
-    public void beforeEach() throws Exception {
+    public void beforeEach() throws Exception
+    {
         g = new Graph(3);
         coordinate1 = new LatLng(45.494619, -73.577376); // SGW
         coordinate2 = new LatLng(45.458423, -73.640460); // Loyola
     }
 
     @AfterEach
-    public void afterEach() throws Exception {
+    public void afterEach() throws Exception
+    {
         g = null;
         coordinate1 = null;
         coordinate2 = null;
     }
 
     @Test
-    public void testReset() {
+    public void testReset()
+    {
         g.insertVertex(coordinate1, 1, "H-907");
         g.insertVertex(coordinate2, 1, "CC-110");
         assertNotNull(g.nodes());
@@ -48,7 +52,8 @@ public class GraphTest {
     // inserting elements
 
     @Test
-    public void testInsertVertex() {
+    public void testInsertVertex()
+    {
         assertTrue(g.insertVertex(coordinate1, 1, "H-907"));
         assertTrue(g.insertVertex(coordinate2, 1, "CC-110"));
         assertTrue(g.insertVertex(coordinate1, 1, "H-820"));
@@ -56,7 +61,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testInsertEdge() {
+    public void testInsertEdge()
+    {
         assertEquals(-1, g.insertEdge(coordinate1, coordinate2)); // -1 if point not in graph
 
         g.insertVertex(coordinate1, 1, "H-907");
@@ -68,7 +74,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testAreAdjacent() {
+    public void testAreAdjacent()
+    {
         assertFalse(g.areAdjacent(coordinate1, coordinate2));
 
         g.insertVertex(coordinate1, 1, "H-907");
@@ -84,7 +91,8 @@ public class GraphTest {
     // removing elements
 
     @Test
-    public void testReplace() {
+    public void testReplace()
+    {
         assertFalse(g.replace(coordinate1, coordinate2)); // shouldn't work because nothing is in the graph yet
 
         g.insertVertex(coordinate1, 1, "H-907");
@@ -93,7 +101,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testRemoveEdge() {
+    public void testRemoveEdge()
+    {
         assertEquals(-1, g.removeEdge(coordinate1, coordinate2)); // nothing in the graph yet
 
         g.insertVertex(coordinate1, 1, "H-907");
@@ -105,7 +114,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testRemoveVertex() {
+    public void testRemoveVertex()
+    {
         assertEquals(-1, g.removeVertex(coordinate1));
 
         g.insertVertex(coordinate1, 1, "H-907");
@@ -114,7 +124,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testIncidentVerticies() {
+    public void testIncidentVerticies()
+    {
         g.insertVertex(coordinate1, 1, "H-907");
 
         assertNotNull(g.incidentVerticies(coordinate1));
@@ -123,14 +134,16 @@ public class GraphTest {
     // checking all elements and shortest path
 
     @Test
-    public void testVertices() {
+    public void testVertices()
+    {
         g.insertVertex(coordinate1, 1, "H-907");
 
         assertNotNull(g.vertices());
     }
 
     @Test
-    public void testNodes() {
+    public void testNodes()
+    {
         g.insertVertex(coordinate1, 1, "H-907");
         g.insertVertex(coordinate2, 1, "CC-110");
         g.insertVertex(coordinate2, 1, "CC-117");
@@ -142,7 +155,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testSearchByClassName() {
+    public void testSearchByClassName()
+    {
         g.insertVertex(coordinate1, 1, "H-907");
         g.insertVertex(coordinate2, 1, "CC-110");
 
@@ -151,7 +165,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testBreathFirstSearch() {
+    public void testBreathFirstSearch()
+    {
         assertNull(g.breathFirstSearch(coordinate1, coordinate2));
 
         g.insertVertex(coordinate1, 1, "H-907");
@@ -162,7 +177,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testShortestPath() {
+    public void testShortestPath()
+    {
         LatLng ClassH100, HallwayHall1a, HallwayHall1b, HallwayHall1c,
                 HallwayHall1d, HallwayHall1e, HallwayHall1f, HallwayHall1g,
                 EscalatorHall1, EscalatorHall2,
@@ -321,7 +337,8 @@ public class GraphTest {
     // testing inner Node class
 
     @Test
-    public void testNodeGetters() {
+    public void testNodeGetters()
+    {
         Graph.Node node1 = g.new Node(coordinate1, 0, 1, "H-907");
         assertEquals(1, node1.getType());
         assertEquals(coordinate1, node1.getElement());
@@ -331,7 +348,8 @@ public class GraphTest {
     }
 
     @Test
-    public void testNodeEquals() {
+    public void testNodeEquals()
+    {
         Graph.Node node1 = g.new Node(coordinate1, 0, 1, "H-907");
         Graph.Node node2 = g.new Node(coordinate1, 0, 1, "H-907");
         Graph.Node node3 = null;

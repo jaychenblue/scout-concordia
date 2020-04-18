@@ -12,21 +12,24 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LinkedListTest {
+public class LinkedListTest
+{
     
     static LinkedList<Integer> l;
     static Integer intTest;
     static Integer[] numbs;
 
     @BeforeEach
-    public void beforeEach() throws Exception {
+    public void beforeEach() throws Exception
+    {
         numbs = new Integer[]{1, 2, 3};
         intTest = new Integer(1);
         l = new LinkedList<Integer>(intTest, numbs);
     }
 
     @AfterEach
-    public void afterEach() throws Exception {
+    public void afterEach() throws Exception
+    {
         numbs = null;
         intTest = null;
         l = null;
@@ -35,7 +38,8 @@ public class LinkedListTest {
     
     // test constructors
     @Test
-    public void testStandardConstructor() {
+    public void testStandardConstructor()
+    {
         LinkedList<Integer> list = new LinkedList<Integer>(1);
 
         assertNull(list.getHead());
@@ -45,7 +49,8 @@ public class LinkedListTest {
     }
     
     @Test
-    public void testCustomConstructor() {
+    public void testCustomConstructor()
+    {
         Integer[] arr = new Integer[]{5, 7, 9, 11, 13000000, -999999};
         LinkedList<Integer> list = new LinkedList<Integer>(1, arr);
         
@@ -57,7 +62,8 @@ public class LinkedListTest {
     
     // test getters
     @Test
-    public void testGetters() {
+    public void testGetters()
+    {
         assertEquals(3, l.size());
         assertNotNull(l.getHead());
         assertTrue(l.add(77));
@@ -65,7 +71,8 @@ public class LinkedListTest {
     
     // test clear
     @Test
-    public void testClear() {
+    public void testClear()
+    {
         l.clear();
         assertEquals(0, l.size());
         assertNotNull(l);
@@ -73,7 +80,8 @@ public class LinkedListTest {
     
     // test toString
     @Test
-    public void testToString() {
+    public void testToString()
+    {
         assertEquals("Size: 3\n" +
                      "Entry 0: 1\n" +
                      "Entry 1: 2\n" +
@@ -82,7 +90,8 @@ public class LinkedListTest {
     }
 
     @Test
-    public void testContains() {
+    public void testContains()
+    {
         assertTrue(l.contains(1));
         assertTrue(l.contains(2));
         assertTrue(l.contains(3));
@@ -91,7 +100,8 @@ public class LinkedListTest {
     }
 
     @Test
-    public void testIndexOf() {
+    public void testIndexOf()
+    {
         assertEquals(0, l.indexOf(1));
         assertEquals(1, l.indexOf(2));
         assertEquals(2, l.indexOf(3));
@@ -100,7 +110,8 @@ public class LinkedListTest {
     }
 
     @Test
-    public void testToArray() {
+    public void testToArray()
+    {
         assertNotNull(l.toArray());
         assertEquals(1, l.toArray()[0]);
         assertEquals(2, l.toArray()[1]);
@@ -109,13 +120,15 @@ public class LinkedListTest {
     
     // test remove object
     @Test
-    public void testRemoveOBJ() {
+    public void testRemoveOBJ()
+    {
         assertTrue(l.removeOBJ(2));
     }
 
     // testing inner Node class
     @Test
-    public void testNodeGetters() {
+    public void testNodeGetters()
+    {
         LinkedList.Node node1 = l.new Node();
         LinkedList.Node node2 = l.new Node();
         LinkedList.Node node3 = l.new Node(3, node1, node2); // node1 is after, node2 is before
@@ -130,7 +143,8 @@ public class LinkedListTest {
     }
 
     @Test
-    public void testNodeToString() {
+    public void testNodeToString()
+    {
         LinkedList.Node node1 = l.new Node();
         LinkedList.Node node2 = l.new Node();
         LinkedList.Node node3 = l.new Node(3, node1, node2);
