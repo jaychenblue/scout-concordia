@@ -23,31 +23,30 @@ import javax.annotation.Nullable;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SettingsFragment extends PreferenceFragment  {
 
-    public static final String PREF_ACCESSIBILITY = "accessibility_settings";
-    private static boolean disabilityPreferences = false;
-    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
-    Context context = getContext();
+    private static boolean disabilityPreferences = false;//static variable that will be used in the MapsActivity for accessibility settings
     private Context mContext;
     private Activity mActivity;
 
 
-    // SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences (context);
-    //SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
+        //display preferences
         addPreferencesFromResource(R.xml.preferences);
 
+        //get application context
         mContext = this.getActivity();
         mActivity = this.getActivity();
 
+        /**
+         * SwitchPreference stores the boolean in the SharedPreferences
+         * This ensures that the state of the switch is saved when the app is restarted.
+         */
         final SwitchPreference accessibility = (SwitchPreference) findPreference(this.getResources()
                 .getString(R.string.AccessibilitySettings));
 
 
-        /*
+        /**
             void setOnPreferenceChangeListener (Preference.OnPreferenceChangeListener onPreferenceChangeListener)
                 Sets the callback to be invoked when this Preference is changed by the user
                 (but before the internal state has been updated).
@@ -61,80 +60,32 @@ public class SettingsFragment extends PreferenceFragment  {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
                 if(accessibility.isChecked()){
-                    Toast.makeText(mActivity,"Unchecked",Toast.LENGTH_SHORT).show();
+                    //Display state of the switch
+                   Toast.makeText(mActivity,"Unchecked",Toast.LENGTH_SHORT).show();
 
                     // Checked the switch programmatically
                     accessibility.setChecked(false);
+                    disabilityPreferences = false; //accessibility settings not needed
+
+
                 }else {
                     Toast.makeText(mActivity,"Checked",Toast.LENGTH_SHORT).show();
 
                     // Unchecked the switch programmatically
                     accessibility.setChecked(true);
+                    disabilityPreferences = true; //user wants accessibility settings on
+
                 }
                 return false;
             }
         });
 
-//        preferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener()
-//        {
-//            @Override
-//            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-//            {
-//                if(key.equals(PREF_ACCESSIBILITY))
-//                {
-//
-//
-//                    //   accessibilityPreference.getSharedPreferences();
-//                    SwitchPreference accessibilityPreference = (SwitchPreference)findPreference(key);
-//
-//                    if(accessibilityPreference.isEnabled()){
-//                        accessibilityPreference.setSummaryOn("SWITCH");
-//                        disabilityPreferences = true;
-//
-//                    } else if (!accessibilityPreference.isEnabled()){
-//                        accessibilityPreference.setSummaryOff("SWITCH IS OFF");
-//                        disabilityPreferences = false;
-//                    }
-//
-//
-//
-//                }
-//            }
-//        };
-
     }
 
+    //Getter method to access the user's choice from the MapsActivity
     public static boolean getDisabilityPreference(){
         return disabilityPreferences;
     }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-       // getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(preferenceChangeListener);
-//        SwitchPreference accessibilityPreference = (SwitchPreference)findPreference(PREF_ACCESSIBILITY);
-//
-//        if(accessibilityPreference.isEnabled()){
-//            accessibilityPreference.setSummaryOn("SWITCH");
-//            disabilityPreferences = true;
-//
-//        } else {
-//            accessibilityPreference.setSummaryOff("SWITCH IS OFF");
-//            disabilityPreferences = false;
-//        }
-
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-    //    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
-    }
-
-
 
 }
 

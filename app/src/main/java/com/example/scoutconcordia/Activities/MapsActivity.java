@@ -1,6 +1,7 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -19,6 +20,7 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -111,6 +113,7 @@ import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
@@ -195,12 +198,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView travelTime;  //estimated travel time
     private TextView from;    //outdoor building start point
     private TextView to;      //outdoor building destination
-
+    private Button buttonToCheckAccess; //verifies accessibility state matches switch
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setmContext(this);
+
 
         //Toolbar on top of the page
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -267,6 +271,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
     public List<Object[]> searchForClass(String fromMe, String toMe) {
         // if we dont find the to me location on the same floor we need to send it to the escalator.
         LatLng point1 = null;
@@ -317,7 +322,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
             // we have to get more creative with the search and break it down
             // we need to search from class -> escalator, then from escalator -> class on the right floor
-            if (SettingsFragment.getDisabilityPreference())
+            if (disabilityPreference)
             {
                 nextStep.setVisibility(VISIBLE); // enable the next step button
                 Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ELEVATOR"));
@@ -781,6 +786,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
 
     private void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
