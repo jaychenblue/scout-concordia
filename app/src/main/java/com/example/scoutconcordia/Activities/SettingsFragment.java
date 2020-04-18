@@ -9,6 +9,10 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -60,20 +64,18 @@ public class SettingsFragment extends PreferenceFragment  {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
                 if(accessibility.isChecked()){
-                    //Display state of the switch
-                   Toast.makeText(mActivity,"Unchecked",Toast.LENGTH_SHORT).show();
-
                     // Checked the switch programmatically
                     accessibility.setChecked(false);
                     disabilityPreferences = false; //accessibility settings not needed
+                    Toast.makeText(mActivity,"Disability Preference variable value:" +disabilityPreferences,Toast.LENGTH_SHORT).show();
 
 
                 }else {
-                    Toast.makeText(mActivity,"Checked",Toast.LENGTH_SHORT).show();
 
                     // Unchecked the switch programmatically
                     accessibility.setChecked(true);
                     disabilityPreferences = true; //user wants accessibility settings on
+                    Toast.makeText(mActivity,"Disability preference variable value: " + disabilityPreferences,Toast.LENGTH_SHORT).show();
 
                 }
                 return false;
@@ -82,10 +84,6 @@ public class SettingsFragment extends PreferenceFragment  {
 
     }
 
-    //Getter method to access the user's choice from the MapsActivity
-    public static boolean getDisabilityPreference(){
-        return disabilityPreferences;
-    }
 
 }
 

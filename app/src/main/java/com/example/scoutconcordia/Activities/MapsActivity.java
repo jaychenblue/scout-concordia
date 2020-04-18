@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -190,7 +192,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomNavigationView travelOptionsMenu = null;
     private boolean shuttleAvailable = false;
 
-    private boolean disabilityPreference = SettingsFragment.getDisabilityPreference(); //false for no disability, true for disability
+    boolean disabilityPreference = SettingsFragment.getDisabilityPreference(); //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
     private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
@@ -198,13 +200,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView travelTime;  //estimated travel time
     private TextView from;    //outdoor building start point
     private TextView to;      //outdoor building destination
-    private Button buttonToCheckAccess; //verifies accessibility state matches switch
+
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setmContext(this);
-
 
         //Toolbar on top of the page
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
