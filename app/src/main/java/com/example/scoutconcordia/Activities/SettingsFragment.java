@@ -25,15 +25,15 @@ import java.util.prefs.PreferenceChangeListener;
 import javax.annotation.Nullable;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
-public class SettingsFragment extends PreferenceFragment  {
-
+public class SettingsFragment extends PreferenceFragment
+{
     private static boolean disabilityPreferences = false;//static variable that will be used in the MapsActivity for accessibility settings
     private Context mContext;
     private Activity mActivity;
 
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState){
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         //display preferences
         addPreferencesFromResource(R.xml.preferences);
@@ -60,18 +60,22 @@ public class SettingsFragment extends PreferenceFragment  {
         */
 
         // SwitchPreference preference change listener
-        accessibility.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        accessibility.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
+        {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object o) {
-                if(accessibility.isChecked()){
+            public boolean onPreferenceChange(Preference preference, Object o)
+            {
+                if(accessibility.isChecked())
+                {
                     // Checked the switch programmatically
                     accessibility.setChecked(false);
                     disabilityPreferences = false; //accessibility settings not needed
                     Toast.makeText(mActivity,"Accessibility settings are turned off" ,Toast.LENGTH_SHORT).show();
 
 
-                }else {
-
+                }
+                else
+                {
                     // Unchecked the switch programmatically
                     accessibility.setChecked(true);
                     disabilityPreferences = true; //user wants accessibility settings on
@@ -83,10 +87,9 @@ public class SettingsFragment extends PreferenceFragment  {
         });
     }
 
-    static public Boolean getDisabilityPreference() {
+    static public Boolean getDisabilityPreference()
+    {
         return disabilityPreferences;
     }
-
-
 }
 
