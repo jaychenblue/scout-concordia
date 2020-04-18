@@ -187,7 +187,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomNavigationView travelOptionsMenu = null;
     private boolean shuttleAvailable = false;
 
-    private boolean disabilityPreference = false; //false for no disability, true for disability
+    private boolean disabilityPreference = SettingsFragment.getDisabilityPreference(); //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
     private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
@@ -317,7 +317,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
             // we have to get more creative with the search and break it down
             // we need to search from class -> escalator, then from escalator -> class on the right floor
-            if (disabilityPreference)
+            if (SettingsFragment.getDisabilityPreference())
             {
                 nextStep.setVisibility(VISIBLE); // enable the next step button
                 Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ELEVATOR"));
