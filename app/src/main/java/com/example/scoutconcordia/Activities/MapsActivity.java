@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -113,6 +115,7 @@ import static android.content.ContentValues.TAG;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     private GoogleMap mMap;
@@ -189,7 +192,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomNavigationView travelOptionsMenu = null;
     private boolean shuttleAvailable = false;
 
-    private boolean disabilityPreference = false; //false for no disability, true for disability
+    boolean disabilityPreference; //false for no disability, true for disability
     private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
     private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
@@ -265,6 +268,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
     public List<Object[]> searchForClass(String fromMe, String toMe) {
         // if we dont find the to me location on the same floor we need to send it to the escalator.
         LatLng point1 = null;
@@ -315,6 +319,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
             // we have to get more creative with the search and break it down
             // we need to search from class -> escalator, then from escalator -> class on the right floor
+            disabilityPreference = SettingsFragment.getDisabilityPreference();
             if (disabilityPreference)
             {
                 nextStep.setVisibility(VISIBLE); // enable the next step button
@@ -778,6 +783,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
 
     private void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
