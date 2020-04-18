@@ -466,24 +466,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floor1.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View view) {
-
                 resetButtonColors();
                 floor1.setBackgroundColor(getResources().getColor(R.color.burgandy));
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall1p");
-
-                for (Graph graph : floorGraphs)
-                {
-                    System.out.println(graph.id);
-                    if ((graph.id).equals("Hall 1 floor"))
-                    {
-                        for (Graph.Node node : graph.nodes())
-                        {
-                            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                        }
-                    }
-                }
             }
         });
     }
@@ -499,18 +486,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 floor2.setTextColor(getResources().getColor((R.color.faintGray)));
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall2floor");
-
-                for (Graph graph : floorGraphs)
-                {
-                    System.out.println(graph.id);
-                    if ((graph.id).equals("Hall 2 floor"))
-                    {
-                        for (Graph.Node node : graph.nodes())
-                        {
-                            mMap.addMarker(new MarkerOptions().position(node.getElement()));
-                        }
-                    }
-                }
             }
         });
     }
