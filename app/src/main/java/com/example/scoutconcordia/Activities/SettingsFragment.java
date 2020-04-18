@@ -81,7 +81,10 @@ public class SettingsFragment extends PreferenceFragment  {
                 return false;
             }
         });
+    }
 
+    static public Boolean getDisabilityPreference() {
+        return disabilityPreferences;
     }
 
 
