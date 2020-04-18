@@ -67,7 +67,7 @@ public class SettingsFragment extends PreferenceFragment  {
                     // Checked the switch programmatically
                     accessibility.setChecked(false);
                     disabilityPreferences = false; //accessibility settings not needed
-                    Toast.makeText(mActivity,"Disability Preference variable value:" +disabilityPreferences,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity,"Accessibility settings are turned off" ,Toast.LENGTH_SHORT).show();
 
 
                 }else {
@@ -75,7 +75,7 @@ public class SettingsFragment extends PreferenceFragment  {
                     // Unchecked the switch programmatically
                     accessibility.setChecked(true);
                     disabilityPreferences = true; //user wants accessibility settings on
-                    Toast.makeText(mActivity,"Disability preference variable value: " + disabilityPreferences,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity,"Accessibility settings are now on" ,Toast.LENGTH_SHORT).show();
 
                 }
                 return false;

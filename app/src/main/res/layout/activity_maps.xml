@@ -78,33 +78,6 @@
         android:checked="true"
         android:layout_centerInParent="true" />
 
-    <Button
-        android:layout_width="75dp"
-        android:layout_height="35dp"
-        android:text="test accessibility"
-        android:id="@+id/buttonToCheck"
-        android:layout_below="@id/search"
-        />
-
-
-    <!--We are keeping this in case we need it for the Google Search bar later  -->
-    <!--<Button
-        android:id="@+id/findYouWayButton"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:paddingHorizontal="10dp"
-        android:text="@string/find_your_way_button"
-        android:textOff="@string/toggle_off"
-        android:textOn="@string/toggle_on"
-        android:layout_below="@id/toggleButton"
-        android:background="@drawable/shadow_toggle"
-        android:textColor="@color/white"
-        android:textFontWeight="500"
-        android:layout_centerInParent="true"
-        android:onClick="onFindYourWayButtonClick"
-        />
--->
-
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
