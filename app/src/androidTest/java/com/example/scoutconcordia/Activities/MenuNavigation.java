@@ -1,4 +1,4 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.Activities;
 
 
 import android.view.View;
@@ -11,7 +11,7 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.example.scoutconcordia.Activities.SplashScreenActivity;
+import com.example.scoutconcordia.R;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -23,13 +23,14 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class BY11_ToggleButton {
+public class MenuNavigation {
 
     @Rule
     public ActivityTestRule<SplashScreenActivity> mActivityTestRule = new ActivityTestRule<>(SplashScreenActivity.class);
@@ -40,29 +41,46 @@ public class BY11_ToggleButton {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY11_ToggleButton() throws InterruptedException {
-        Thread.sleep(2500);
-        ViewInteraction toggleButton = onView(
-                allOf(withId(R.id.toggleButton), withText("SGW"),
+    public void menuNavigation() {
+        ViewInteraction overflowMenuButton = onView(
+                allOf(withContentDescription("More options"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
+                                        withId(R.id.my_toolbar),
+                                        1),
+                                1),
                         isDisplayed()));
-        toggleButton.perform(click());
-        Thread.sleep(2500);
+        overflowMenuButton.perform(click());
 
-        ViewInteraction toggleButton2 = onView(
-                allOf(withId(R.id.toggleButton), withText("Loyola"),
+        ViewInteraction appCompatTextView = onView(
+                allOf(withId(R.id.title), withText("Shuttle Bus Schedule"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withId(R.id.content),
                                         0),
-                                4),
+                                0),
                         isDisplayed()));
-        toggleButton2.perform(click());
-        Thread.sleep(2500);
+        appCompatTextView.perform(click());
+
+        ViewInteraction overflowMenuButton2 = onView(
+                allOf(withContentDescription("More options"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.my_toolbar),
+                                        1),
+                                1),
+                        isDisplayed()));
+        overflowMenuButton2.perform(click());
+
+        ViewInteraction appCompatTextView2 = onView(
+                allOf(withId(R.id.title), withText("#ScoutConcordia"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.content),
+                                        0),
+                                0),
+                        isDisplayed()));
+        appCompatTextView2.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
