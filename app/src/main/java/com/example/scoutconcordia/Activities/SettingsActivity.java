@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,11 +20,11 @@ import com.example.scoutconcordia.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.api.services.calendar.model.Setting;
 
-public class SettingsActivity extends AppCompatActivity {
-
-
+public class SettingsActivity extends AppCompatActivity
+{
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -32,7 +35,8 @@ public class SettingsActivity extends AppCompatActivity {
         //set title of page
         getSupportActionBar().setTitle("ScoutConcordia");
 
-        if(findViewById(R.id.fragment_container)!= null){
+        if (findViewById(R.id.fragment_container)!= null)
+        {
             if(savedInstanceState !=null)
                 return;
 
@@ -42,10 +46,13 @@ public class SettingsActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
+        {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+            {
+                switch (menuItem.getItemId())
+                {
                     case R.id.nav_map:
                         Intent mapsIntent = new Intent(SettingsActivity.this, MapsActivity.class);
                         startActivity(mapsIntent);
@@ -70,8 +77,6 @@ public class SettingsActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
     }
 
     /**
@@ -82,7 +87,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     //inflates the menu
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
@@ -95,9 +101,11 @@ public class SettingsActivity extends AppCompatActivity {
      */
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
+    public boolean onOptionsItemSelected(MenuItem menuItem)
+    {
         // Handle item selection
-        switch (menuItem.getItemId()) {
+        switch (menuItem.getItemId())
+        {
             case R.id.main_home:
                 Intent mapsIntent = new Intent(SettingsActivity.this, MapsActivity.class);
                 startActivity(mapsIntent);
@@ -125,5 +133,4 @@ public class SettingsActivity extends AppCompatActivity {
         }
         return false;
     }
-
 }

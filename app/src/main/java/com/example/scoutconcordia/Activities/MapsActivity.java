@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -78,6 +79,7 @@ import static android.view.View.VISIBLE;
 import static com.example.scoutconcordia.Directions.displaySearchResults;
 import static com.example.scoutconcordia.Directions.getDirections;
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
     protected static GoogleMap mMap;
@@ -603,6 +605,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
 
     private void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);

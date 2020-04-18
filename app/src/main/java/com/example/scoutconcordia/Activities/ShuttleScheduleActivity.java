@@ -12,10 +12,11 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.scoutconcordia.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class ShuttleScheduleActivity extends AppCompatActivity {
-
+public class ShuttleScheduleActivity extends AppCompatActivity
+{
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shuttle_schedule);
 
@@ -29,10 +30,12 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_shuttle_schedule);
         bottomNavigationView.setSelectedItemId(R.id.nav_shuttle);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
+        {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
+                switch(menuItem.getItemId())
+                {
                     case R.id.nav_map:
                         Intent mapIntent = new Intent(ShuttleScheduleActivity.this, MapsActivity.class);
                         startActivity(mapIntent);
@@ -55,7 +58,8 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
 
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         super.onBackPressed();
         overridePendingTransition(0, 0);
     }
@@ -66,7 +70,8 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
      * @return boolean.
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
@@ -78,7 +83,8 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
      * @return boolean.
      */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem)
+    {
         // Handle item selection
         switch (menuItem.getItemId()) {
             case R.id.main_home:

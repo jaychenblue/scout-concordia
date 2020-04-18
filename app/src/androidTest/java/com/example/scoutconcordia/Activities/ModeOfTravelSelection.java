@@ -1,19 +1,19 @@
-package com.example.scoutconcordia;
+package com.example.scoutconcordia.Activities;
 
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-
-import androidx.test.espresso.ViewAssertion;
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.example.scoutconcordia.Activities.SplashScreenActivity;
+import com.example.scoutconcordia.R;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -22,16 +22,22 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class BY11_ToggleButton {
+public class ModeOfTravelSelection {
 
     @Rule
     public ActivityTestRule<SplashScreenActivity> mActivityTestRule = new ActivityTestRule<>(SplashScreenActivity.class);
@@ -42,30 +48,39 @@ public class BY11_ToggleButton {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void bY11_ToggleButton() throws InterruptedException {
+    public void modeOfTravelSelection() {
+        ViewInteraction appCompatAutoCompleteTextView = onView(
+                allOf(withId(R.id.search_bar),
+                        childAtPosition(
+                                allOf(withId(R.id.search),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.RelativeLayout")),
+                                                1)),
+                                1),
+                        isDisplayed()));
+        appCompatAutoCompleteTextView.perform(replaceText("e"), closeSoftKeyboard());
 
-        Thread.sleep(2500);
-        ViewInteraction toggleButton = onView(
-                allOf(withId(R.id.toggleButton), withText("SGW"),
+        onData(anything()).inRoot(RootMatchers.isPlatformPopup()).atPosition(0).perform(click());
+
+        ViewInteraction bottomNavigationItemView = onView(
+                allOf(withId(R.id.car), withContentDescription("Car"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
+                                        withId(R.id.travel_modes_nav_bar),
                                         0),
-                                4),
+                                1),
                         isDisplayed()));
-        toggleButton.perform(click());
-        Thread.sleep(2500);
+        bottomNavigationItemView.perform(click());
 
-        ViewInteraction toggleButton2 = onView(
-                allOf(withId(R.id.toggleButton), withText("Loyola"),
+        ViewInteraction floatingActionButton = onView(
+                allOf(withId(R.id.getDirectionsButton),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        4),
+                                0),
                         isDisplayed()));
-        toggleButton2.perform(click());
-        Thread.sleep(2500);
+        floatingActionButton.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

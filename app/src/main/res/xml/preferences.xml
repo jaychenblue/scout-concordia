@@ -3,7 +3,8 @@
 
 
     <SwitchPreference
-        android:key="accessibility_settings"
+        android:key="@string/AccessibilitySettings"
+        android:defaultValue="false"
         android:title="@string/AccessibilitySettings"
         android:summary="@string/summary"/>
 

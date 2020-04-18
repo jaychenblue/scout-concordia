@@ -9,18 +9,21 @@ import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class BuildingInfoTest {
+public class BuildingInfoTest
+{
     
     static BuildingInfo b;
     
     @BeforeAll
-    static void beforeAll() throws Exception {
+    static void beforeAll() throws Exception
+    {
         b = new BuildingInfo("ABC", "123", "0800");
     }
     
     // test getters
     @Test
-    public void testGetters() {
+    public void testGetters()
+    {
         assertEquals("ABC", b.getName());
         assertEquals("123", b.getAddress());
         assertEquals("0800", b.getOpeningTimes());
@@ -28,7 +31,8 @@ public class BuildingInfoTest {
     
     // test constructor
     @Test
-    public void testConstructor() {
+    public void testConstructor()
+    {
         BuildingInfo building = new BuildingInfo("XYZ", "145 St-Laurent", "0700-1900");
         
         assertEquals("XYZ", building.getName());
@@ -39,7 +43,8 @@ public class BuildingInfoTest {
     }
     
     @AfterAll
-    static void afterAll() throws Exception {
+    static void afterAll() throws Exception
+    {
         b = null;
         assertNull(b);
     }
