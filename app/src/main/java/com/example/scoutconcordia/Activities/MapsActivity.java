@@ -200,9 +200,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Defining all literals that are used multiple times as constants as to reduce potential errors
      * if the code ever needs to be modified
      */
-
     private static final String DRAWABLE = "drawable";
-
+    private static final String BUILDING = "building";
+    private static final String H100 = "H-100";
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -912,30 +912,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
             if (restaurantMarkers.get(i).getTitle().equals(startingPoint))
             {
-                startingPointType = "building";
+                startingPointType = BUILDING;
             }
             else if (restaurantMarkers.get(i).getTitle().equals(destination))
             {
-                destinationType = "building";
+                destinationType = BUILDING;
             }
         }
 
         if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building"))  // check if the starting point is a building
         {
             startingBuilding = startingPoint.split(" ")[0];
-            startingPointType = "building";
+            startingPointType = BUILDING;
         }
 
         if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building"))  // check if the destination is a building
         {
             destinationBuilding = destination.split(" ")[0];
-            destinationType = "building";
+            destinationType = BUILDING;
         }
 
         if(startingPoint != null) {
-            if (startingPointType.equals("building") || startingPoint.equals("building")) //if the starting point is a building
+            if (startingPointType.equals(BUILDING) || startingPoint.equals(BUILDING)) //if the starting point is a building
             {
-                if (destinationType.equals("building")) //if the destination is a building  (building -> building)
+                if (destinationType.equals(BUILDING)) //if the destination is a building  (building -> building)
                 {
                     if (needMoreDirections)
                     {
@@ -965,7 +965,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         needMoreDirections = false;
                         if (destinationBuilding.equals("H"))
                         {
-                            searchResults = searchForClass("H-100", toMe);
+                            searchResults = searchForClass(H100, toMe);
                         }
                         else if (destinationBuilding.equals("CC"))
                         {
@@ -976,7 +976,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     {
                         if (destinationBuilding.equals("H"))
                         {
-                            searchResults = searchForClass("H-100", toMe);  // search from the front door of the destination building to the destination classroom
+                            searchResults = searchForClass(H100, toMe);  // search from the front door of the destination building to the destination classroom
                         }
                         else if (destinationBuilding.equals("CC"))
                         {
@@ -989,7 +989,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             else //if the starting point is a classroom
             {
-                if (destinationType.equals("building")) //if the destination is a building  (classroom -> building)
+                if (destinationType.equals(BUILDING)) //if the destination is a building  (classroom -> building)
                 {
                     // need to go from class room to exit (we can hard code the exit for H and for CC)
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
@@ -1004,7 +1004,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     if (startingBuilding.equals("H"))
                     {
-                        searchResults = searchForClass(startingPoint, "H-100");
+                        searchResults = searchForClass(startingPoint, H100);
                     }
                     else if (startingBuilding.equals("CC"))
                     {
@@ -1049,7 +1049,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         if (startingBuilding.equals("H"))
                         {
-                            searchResults = searchForClass(startingPoint, "H-100"); //directions to exit for H building
+                            searchResults = searchForClass(startingPoint, H100); //directions to exit for H building
                         }
                         else if (startingBuilding.equals("CC"))
                         {
@@ -1941,8 +1941,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // we will assume that the starting point is a building as there is no way to determine which floor someone is on
                         // we also need to look at the destination to find where we are going. (this will be a building we know)
                         origin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        startingPoint = "building";
-                        startingBuilding = "building";
+                        startingPoint = BUILDING;
+                        startingBuilding = BUILDING;
 
                         getDirections();
                     }
