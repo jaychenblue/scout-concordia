@@ -25,9 +25,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
-
-
 // To use this class, the app has to essentially create an object of 'ShuttleInfo'.
 // Then, the app needs to call either of two methods, depending on the location of the user.
 // If the user is at SGW, the object should call 'getNextEarliestTimeFromSGW()'.
@@ -35,6 +32,17 @@ import java.util.Calendar;
 
 public class ShuttleInfo {
 
+    /**
+     * Defining all literals that are used multiple times as constants as to reduce potential errors
+     * if the code ever needs to be modified
+     */
+    private static final String MONDAY = "Monday";
+    private static final String TUESDAY = "Tuesday";
+    private static final String WEDNESDAY = "Wednesday";
+    private static final String THURSDAY = "Thursday";
+    private static final String FRIDAY = "Friday";
+    private static final String SATURDAY = "Saturday";
+    private static final String SUNDAY = "Sunday";
 
 
     private Context context = MapsActivity.getmContext();
@@ -69,34 +77,34 @@ public class ShuttleInfo {
         switch (currentDay) {
 
             case 1:
-                today = "Sunday";
+                today = SUNDAY;
                 break;
 
             case 2:
-                today = "Monday";
+                today = MONDAY;
                 break;
 
             case 3:
-                today = "Tuesday";
+                today = TUESDAY;
                 break;
 
             case 4:
-                today = "Wednesday";
+                today = WEDNESDAY;
                 break;
 
             case 5:
-                today = "Thursday";
+                today = THURSDAY;
                 break;
 
             case 6:
-                today = "Friday";
+                today = FRIDAY;
                 break;
 
             case 7:
-                today = "Saturday";
+                today = SATURDAY;
                 break;
             default:
-                today = "Monday";
+                today = MONDAY;
                 break;
         }
 
@@ -112,11 +120,11 @@ public class ShuttleInfo {
 
         switch (today) {
 
-            case "Sunday":
+            case SUNDAY:
                 messageToUser = "There are no bus shuttles on Sundays!";
                 break;
 
-            case "Monday":
+            case MONDAY:
 
                 shuttleTimes = getSGWMondayToThursdayTimes();
 
@@ -133,7 +141,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Tuesday":
+            case TUESDAY:
 
 
                 shuttleTimes = getSGWMondayToThursdayTimes();
@@ -150,7 +158,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Wednesday":
+            case WEDNESDAY:
                 shuttleTimes = getSGWMondayToThursdayTimes();
 
                 for (int i = 0; i < shuttleTimes.length; i++) {
@@ -165,7 +173,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Thursday":
+            case THURSDAY:
                 shuttleTimes = getSGWMondayToThursdayTimes();
 
                 for (int i = 0; i < shuttleTimes.length; i++) {
@@ -180,7 +188,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Friday":
+            case FRIDAY:
 
                 shuttleTimes = getSGWFridayTimes();
 
@@ -197,7 +205,7 @@ public class ShuttleInfo {
                 break;
 
 
-            case "Saturday":
+            case SATURDAY:
                 messageToUser = "There are no bus shuttles on Saturdays!";
                 break;
 
@@ -230,7 +238,7 @@ public class ShuttleInfo {
 
 //            return (messageToUser + "\n" + overallEstimation);
 
-        if ((today.equals("Saturday")) || today.equals("Sunday")) {
+        if ((today.equals(SATURDAY)) || today.equals(SUNDAY)) {
             overallEstimation = "";
         }
 
@@ -271,35 +279,35 @@ public class ShuttleInfo {
         switch (currentDay) {
 
             case 1:
-                today = "Sunday";
+                today = SUNDAY;
                 break;
 
             case 2:
-                today = "Monday";
+                today = MONDAY;
                 break;
 
             case 3:
-                today = "Tuesday";
+                today = TUESDAY;
                 break;
 
             case 4:
-                today = "Wednesday";
+                today = WEDNESDAY;
                 break;
 
             case 5:
-                today = "Thursday";
+                today = THURSDAY;
                 break;
 
             case 6:
-                today = "Friday";
+                today = FRIDAY;
                 break;
 
             case 7:
-                today = "Saturday";
+                today = SATURDAY;
                 break;
 
             default:
-                today = "Monday";
+                today = MONDAY;
                 break;
         }
 
@@ -318,11 +326,11 @@ public class ShuttleInfo {
 
         switch (today) {
 
-            case "Sunday":
+            case SUNDAY:
                 messageToUser = "There are no bus shuttles on Sundays!";
                 break;
 
-            case "Monday":
+            case MONDAY:
 
                 shuttleTimes = getLoyolaMondayToThursdayTimes();
 
@@ -339,7 +347,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Tuesday":
+            case TUESDAY:
 
 
                 shuttleTimes = getLoyolaMondayToThursdayTimes();
@@ -356,7 +364,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Wednesday":
+            case WEDNESDAY:
                 shuttleTimes = getLoyolaMondayToThursdayTimes();
 
                 for (int i = 0; i < shuttleTimes.length; i++) {
@@ -371,7 +379,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Thursday":
+            case THURSDAY:
                 shuttleTimes = getLoyolaMondayToThursdayTimes();
 
                 for (int i = 0; i < shuttleTimes.length; i++) {
@@ -386,7 +394,7 @@ public class ShuttleInfo {
 
                 break;
 
-            case "Friday":
+            case FRIDAY:
 
                 shuttleTimes = getLoyolaFridayTimes();
 
@@ -403,7 +411,7 @@ public class ShuttleInfo {
                 break;
 
 
-            case "Saturday":
+            case SATURDAY:
                 messageToUser = "There are no bus shuttles on Saturdays!";
                 break;
 
@@ -436,7 +444,7 @@ public class ShuttleInfo {
 
 //            return (messageToUser + "\n" + overallEstimation);
 
-        if ((today.equals("Saturday")) || today.equals("Sunday")) {
+        if ((today.equals(SATURDAY)) || today.equals(SUNDAY)) {
             overallEstimation = "";
         }
 
