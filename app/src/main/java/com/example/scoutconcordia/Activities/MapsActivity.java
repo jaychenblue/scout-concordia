@@ -1,7 +1,6 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -18,7 +17,6 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.example.scoutconcordia.DataStructures.Graph;
+import com.example.scoutconcordia.Directions;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
 import com.example.scoutconcordia.R;
@@ -65,59 +64,49 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.maps.android.PolyUtil;
 import java.io.InputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
-import com.google.maps.DirectionsApi;
-import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsLeg;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.DirectionsStep;
-import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
 import static android.content.ContentValues.TAG;
 import static android.view.View.VISIBLE;
+import static com.example.scoutconcordia.Directions.displaySearchResults;
+import static com.example.scoutconcordia.Directions.getDirections;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
 
-    private GoogleMap mMap;
-    private float zoomLevel = 16.0f;
+    protected static GoogleMap mMap;
+    protected static float zoomLevel = 16.0f;
     // different req code for handling result depending on why permission was asked
     private final int ACCESS_FINE_LOCATION = 9001; // req code for user location permission when starting app
     private final int ACCESS_FINE_LOCATION_DRAW_PATH = 9002; // Req code asking for permission when user selects current location as origin but has not enabled permission
     private final int RC_CALENDAR_ACTIVITY = 9003;
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    protected FusedLocationProviderClient fusedLocationProviderClient;
     private final LatLng concordiaLatLngDowntownCampus = new LatLng(45.494619, -73.577376);
     private final LatLng concordiaLatLngLoyolaCampus = new LatLng(45.458423, -73.640460);
     private Button directionButton;
-    private Button exploreInsideButton;
-    private Button nextStep;
+    protected static Button exploreInsideButton;
+    protected static Button nextStep;
 
-    private List<Object[]> searchResults = new ArrayList<>();
-    private int searchResultsIndex;
-    private Polyline searchPath;
-    private Marker pathMarker;
+    protected static List<Object[]> searchResults = new ArrayList<>();
+    protected static int searchResultsIndex;
+    protected static Polyline searchPath;
+    protected static Marker pathMarker;
 
-    private Button floor1;
-    private Button floor2;
-    private Button floor8;
-    private Button floor9;
-    private Button floorCC1;
-    private Button floorCC2;
-
+    protected static Button floor1;
+    protected static Button floor2;
+    protected static Button floor8;
+    protected static Button floor9;
+    protected static Button floorCC1;
+    protected static Button floorCC2;
     private Button floorVE2;
     private Button floorVL1;
     private Button floorVL2;
-
     private Button floorMB1;
     private Button floorMBS2;
 
@@ -127,12 +116,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @SuppressLint("StaticFieldLeak")
     private static Context mContext; // This context variable is necessary in order for non-activity classes to read resource files.
 
-    private Marker searchMarker;
+    protected static Marker searchMarker;
     private String activeInfoWindow = null;
     private List<Polygon> polygonBuildings = new ArrayList<>();  // list of polygons, representing all of the campus buildings
-    private List<Marker> markerBuildings = new ArrayList<>();  // List of markers for all of the campus buildings
-    private List<Marker> restaurantMarkers = new ArrayList<>();  // List of markers for all of the restaurants (POI)
-    private List<Graph> floorGraphs = new ArrayList<>();  // List of graphs, representing the graphs used for indoor directions.
+    protected static List<Marker> markerBuildings = new ArrayList<>();  // List of markers for all of the campus buildings
+    protected static List<Marker> restaurantMarkers = new ArrayList<>();  // List of markers for all of the restaurants (POI)
+    protected static List<Graph> floorGraphs = new ArrayList<>();  // List of graphs, representing the graphs used for indoor directions.
     public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
@@ -148,37 +137,38 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GroundOverlay vlGroundOverlay;
     private GroundOverlay mbGroundOverlay;
 
-
-    private static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
-    private String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
-    private String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
-    private String startingBuilding;  // The letter of the building. ex: "H"
-    private String destinationBuilding;  // The letter of the building. ex: "H"
-    private LatLng origin; //origin of directions search
-    private Polyline pathPolyline = null; // polyline for displaying the map
+    protected static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
+    protected static String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
+    protected static String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
+    protected static String startingBuilding;  // The letter of the building. ex: "H"
+    protected static String destinationBuilding;  // The letter of the building. ex: "H"
+    protected static LatLng origin; //origin of directions search
+    protected static Polyline pathPolyline = null; // polyline for displaying the map
     private Dialog setOriginDialog;
-    private boolean useMyLocation = true; // whether useMyCurrentLocation button is checked
-    private Marker startLocationMarker, destinationMarker = null;
-    private int travelMode = 1; // 1 = walking (default), 2 = car, 3 = transit, 4 = shuttle
+    protected static boolean useMyLocation = true; // whether useMyCurrentLocation button is checked
+    protected static Marker startLocationMarker;
+    protected static Marker destinationMarker = null;
+    protected static int travelMode = 1; // 1 = walking (default), 2 = car, 3 = transit, 4 = shuttle
     private BottomNavigationView travelOptionsMenu = null;
     private boolean shuttleAvailable = false;
 
-    private boolean disabilityPreference = false; //false for no disability, true for disability
-    private boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
-    private boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
+    protected static boolean disabilityPreference = false; //false for no disability, true for disability
+    protected static boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
+    protected static boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
     private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
 
-    private TextView travelTime;  //estimated travel time
+    protected static TextView travelTime;  //estimated travel time
+    protected static GeoApiContext geoApiContext = null;
 
     /**
      * Defining all literals that are used multiple times as constants as to reduce potential errors
      * if the code ever needs to be modified
      */
     private static final String DRAWABLE = "drawable";
-    private static final String BUILDING = "building"; //building type
-    private static final String BUILDING_NAME = "Building"; //building name
-    private static final String H100 = "H-100";
-    private static final String CC150 = "CC-150";
+    protected static final String BUILDING = "building"; //building type
+    protected static final String BUILDING_NAME = "Building"; //building name
+    protected static final String H100 = "H-100";
+    protected static final String CC150 = "CC-150";
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +179,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Toolbar on top of the page
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -243,155 +232,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addNextStepListener();
 
         createFloorGraphs();
-    }
 
-    public List<Object[]> searchForClass(String fromMe, String toMe) {
-        // if we dont find the to me location on the same floor we need to send it to the escalator.
-        LatLng point1 = null;
-        LatLng point2 = null;
-        String floor1 = "";
-        String floor2 = "";
-        Graph graph1 = null;
-        Graph graph2 = null;
-        List<Object[]> results = new ArrayList<>();
-
-        for (Graph graph : floorGraphs)
-        {
-            point1 = graph.searchByClassName(fromMe);
-            if (point1 != null)
-            {
-                graph1 = graph;
-                floor1 = graph.id;
-                break;
-            }
-        }
-
-        for (Graph graph: floorGraphs)
-        {
-            point2 = graph.searchByClassName(toMe);
-            if (point2 != null)
-            {
-                graph2 = graph;
-                floor2 = graph.id;
-                break;
-            }
-        }
-
-        //if either of the points are null then we stop right away.
-        if (point1 == null || point2 == null)
-        {
-            Log.w("ERROR: ", "The location you selected was not found");
-            return null;
-        }
-
-        // we want to check if both of the locations are on the same floor
-        if (floor1.equals(floor2))  //this is an easy search as they are on the same floor
-        {
-            nextStep.setVisibility(VISIBLE);
-            Object[] path = graph1.breathFirstSearch(point1, point2);
-            results.add(path);
-            return results;
-        }
-        else {
-            // we have to get more creative with the search and break it down
-            // we need to search from class -> escalator, then from escalator -> class on the right floor
-            if (disabilityPreference)
-            {
-                nextStep.setVisibility(VISIBLE); // enable the next step button
-                Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ELEVATOR"));
-                Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ELEVATOR"), point2);
-                results.add(path1);
-                results.add(path2);
-                return results;
-            } else
-            {
-                nextStep.setVisibility(VISIBLE); // enable the next step button
-                Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ESCALATOR"));
-                Object[] path2 = graph2.breathFirstSearch(graph2.searchByClassName("ESCALATOR"), point2);
-                results.add(path1);
-                results.add(path2);
-                return results;
-            }
-        }
-    }
-
-    // this method is going to be used to display the search results from the searchForClass method
-    public void displaySearchResults(Object[] results)
-    {
-        LatLng[] dest = new LatLng[results.length];
-        System.arraycopy(results, 0, dest, 0, results.length);
-
-        //List<LatLng> listOfPoints = new ArrayList<>();
-        searchPath.setPoints(Arrays.asList(dest));
-
-        // get the first point and the last point
-        LatLng point1 = dest[0];
-        LatLng point2 = dest[dest.length - 1];
-        String point1Floor = "a";
-        String point2Floor = "b";
-        String showFloor = "";
-
-        pathMarker = mMap.addMarker(new MarkerOptions()
-                .position(point2)
-                .visible(true));
-
-        // we also need to consider if the point is an elevator/escalator so we need to check both points.
-        for (Graph graph: floorGraphs)
-        {
-            for (Graph.Node node: graph.nodes())
-            {
-                if (point1 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
-                {
-                    point1Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
-                    showFloor = point1Floor;
-                    break;
-                } else if (point2 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
-                {
-                    point2Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
-                    showFloor = point2Floor;
-                    break;
-                }
-            }
-            if (!showFloor.equals(""))  //if they got a new value that isn't the default value we found the floor
-            {
-                break;
-            }
-        }
-
-        // need to determine which floor map to show.
-        switch (showFloor) {
-            case "H-0":
-            case "H-1":
-                showHallButtons();
-                hideCCButtons();
-                floor1.performClick();
-                break;
-            case "H-2":
-                showHallButtons();
-                hideCCButtons();
-                floor2.performClick();
-                break;
-            case "H-8":
-                showHallButtons();
-                hideCCButtons();
-                floor8.performClick();
-                break;
-            case "H-9":
-                showHallButtons();
-                hideCCButtons();
-                floor9.performClick();
-                break;
-            case "CC-1":
-                showCCButtons();
-                hideHallButtons();
-                floorCC1.performClick();
-                break;
-            case "CC-2":
-                showCCButtons();
-                hideHallButtons();
-                floorCC2.performClick();
-                break;
-        }
+        travelTime = (TextView) findViewById((R.id.estimatedTravelTime));  //this is for the drawDirectionsPath method of the Directions class
+        geoApiContext = new GeoApiContext.Builder()         //this is for the drawDirectionsPath method of the Directions class
+                .apiKey(getString(R.string.google_maps_key))
+                .build();
     }
 
     public void createFloorGraphs()
@@ -440,6 +285,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .bearing(imgRotation));
     }
 
+
     public void addfloor1ButtonListener()
     {
         floor1 = (Button) findViewById(R.id.floor1);
@@ -479,7 +325,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 resetButtonColors();
                 floor8.setBackgroundColor(getResources().getColor(R.color.burgandy));
                 floor8.setTextColor(getResources().getColor((R.color.faintGray)));
-
                 removeAllFloorOverlays();
                 setUpGroundOverlay("hall8p");
             }
@@ -875,174 +720,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void getDirections()
-    {
-        String startingPointType = "class"; // can be type class or building
-        String destinationType = "class";  // can be type class or building
-
-        for (int i = 0; i < restaurantMarkers.size(); i++)  // Check if either the destination or the starting point is a restaurant
-        {
-            if (restaurantMarkers.get(i).getTitle().equals(startingPoint))
-            {
-                startingPointType = BUILDING;
-            }
-            else if (restaurantMarkers.get(i).getTitle().equals(destination))
-            {
-                destinationType = BUILDING;
-            }
-        }
-
-        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals(BUILDING_NAME))  // check if the starting point is a building
-        {
-            startingBuilding = startingPoint.split(" ")[0];
-            startingPointType = BUILDING;
-        }
-
-        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals(BUILDING_NAME))  // check if the destination is a building
-        {
-            destinationBuilding = destination.split(" ")[0];
-            destinationType = BUILDING;
-        }
-
-        if(startingPoint != null) {
-            if (startingPointType.equals(BUILDING) || startingPoint.equals(BUILDING)) //if the starting point is a building
-            {
-                if (destinationType.equals(BUILDING)) //if the destination is a building  (building -> building)
-                {
-                    if (needMoreDirections)
-                    {
-                        needMoreDirections = false;
-                        searchResultsIndex = 99;
-                    }
-                    drawDirectionsPath(origin, locationMap.get(destination));
-                }
-                else //if the destination is a classroom  (building -> classroom)
-                {
-                    destinationBuilding = destination.split("-")[0];
-                    String destinationBuildingName = destination.split("-")[0] + " Building";
-                    String toMe = destination;
-
-                    for (Marker marker : markerBuildings)
-                    {
-                        if ((marker.getTitle()).equals(destinationBuildingName))
-                        {
-                            searchMarker.setPosition(marker.getPosition());
-                            searchMarker.setVisible(false);
-                        }
-                    }
-                    drawDirectionsPath(origin, locationMap.get(destinationBuildingName));  //draws the path from the start building to the destination building (This takes care of the building to building part)
-
-                    if (classToClass)  // if the general search is a class-> class search or just a building->class search
-                    {
-                        needMoreDirections = false;
-                        if (destinationBuilding.equals("H"))
-                        {
-                            searchResults = searchForClass(H100, toMe);
-                        }
-                        else if (destinationBuilding.equals("CC"))
-                        {
-                            searchResults = searchForClass(CC150, toMe);
-                        }
-                    }
-                    else
-                    {
-                        if (destinationBuilding.equals("H"))
-                        {
-                            searchResults = searchForClass(H100, toMe);  // search from the front door of the destination building to the destination classroom
-                        }
-                        else if (destinationBuilding.equals("CC"))
-                        {
-                            searchResults = searchForClass(CC150, toMe);   // search from the front door of the destination building to the destination classroom
-                        }
-                    }
-                    searchResultsIndex = -1;
-                    searchPath.setVisible(true);
-                }
-            }
-            else //if the starting point is a classroom
-            {
-                if (destinationType.equals(BUILDING)) //if the destination is a building  (classroom -> building)
-                {
-                    // need to go from class room to exit (we can hard code the exit for H and for CC)
-                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-                    for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                        if ((marker.getTitle()).equals(startingBuilding + " Building"))
-                        {
-                            searchMarker.setPosition(marker.getPosition());
-                            searchMarker.setVisible(false);
-                        }
-                    }
-                    exploreInsideButton.performClick();
-
-                    if (startingBuilding.equals("H"))
-                    {
-                        searchResults = searchForClass(startingPoint, H100);
-                    }
-                    else if (startingBuilding.equals("CC"))
-                    {
-                        searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
-                    }
-                    searchResultsIndex = -1;
-                    searchPath.setVisible(true);
-                    needMoreDirections = true;
-                    // need to go from exit to the building. Will be called in the needMoreDirections loop
-                }
-                else // if the destination is a classroom (class -> class)
-                {
-                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-                    destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-
-                    if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
-                    {
-                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
-                            {
-                                searchMarker.setPosition(marker.getPosition());
-                                searchMarker.setVisible(false);
-                            }
-                        }
-                        exploreInsideButton.performClick();
-                        searchResults = searchForClass(startingPoint, destination);
-                        searchResultsIndex = -1;
-                        searchPath.setVisible(true);
-                    }
-                    else //if both classes are in different buildings
-                    {
-                        // go from the class to the building exit
-                        for (Marker marker : markerBuildings)   //set the marker onto the desired building
-                        {
-                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
-                            {
-                                searchMarker.setPosition(marker.getPosition());
-                                searchMarker.setVisible(false);
-                            }
-                        }
-                        exploreInsideButton.performClick();
-
-                        if (startingBuilding.equals("H"))
-                        {
-                            searchResults = searchForClass(startingPoint, H100); //directions to exit for H building
-                        }
-                        else if (startingBuilding.equals("CC"))
-                        {
-                            searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
-                        }
-
-                        searchResultsIndex = -1;
-                        searchPath.setVisible(true);
-
-                        needMoreDirections = true;
-                        classToClass = true;
-
-                        // go from building to building
-
-                        // go from the building entrance to the class
-                    }
-                }
-            }
-        }
-    }
-
     public void useMyLocationButtonClicked(View v){
         RadioButton btn = (RadioButton)v.findViewById(R.id.useMyLocationButton);
         AutoCompleteTextView startingLocation = ((ViewGroup)v.getParent().getParent()).findViewById(R.id.starting_location);
@@ -1213,7 +890,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void showHallButtons()
+    public static void showHallButtons()
     {
         floor1.setVisibility(View.VISIBLE);
         floor2.setVisibility(View.VISIBLE);
@@ -1221,7 +898,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floor9.setVisibility(View.VISIBLE);
     }
 
-    public void hideHallButtons()
+    public static void hideHallButtons()
     {
         floor1.setVisibility(View.INVISIBLE);
         floor2.setVisibility(View.INVISIBLE);
@@ -1263,13 +940,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorMBS2.setVisibility(View.INVISIBLE);
     }
 
-    public void showCCButtons()
+    public static void showCCButtons()
     {
         floorCC1.setVisibility(View.VISIBLE);
         floorCC2.setVisibility(View.VISIBLE);
     }
 
-    public void hideCCButtons()
+    public static void hideCCButtons()
     {
         floorCC1.setVisibility(View.INVISIBLE);
         floorCC2.setVisibility(View.INVISIBLE);
@@ -1409,95 +1086,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /**
-     * This is the method that draw the outdoor direction path between 2 points.
-     * @param origin This is the first paramter to drawDirectionsPath method.
-     * @param dest This is the second paramter to drawDirectionsPath method.
-     * @return void.
-     * @exception catch Throwable error.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void drawDirectionsPath(LatLng origin, LatLng dest){
-        resetPath();
-        List<LatLng> path = new ArrayList();
-        GeoApiContext context = new GeoApiContext.Builder()
-                .apiKey(getString(R.string.google_maps_key))
-                .build();
-
-        DirectionsApiRequest request = DirectionsApi.newRequest(context);
-        float time = 0;
-        travelTime = (TextView) findViewById((R.id.estimatedTravelTime));
-        TravelMode mode = getTraveMode();
-
-        if(mode != null) {
-            request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
-        }
-        try {
-            DirectionsResult res = request.await();
-            // adds coordinates of each step on the first route give to the List<LatLng> for drawing the polyline
-            if (res.routes != null && res.routes.length > 0) {
-                DirectionsRoute route = res.routes[0]; // take the first route
-                if (route.legs != null) {
-                    for (int i = 0; i < route.legs.length; i++) { //loop through all the legs
-                        DirectionsLeg leg = route.legs[i];
-                        time = time + leg.duration.inSeconds;
-                        if (leg.steps != null) {
-                            for (int j = 0; j < leg.steps.length; j++) {    // loop through all the steps
-                                DirectionsStep step = leg.steps[j];
-                                EncodedPolyline polyline = step.polyline;
-                                if (polyline != null) {
-                                    List<com.google.maps.model.LatLng> coordinates = polyline.decodePath();
-                                    for (com.google.maps.model.LatLng coord : coordinates) {
-                                        path.add(new LatLng(coord.lat, coord.lng));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            startLocationMarker = mMap.addMarker(new MarkerOptions().position(origin));
-            destinationMarker = mMap.addMarker(new MarkerOptions().position(dest));
-            //draw path
-            PolylineOptions opts = new PolylineOptions().addAll(path).color(Color.BLUE).width(5);
-            pathPolyline = mMap.addPolyline(opts);
-            animateCamera(origin, zoomLevel);
-            // set starting point and destination to null
-            //resetGetDirectionParams();
-        }
-        catch(Throwable t){
-            Log.d(TAG, t.getMessage());
-        }
-
-        //to rounding up integers when it is 0
-        int estimatedTime = new BigDecimal(time/60).setScale(0, RoundingMode.HALF_UP).intValue();
-        //if shuttle not selected as travel mode
-        if(travelMode != 4) {
-            String estimateOutput = "";
-            if (useMyLocation)
-            {
-                estimateOutput += "My location to ";
-            }
-            else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals(BUILDING_NAME)) //if the starting point is a building
-            {
-                estimateOutput += startingPoint+" to  ";
-            }
-
-            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals(BUILDING_NAME)) //if the destination is a building
-            {
-                estimateOutput += destination +" ~";
-            }
-            travelTime.setText(estimateOutput + String.valueOf(estimatedTime) + " mins");
-            travelTime.setVisibility(View.VISIBLE);
-        }
-        else {
-            ShuttleInfo getShuttleEstimate = new ShuttleInfo();
-            travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
-            travelTime.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private TravelMode getTraveMode(){
+    protected static TravelMode getTravelMode(){
         TravelMode mode = null;
         switch (travelMode){
             case 1:
@@ -1515,7 +1104,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // remove previous path and markers
-    private void resetPath(){
+    protected static void resetPath(){
         if(pathPolyline != null) {
             try {
                 startLocationMarker.remove();
@@ -1611,7 +1200,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         hideVEButtons();
                         hideVLButtons();
                         hideMBButtons();
-
 
                         removeAllFloorOverlays();
 
@@ -1822,7 +1410,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return false; // returning false calls the super method, returning true does not
     }
 
-    private void animateCamera(LatLng latLng, float zoomLevel)
+    protected static void animateCamera(LatLng latLng, float zoomLevel)
     {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
     }
@@ -1961,16 +1549,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
-//    //checks if the accessibility setting is checked
-//    private boolean isChecked=false;
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        MenuItem checkable = menu.findItem(R.id.main_accessibility);
-//        checkable.setChecked(isChecked);
-//        return true;
-//    }
-//
-
     //Handling menu clicks
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
@@ -2003,6 +1581,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return false;
     }
-
 }
-
