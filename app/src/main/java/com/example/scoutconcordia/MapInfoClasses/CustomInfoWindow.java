@@ -11,19 +11,24 @@ import com.google.android.gms.maps.model.Marker;
 
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 
-public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
+public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter
+{
     private Activity context;
 
-    public CustomInfoWindow(Activity context){
+    public CustomInfoWindow(Activity context)
+    {
         this.context = context;
     }
+
     @Override
-    public View getInfoWindow(Marker marker){
+    public View getInfoWindow(Marker marker)
+    {
         return null;
     }
 
     @Override
-    public View getInfoContents(Marker marker){
+    public View getInfoContents(Marker marker)
+    {
         View view = context.getLayoutInflater().inflate(R.layout.custominfowindow, null);
 
         TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
@@ -40,5 +45,4 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
         return view;
     }
-
 }
