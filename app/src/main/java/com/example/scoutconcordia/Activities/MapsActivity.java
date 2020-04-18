@@ -204,6 +204,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String BUILDING = "building"; //building type
     private static final String BUILDING_NAME = "Building"; //building name
     private static final String H100 = "H-100";
+    private static final String CC150 = "CC-150";
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -970,7 +971,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         else if (destinationBuilding.equals("CC"))
                         {
-                            searchResults = searchForClass("CC-150", toMe);
+                            searchResults = searchForClass(CC150, toMe);
                         }
                     }
                     else
@@ -981,7 +982,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         else if (destinationBuilding.equals("CC"))
                         {
-                            searchResults = searchForClass("CC-150", toMe);   // search from the front door of the destination building to the destination classroom
+                            searchResults = searchForClass(CC150, toMe);   // search from the front door of the destination building to the destination classroom
                         }
                     }
                     searchResultsIndex = -1;
@@ -1009,7 +1010,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     else if (startingBuilding.equals("CC"))
                     {
-                        searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                        searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
@@ -1054,7 +1055,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         else if (startingBuilding.equals("CC"))
                         {
-                            searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                            searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
                         }
 
                         searchResultsIndex = -1;
