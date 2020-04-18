@@ -53,13 +53,18 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
         });
     }
 
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(0, 0);
     }
 
-    //inflates the menu
+    /**
+     * This is the method that inflates the menu
+     * @param menu This is the first paramter to onCreateOptionsMenu method.
+     * @return boolean.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -67,7 +72,11 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
         return true;
     }
 
-    //Handling menu clicks
+    /**
+     * This is the method that Handling menu clicks
+     * @param menuItem This is the first paramter to onOptionsItemSelected method.
+     * @return boolean.
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         // Handle item selection
