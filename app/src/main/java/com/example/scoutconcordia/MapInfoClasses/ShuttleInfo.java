@@ -451,6 +451,7 @@ public class ShuttleInfo {
      * (It essentially converts strings into doubles, for calculation purposes.)
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private double[] getLoyolaMondayToThursdayTimes() {
 
         String[] numRange = retrieveMonToThursLoyola();
@@ -482,6 +483,7 @@ public class ShuttleInfo {
      * (It essentially converts strings into doubles, for calculation purposes.)
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private double[] getSGWMondayToThursdayTimes() {
 
         String[] numRange = retrieveMonToThursSGW();
@@ -512,6 +514,7 @@ public class ShuttleInfo {
      * (It essentially converts strings into doubles, for calculation purposes.)
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private double[] getLoyolaFridayTimes() {
 
         String[] numRange = retrieveFridayLoyola();
@@ -542,6 +545,7 @@ public class ShuttleInfo {
      * (It essentially converts strings into doubles, for calculation purposes.)
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private double[] getSGWFridayTimes() {
 
         String[] numRange = retrieveFridaySGW();
@@ -575,35 +579,13 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveMonToThursLoyola() {
 
-        ArrayList<String> shuttleArrayList = new ArrayList<>();
-
-            try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola))
-            {
-                InputStreamReader readInput = new InputStreamReader(is);
-                StringBuilder sb = new StringBuilder();
-                BufferedReader bfr = new BufferedReader(readInput);
-
-                String thisLine;
-
-                // This while loop goes through the entire file line by line and analyzes it
-                while ((thisLine = bfr.readLine()) != null) {
-                    shuttleArrayList.add(thisLine);
-                }
-
-                readInput.close();
-                bfr.close();
-
+        String[] scheduleArray = new String[0];
+        try {
+            scheduleArray = retrieveTime("loyolaMonThurs");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        String[] givenTimes = new String[shuttleArrayList.size()];
-
-        for (int i = 0; i < givenTimes.length; i++){
-            givenTimes[i] = shuttleArrayList.get(i);
-        }
-
-        return givenTimes;
+        return scheduleArray;
 
     }
 
@@ -615,34 +597,13 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveFridayLoyola() {
 
-        ArrayList<String> shuttleArrayList = new ArrayList<>();
-
-        try(InputStream is = context.getResources().openRawResource(raw.schedule_friday_loyola)) {
-            InputStreamReader readInput = new InputStreamReader(is);
-            StringBuilder sb = new StringBuilder();
-            BufferedReader bfr = new BufferedReader(readInput);
-
-            String thisLine;
-
-            // This while loop goes through the entire file line by line and analyzes it
-            while ((thisLine = bfr.readLine()) != null) {
-                shuttleArrayList.add(thisLine);
-            }
-
-            readInput.close();
-            bfr.close();
-
+        String[] scheduleArray = new String[0];
+        try {
+            scheduleArray = retrieveTime("loyolaFriday");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        String[] givenTimes = new String[shuttleArrayList.size()];
-
-        for (int i = 0; i < givenTimes.length; i++){
-            givenTimes[i] = shuttleArrayList.get(i);
-        }
-
-        return givenTimes;
+        return scheduleArray;
 
     }
 
@@ -655,34 +616,13 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveMonToThursSGW() {
 
-        ArrayList<String> shuttleArrayList = new ArrayList<>();
-
-        try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)) {
-            InputStreamReader readInput = new InputStreamReader(is);
-            StringBuilder sb = new StringBuilder();
-            BufferedReader bfr = new BufferedReader(readInput);
-
-            String thisLine;
-
-            // This while loop goes through the entire file line by line and analyzes it
-            while ((thisLine = bfr.readLine()) != null) {
-                shuttleArrayList.add(thisLine);
-            }
-
-            readInput.close();
-            bfr.close();
-
+        String[] scheduleArray = new String[0];
+        try {
+            scheduleArray = retrieveTime("sgwMonThurs");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        String[] givenTimes = new String[shuttleArrayList.size()];
-
-        for (int i = 0; i < givenTimes.length; i++){
-            givenTimes[i] = shuttleArrayList.get(i);
-        }
-
-        return givenTimes;
+        return scheduleArray;
 
     }
 
@@ -695,25 +635,53 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveFridaySGW() {
 
-        ArrayList<String> shuttleArrayList = new ArrayList<>();
-
-        try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)) {
-            InputStreamReader readInput = new InputStreamReader(is);
-            StringBuilder sb = new StringBuilder();
-            BufferedReader bfr = new BufferedReader(readInput);
-
-            String thisLine;
-
-            // This while loop goes through the entire file line by line and analyzes it
-            while ((thisLine = bfr.readLine()) != null) {
-                shuttleArrayList.add(thisLine);
-            }
-
-            readInput.close();
-            bfr.close();
+        String[] scheduleArray = new String[0];
+        try {
+            scheduleArray = retrieveTime("sgwFriday");
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return scheduleArray;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private String[] retrieveTime(String txtFile) throws IOException {
+
+        InputStream is = null;
+
+        switch (txtFile){
+            case "loyolaMonThurs":
+                is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
+                break;
+            case "loyolaFriday":
+                is = context.getResources().openRawResource(raw.schedule_friday_loyola);
+                break;
+            case "sgwFriday":
+                is = context.getResources().openRawResource(raw.schedule_friday_sgw);
+                break;
+            default:
+                is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
+                break;
+        }
+
+        ArrayList<String> shuttleArrayList = new ArrayList<>();
+
+        is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
+        InputStreamReader readInput = new InputStreamReader(is);
+        StringBuilder sb = new StringBuilder();
+        BufferedReader bfr = new BufferedReader(readInput);
+
+        String thisLine;
+
+        // This while loop goes through the entire file line by line and analyzes it
+        while ((thisLine = bfr.readLine()) != null) {
+            shuttleArrayList.add(thisLine);
+        }
+
+        readInput.close();
+        bfr.close();
+
 
         String[] givenTimes = new String[shuttleArrayList.size()];
 
