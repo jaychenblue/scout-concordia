@@ -50,9 +50,6 @@ public class Graph
             return false;
         }
 
-        private int getId() { return id; }
-        private void setId(int id) { this.id = id; }
-        private void setElement(LatLng element) { this.element = element; }
         private boolean isTraversed() { return traversed; }
         private void setTraversed(boolean traversed) { this.traversed = traversed; }
         public int getType() { return type; }
@@ -165,8 +162,6 @@ public class Graph
         nodes[id].element = newCoordinate;
         return true;
     }
-
-    // returns -1 if the elements can't be found in the nodes of the graph, 0 if one of the elements couldn't be removed / wasn't in the adjacency list and 1 if it was successful
 
     /** Removes an edge between 2 vertices (nodes)
      * @param ele1 The latitude and longitude coordinate of the 1st node.
