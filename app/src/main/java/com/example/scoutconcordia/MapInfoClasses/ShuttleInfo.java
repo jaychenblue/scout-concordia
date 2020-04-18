@@ -277,8 +277,8 @@ public class ShuttleInfo {
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private double[] getLoyolaMondayToThursdayTimes() {
-
+    private double[] getLoyolaMondayToThursdayTimes()
+    {
         String[] numRange = retrieveMonToThursLoyola();
 
         int[] hours = new int[numRange.length];
@@ -296,8 +296,6 @@ public class ShuttleInfo {
 
             calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
             actualTimes[j] = (hours[j] + (calculatedMinutes));
-
-//                System.out.println(actualTimes[j]);
         }
 
         return actualTimes;
@@ -309,8 +307,8 @@ public class ShuttleInfo {
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private double[] getSGWMondayToThursdayTimes() {
-
+    private double[] getSGWMondayToThursdayTimes()
+    {
         String[] numRange = retrieveMonToThursSGW();
 
         int[] hours = new int[numRange.length];
@@ -340,7 +338,8 @@ public class ShuttleInfo {
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private double[] getLoyolaFridayTimes() {
+    private double[] getLoyolaFridayTimes()
+    {
 
         String[] numRange = retrieveFridayLoyola();
 
@@ -371,8 +370,8 @@ public class ShuttleInfo {
      * @return This returns a double array, which holds the shuttle time of the requested day and location
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private double[] getSGWFridayTimes() {
-
+    private double[] getSGWFridayTimes()
+    {
         String[] numRange = retrieveFridaySGW();
 
         int[] hours = new int[numRange.length];
@@ -402,8 +401,8 @@ public class ShuttleInfo {
      * @return A string array holding shuttle times to display
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private String[] retrieveMonToThursLoyola() {
-
+    private String[] retrieveMonToThursLoyola()
+    {
         String[] scheduleArray = new String[0];
         try {
             scheduleArray = retrieveTime("loyolaMonThurs");
@@ -420,8 +419,8 @@ public class ShuttleInfo {
      * @return A string array holding shuttle times to display
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private String[] retrieveFridayLoyola() {
-
+    private String[] retrieveFridayLoyola()
+    {
         String[] scheduleArray = new String[0];
         try {
             scheduleArray = retrieveTime("loyolaFriday");
@@ -432,15 +431,14 @@ public class ShuttleInfo {
 
     }
 
-
     /**
      * This method will handle the retrieval of times from external encrypted txt files,
      * And then convert them into a comprehensible String array which can be used by this class for calculations.
      * @return A string array holding shuttle times to display
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private String[] retrieveMonToThursSGW() {
-
+    private String[] retrieveMonToThursSGW()
+    {
         String[] scheduleArray = new String[0];
         try {
             scheduleArray = retrieveTime("sgwMonThurs");
@@ -448,7 +446,6 @@ public class ShuttleInfo {
             e.printStackTrace();
         }
         return scheduleArray;
-
     }
 
 
@@ -458,8 +455,8 @@ public class ShuttleInfo {
      * @return A string array holding shuttle times to display
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private String[] retrieveFridaySGW() {
-
+    private String[] retrieveFridaySGW()
+    {
         String[] scheduleArray = new String[0];
         try {
             scheduleArray = retrieveTime("sgwFriday");
@@ -469,10 +466,15 @@ public class ShuttleInfo {
         return scheduleArray;
     }
 
-
+    /**
+     * This method retrieves the departure times of the shuttle depending on the day and location of the user (SGW vs Loyola).
+     * @param txtFile files in which the schedules are stored
+     * @return
+     * @throws IOException
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private String[] retrieveTime(String txtFile) throws IOException {
-
+    private String[] retrieveTime(String txtFile) throws IOException
+    {
         InputStream is = null;
 
         switch (txtFile){
@@ -507,7 +509,6 @@ public class ShuttleInfo {
         readInput.close();
         bfr.close();
 
-
         String[] givenTimes = new String[shuttleArrayList.size()];
 
         for (int i = 0; i < givenTimes.length; i++){
@@ -517,8 +518,6 @@ public class ShuttleInfo {
         return givenTimes;
 
     }
-
-
 
 }
 
