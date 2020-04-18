@@ -36,11 +36,17 @@ import java.util.Calendar;
 public class ShuttleInfo {
 
 
+
     private Context context = MapsActivity.getmContext();
 
     // This method checks the time and day and finds the next relevant shuttle bus time, from SGW.
     // From there, it builds an estimate of how long it would take for the entire trip.
 
+    /**
+     * This method pulls the estimated route time from SGW Campus and returns it as a user-friendly string which
+     * will explain when the next shuttle time is and subsequently tell the user the estimated route time.
+     * @return A string with a relevant message to the user.
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String getEstimatedRouteTimeFromSGW() {
 
@@ -237,6 +243,12 @@ public class ShuttleInfo {
     // This method checks the time and day and finds the next relevant shuttle bus time, from Loyola.
     // From there, it builds an estimate of how long it would take for the entire trip.
 
+
+    /**
+     * This method pulls the estimated route time from Loyola Campus and returns it as a user-friendly string which
+     * will explain when the next shuttle time is and subsequently tell the user the estimated route time.
+     * @return A string with a relevant message to the user.
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String getEstimatedRouteTimeFromLoyola() {
 
@@ -434,8 +446,11 @@ public class ShuttleInfo {
 
     }
 
-    // This returns a double array, which holds the shuttle time of the requested day and location.
-    // It essentially converts strings into doubles, for calculation purposoes.
+    /**
+     * This method retrieves the times of the Loyola schedule from Monday to Thursday
+     * (It essentially converts strings into doubles, for calculation purposes.)
+     * @return This returns a double array, which holds the shuttle time of the requested day and location
+     */
     private double[] getLoyolaMondayToThursdayTimes() {
 
         String[] numRange = retrieveMonToThursLoyola();
@@ -462,7 +477,11 @@ public class ShuttleInfo {
         return actualTimes;
     }
 
-    // This returns a double array, which holds the shuttle time of the requested day and location
+    /**
+     * This method retrieves the times of the SGW schedule from Monday to Thursday
+     * (It essentially converts strings into doubles, for calculation purposes.)
+     * @return This returns a double array, which holds the shuttle time of the requested day and location
+     */
     private double[] getSGWMondayToThursdayTimes() {
 
         String[] numRange = retrieveMonToThursSGW();
@@ -488,7 +507,11 @@ public class ShuttleInfo {
 
     }
 
-    // This returns a double array, which holds the shuttle time of the requested day and location
+    /**
+     * This method retrieves the times of the Loyola schedule for Friday
+     * (It essentially converts strings into doubles, for calculation purposes.)
+     * @return This returns a double array, which holds the shuttle time of the requested day and location
+     */
     private double[] getLoyolaFridayTimes() {
 
         String[] numRange = retrieveFridayLoyola();
@@ -514,7 +537,11 @@ public class ShuttleInfo {
 
     }
 
-    // This returns a double array, which holds the shuttle time of the requested day and location
+    /**
+     * This method retrieves the times of the SGW schedule for Friday
+     * (It essentially converts strings into doubles, for calculation purposes.)
+     * @return This returns a double array, which holds the shuttle time of the requested day and location
+     */
     private double[] getSGWFridayTimes() {
 
         String[] numRange = retrieveFridaySGW();
@@ -540,9 +567,11 @@ public class ShuttleInfo {
     }
 
 
-
-    // These methods will handle the retrieval of times from external encrypted txt files,
-    // And then convert them into a comprehensible String array which can be used by this class for calculations.
+    /**
+     * This method will handle the retrieval of times from external encrypted txt files,
+     * And then convert them into a comprehensible String array which can be used by this class for calculations.
+     * @return A string array holding shuttle times to display
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveMonToThursLoyola() {
 
@@ -578,7 +607,11 @@ public class ShuttleInfo {
 
     }
 
-
+    /**
+     * This method will handle the retrieval of times from external encrypted txt files,
+     * And then convert them into a comprehensible String array which can be used by this class for calculations.
+     * @return A string array holding shuttle times to display
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveFridayLoyola() {
 
@@ -614,6 +647,11 @@ public class ShuttleInfo {
     }
 
 
+    /**
+     * This method will handle the retrieval of times from external encrypted txt files,
+     * And then convert them into a comprehensible String array which can be used by this class for calculations.
+     * @return A string array holding shuttle times to display
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveMonToThursSGW() {
 
@@ -649,6 +687,11 @@ public class ShuttleInfo {
     }
 
 
+    /**
+     * This method will handle the retrieval of times from external encrypted txt files,
+     * And then convert them into a comprehensible String array which can be used by this class for calculations.
+     * @return A string array holding shuttle times to display
+     */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveFridaySGW() {
 
