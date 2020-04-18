@@ -201,7 +201,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * if the code ever needs to be modified
      */
     private static final String DRAWABLE = "drawable";
-    private static final String BUILDING = "building";
+    private static final String BUILDING = "building"; //building type
+    private static final String BUILDING_NAME = "Building"; //building name
     private static final String H100 = "H-100";
 
     // Displays the Map
@@ -920,13 +921,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building"))  // check if the starting point is a building
+        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals(BUILDING_NAME))  // check if the starting point is a building
         {
             startingBuilding = startingPoint.split(" ")[0];
             startingPointType = BUILDING;
         }
 
-        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building"))  // check if the destination is a building
+        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals(BUILDING_NAME))  // check if the destination is a building
         {
             destinationBuilding = destination.split(" ")[0];
             destinationType = BUILDING;
@@ -1550,12 +1551,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 estimateOutput += "My location to ";
             }
-            else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+            else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals(BUILDING_NAME)) //if the starting point is a building
             {
                 estimateOutput += startingPoint+" to  ";
             }
 
-            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals(BUILDING_NAME)) //if the destination is a building
             {
                 estimateOutput += destination +" ~";
             }
