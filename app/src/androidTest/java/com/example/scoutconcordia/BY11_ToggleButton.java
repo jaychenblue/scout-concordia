@@ -48,7 +48,7 @@ public class BY11_ToggleButton {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                4),
                         isDisplayed()));
         toggleButton.perform(click());
         Thread.sleep(2500);
@@ -59,7 +59,7 @@ public class BY11_ToggleButton {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                4),
                         isDisplayed()));
         toggleButton2.perform(click());
         Thread.sleep(2500);

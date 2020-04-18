@@ -43,7 +43,7 @@ public class BY14_AdditionalInfo {
     public GrantPermissionRule mGrantPermissionRule =
     GrantPermissionRule.grant(
     "android.permission.ACCESS_FINE_LOCATION");
-    
+
     @Test
     public void bY14_AdditionalInfo() throws InterruptedException
     {
@@ -54,7 +54,7 @@ public class BY14_AdditionalInfo {
             UiObject marker = device.findObject(new UiSelector().descriptionContains("ER Building"));
             marker.click();
         }
-        catch (UiObjectNotFoundException notFound)
+        catch (Throwable t)
         {
             Log.println(Log.WARN, "MessedUpTest", "The Marker could not be found");
         }
@@ -64,7 +64,7 @@ public class BY14_AdditionalInfo {
               childAtPosition(
               childAtPosition(
               withClassName(is("android.widget.RelativeLayout")),
-              5),
+              6),
               0),
               isDisplayed()));
         button.perform(click());
@@ -75,7 +75,7 @@ public class BY14_AdditionalInfo {
               childAtPosition(
               childAtPosition(
               withClassName(is("android.widget.RelativeLayout")),
-              5),
+              6),
               1),
               isDisplayed()));
         button5.perform(click());

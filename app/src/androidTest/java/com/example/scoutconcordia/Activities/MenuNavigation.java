@@ -53,7 +53,7 @@ public class MenuNavigation {
         overflowMenuButton.perform(click());
 
         ViewInteraction appCompatTextView = onView(
-                allOf(withId(R.id.title), withText("Shuttle Bus"),
+                allOf(withId(R.id.title), withText("Shuttle Bus Schedule"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.content),

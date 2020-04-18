@@ -91,7 +91,7 @@ public class IndoorDirections {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                13),
+                                20),
                         isDisplayed()));
         appCompatButton.perform(click());
 
@@ -101,7 +101,7 @@ public class IndoorDirections {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                13),
+                                20),
                         isDisplayed()));
         appCompatButton2.perform(click());
 
