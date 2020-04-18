@@ -14,7 +14,36 @@
     <string name="shuttle">Navette</string>
     <string name="search_hint">Rechercher une salle de classe ou un bâtiment</string>
     <string name="search_starting_location_hint">Rechercher un lieu de départ</string>
-    <string name="use_my_location">Utilise Ma Location</string>
+    <string name="use_my_location">Utiliser Ma Location</string>
     <string name="invalid_search_hint">Aucun emplacement correspondant trouvé!</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAi_bpwITcR_xUBhFANaBaXFj7FLxxC2tA</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Premier fragment</string>
+    <string name="second_fragment_label">Deuxième fragment</string>
+    <string name="next">Suivant</string>
+    <string name="previous">Précédent</string>
+
+    <string name="hello_first_fragment">Bonjour premier fragment</string>
+    <string name="hello_second_fragment">Bonjour deuxième fragment. Arg: %1$s</string>
+
+    <string name="CourseSchedule">Horaire Scolaire</string>
+    <string name="ShuttleBus">Horaire de Navette</string>
+    <string name="setting_title">Paramètres</string>
+
+    <string name="weekday">Lundi - Jeudi</string>
+    <string name="FromLoyola">Partir de Loyola</string>
+    <string name="ArrivingSGW">Arrivée à SGW</string>
+    <string name="departures">Départs:</string>
+    <string name="string_halfhour">Toutes les 30 min.</string>
+    <string name="Friday">Vendredi</string>
+    <string name="Departures">Départs</string>
+    <string name="hint">Trouver une salle de classe ou un bâtiment</string>
+    <string name="ExploreInside">Intérieur</string>
+    <string name="string_getdirections">Obtenir des directions</string>
+    <string name="summary">L\'activation des paramètres d\'accessibilité garantit qu\'un chemin accessible sera affiché.</string>
+    <string name="string_nextstep">L\'étape suivante</string>
+    <string name="AccessibilitySettings">Paramètres d\'accessibilité</string>
+
+
 </resources>

@@ -24,7 +24,7 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         //set title of page
-        getSupportActionBar().setTitle("Shuttle Bus Schedule");
+        getSupportActionBar().setTitle("ScoutConcordia");
 
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_shuttle_schedule);
@@ -45,7 +45,7 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
                         ShuttleScheduleActivity.this.overridePendingTransition(0, 0);
                         break;
 
-                    case R.id.nav_shuttle:
+                    default:
                         break;
                 }
                 return false;
@@ -91,6 +91,10 @@ public class ShuttleScheduleActivity extends AppCompatActivity {
                 startActivity(settingsIntent);
                 ShuttleScheduleActivity.this.overridePendingTransition(0,0);
                 break;
+
+            default:
+            return super.onOptionsItemSelected(menuItem);
+
         }
         return false;
     }
