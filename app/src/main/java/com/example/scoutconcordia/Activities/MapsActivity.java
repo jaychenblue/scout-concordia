@@ -1,6 +1,7 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -19,6 +20,7 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -193,8 +195,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
 
     private TextView travelTime;  //estimated travel time
-    private TextView from;    //outdoor building start point
-    private TextView to;      //outdoor building destination
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -244,9 +244,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addDirectionButtonListener();
         addExploreInsideButtonListener();
         addPopUpBarListener();
-        addFromListener();
-        addTravelTimeListener();
-        addToListener();
+
         addfloor8ButtonListener();
         addfloor9ButtonListener();
         addfloor1ButtonListener();
@@ -885,8 +883,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private boolean enableShuttle(View v, boolean enabled){
-        BottomNavigationItemView shuttleModeItem = v.findViewById(R.id.shuttle);
-        shuttleModeItem.setEnabled(enabled);
+        BottomNavigationView bottomNavigationView = v.findViewById(R.id.travel_modes_nav_bar);
+        MenuItem shuttleMenuItem = bottomNavigationView.getMenu().getItem(3);
+        shuttleMenuItem.setEnabled(enabled);
         shuttleAvailable = enabled;
         return enabled;
     }
@@ -1130,6 +1129,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onShuttleSelected(MenuItem m){
         m.setChecked(true);
         travelMode = 4;
+        Toast.makeText(this, String.valueOf(travelMode), Toast.LENGTH_LONG).show();
     }
 
     private void setModeToWalkIfShuttleSelected(){
@@ -1231,21 +1231,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         popUpBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
         // can add functionality here if we click on the pop up bar
-    }
-
-    private void addFromListener()
-    {
-        from = findViewById(R.id.from);
-    }
-
-    private void addToListener()
-    {
-        to = findViewById(R.id.to);
-    }
-
-    private void addTravelTimeListener()
-    {
-        travelTime = findViewById(R.id.estimatedTravelTime);
     }
 
     // method for hiding all of the markers on the map
@@ -1520,6 +1505,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @return void.
      * @exception catch Throwable error.
      */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void drawDirectionsPath(LatLng origin, LatLng dest){
         resetPath();
         List<LatLng> path = new ArrayList();
@@ -1529,10 +1515,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         DirectionsApiRequest request = DirectionsApi.newRequest(context);
         float time = 0;
-        from = (TextView) findViewById((R.id.from));
-        to = (TextView) findViewById((R.id.to));
         travelTime = (TextView) findViewById((R.id.estimatedTravelTime));
         TravelMode mode = getTraveMode();
+
         if(mode != null) {
             request.mode(mode).origin(origin.latitude + "," + origin.longitude).destination(dest.latitude + "," + dest.longitude);
         }
@@ -1575,23 +1560,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //to rounding up integers when it is 0
         int estimatedTime = new BigDecimal(time/60).setScale(0, RoundingMode.HALF_UP).intValue();
-        //cases that  different travel mode was selected
-        if(mode.toString().equals("driving") || mode.toString().equals("walking") || mode.toString().equals("transit")){
-            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+        //if shuttle not selected as travel mode
+        if(travelMode != 4) {
+            String estimateOutput = "";
+            if (useMyLocation)
             {
-                to.setText("To " + destination);
-                to.setVisibility(View.VISIBLE);
-            }
-            if(useMyLocation){
-                from.setText("From Current");
-                from.setVisibility(View.VISIBLE);
+                estimateOutput += "My location to ";
             }
             else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
             {
-                from.setText("From " + startingPoint);
-                from.setVisibility(View.VISIBLE);
+                estimateOutput += startingPoint+" to  ";
             }
-            travelTime.setText("~" + String.valueOf(estimatedTime) + " mins");
+
+            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+            {
+                estimateOutput += destination +" ~";
+            }
+            travelTime.setText(estimateOutput + String.valueOf(estimatedTime) + " mins");
+            travelTime.setVisibility(View.VISIBLE);
+        }
+        else {
+            ShuttleInfo getShuttleEstimate = new ShuttleInfo();
+            travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
             travelTime.setVisibility(View.VISIBLE);
         }
     }
@@ -1756,9 +1746,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onMapClick(LatLng latLng) {
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
-                from.setVisibility(View.INVISIBLE);
-                to.setVisibility(View.INVISIBLE);
-                travelTime.setVisibility(View.INVISIBLE);
 
                 hideHallButtons();
                 hideCCButtons();
@@ -1774,7 +1761,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 resetGetDirectionParams();
                 resetPath();  //erase the path from outdoor directions
                 setRestaurantMarkersVisibility(false);
-                //System.out.println(latLng);
+
+                travelTime.setVisibility(View.INVISIBLE);
             }
         });
     }
