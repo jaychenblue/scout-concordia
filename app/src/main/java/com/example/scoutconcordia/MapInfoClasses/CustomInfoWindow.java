@@ -16,7 +16,7 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     {
         this.context = context;
     }
-    
+
     @Override
     public View getInfoWindow(Marker marker)
     {
