@@ -74,8 +74,10 @@ public class ShuttleInfo {
      */
     public void getNextShuttleTime(double [] shuttleTimes)
     {
-        for (int i = 0; i < shuttleTimes.length; i++) {
-            if (timeOfDay < shuttleTimes[i]) {
+        for (int i = 0; i < shuttleTimes.length; i++)
+        {
+            if (timeOfDay < shuttleTimes[i])
+            {
                 nextShuttleTime = shuttleTimes[i];
                 indexPosition = i;
                 break;
@@ -91,7 +93,8 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String getEstimatedRouteTimeFromSGW()
     {
-        switch (currentDay) {
+        switch (currentDay)
+        {
 
             case 1:
                 today = SUNDAY;
@@ -126,7 +129,8 @@ public class ShuttleInfo {
         }
 
         // now we iterate through the schedule to check the next best time.
-        switch (today) {
+        switch (today)
+        {
 
             case SUNDAY:
                 messageToUser = "There are no bus shuttles on Sundays!";
@@ -185,7 +189,8 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String getEstimatedRouteTimeFromLoyola()
     {
-        switch (currentDay) {
+        switch (currentDay)
+        {
 
             case 1:
                 today = SUNDAY;
@@ -221,7 +226,8 @@ public class ShuttleInfo {
         }
 
         // now we iterate through the schedule to check the next best time.
-        switch (today) {
+        switch (today)
+        {
 
             case SUNDAY:
                 messageToUser = "There are no bus shuttles on Sundays!";
@@ -258,8 +264,6 @@ public class ShuttleInfo {
         String overallEstimation = " Route estimate is: " + estimatedTime + " mins";
 
         System.out.println((messageToUser + "\n" + overallEstimation + " minutes"));
-
-//            return (messageToUser + "\n" + overallEstimation);
 
         if ((today.equals(SATURDAY)) || today.equals(SUNDAY)) {
             overallEstimation = "";
@@ -334,7 +338,8 @@ public class ShuttleInfo {
     private double[] getTime(String whichTime)
     {
         String[] numRange = new String[0];
-        switch (whichTime){
+        switch (whichTime)
+        {
             case "loyolaMonThurs":
                 numRange = retrieveMonToThursLoyola();
                 break;
@@ -360,7 +365,8 @@ public class ShuttleInfo {
 
         double[] actualTimes = new double[hours.length];
         double calculatedMinutes = 0;
-        for (int j = 0; j < actualTimes.length; j++) {
+        for (int j = 0; j < actualTimes.length; j++)
+        {
 
             calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
             actualTimes[j] = (hours[j] + (calculatedMinutes));
@@ -379,7 +385,8 @@ public class ShuttleInfo {
     private String[] retrieveMonToThursLoyola()
     {
         String[] scheduleArray = new String[0];
-        try {
+        try
+        {
             scheduleArray = retrieveTime("loyolaMonThurs");
         } catch (IOException e) {
             e.printStackTrace();
@@ -397,9 +404,12 @@ public class ShuttleInfo {
     private String[] retrieveFridayLoyola()
     {
         String[] scheduleArray = new String[0];
-        try {
+        try
+        {
             scheduleArray = retrieveTime("loyolaFriday");
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
         return scheduleArray;
@@ -415,9 +425,12 @@ public class ShuttleInfo {
     private String[] retrieveMonToThursSGW()
     {
         String[] scheduleArray = new String[0];
-        try {
+        try
+        {
             scheduleArray = retrieveTime("sgwMonThurs");
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
         return scheduleArray;
@@ -433,9 +446,12 @@ public class ShuttleInfo {
     private String[] retrieveFridaySGW()
     {
         String[] scheduleArray = new String[0];
-        try {
+        try
+        {
             scheduleArray = retrieveTime("sgwFriday");
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
         return scheduleArray;
@@ -452,16 +468,20 @@ public class ShuttleInfo {
     {
         InputStream is = null;
 
-        switch (txtFile){
+        switch (txtFile)
+        {
             case "loyolaMonThurs":
                 is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
                 break;
+
             case "loyolaFriday":
                 is = context.getResources().openRawResource(raw.schedule_friday_loyola);
                 break;
+
             case "sgwFriday":
                 is = context.getResources().openRawResource(raw.schedule_friday_sgw);
                 break;
+
             default:
                 is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
                 break;
@@ -477,7 +497,8 @@ public class ShuttleInfo {
         String thisLine;
 
         // This while loop goes through the entire file line by line and analyzes it
-        while ((thisLine = bfr.readLine()) != null) {
+        while ((thisLine = bfr.readLine()) != null)
+        {
             shuttleArrayList.add(thisLine);
         }
 
@@ -486,7 +507,8 @@ public class ShuttleInfo {
 
         String[] givenTimes = new String[shuttleArrayList.size()];
 
-        for (int i = 0; i < givenTimes.length; i++){
+        for (int i = 0; i < givenTimes.length; i++)
+        {
             givenTimes[i] = shuttleArrayList.get(i);
         }
 
