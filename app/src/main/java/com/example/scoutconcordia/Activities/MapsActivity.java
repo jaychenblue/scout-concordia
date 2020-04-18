@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -35,17 +33,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.example.scoutconcordia.DataStructures.Graph;
-import com.example.scoutconcordia.FileAccess.DES;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
 import com.example.scoutconcordia.R;
@@ -57,7 +50,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -70,33 +62,19 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import com.google.maps.android.PolyUtil;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-
-import java.io.OutputStream;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TreeMap;
-
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
 import com.example.scoutconcordia.MapInfoClasses.CustomInfoWindow;
-
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -106,11 +84,7 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
-
-import org.joda.time.DateTime;
-
 import static android.content.ContentValues.TAG;
-import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
@@ -269,10 +243,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addNextStepListener();
 
         createFloorGraphs();
-
-        // lets encrypt all of the files before using them
-        //encryptAllInputFiles();
-
     }
 
     public List<Object[]> searchForClass(String fromMe, String toMe) {
@@ -1438,50 +1408,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // logic here
         }
     }
-
-/*
-    // This is the method that will be used to encrypt all of the input files during the app startup.
-    // This method encrypts all of the files that are in the "filestoencrypt" file
-    // *** we need to keep this here until the end as i am using it to get the encrypted files for the raw folder ***
-    public void encryptAllInputFiles()
-    {
-        DES encrypter = new DES();
-        InputStream fis = null;
-        OutputStream fos = null;
-        String filename = "";
-        String encryptedFilename = "";
-        try {
-            InputStream readMe = getResources().openRawResource(getResources().getIdentifier("filestoencrypt", "raw", getPackageName()));
-            Scanner reader = new Scanner(readMe);
-            while (reader.hasNext())
-            {
-                filename = reader.nextLine();
-                encryptedFilename = "encrypted_" + filename;
-                fis = getResources().openRawResource(getResources().getIdentifier(filename, "raw", getPackageName()));
-                fos = new FileOutputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                encrypter.encryptFile(fis, fos);
-
-                // this is some code that we can use to get the text in the encrypted file
-                if (filename.equals("hall2nodes"))
-                {
-                    fis = new FileInputStream(new File(MapsActivity.this.getFilesDir().getAbsoluteFile(), encryptedFilename));
-                   Scanner readEncrypted = new Scanner(fis);
-                    while (readEncrypted.hasNext())
-                    {
-                        System.out.println(readEncrypted.nextLine());
-                    }
-                    System.out.println("DONE");
-                }
-            }
-            // close the input and the output streams
-            fis.close();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    } */
 
     /**
      * This is the method that draw the outdoor direction path between 2 points.
