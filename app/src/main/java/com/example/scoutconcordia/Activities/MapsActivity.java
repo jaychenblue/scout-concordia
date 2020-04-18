@@ -196,6 +196,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private TextView travelTime;  //estimated travel time
 
+    /**
+     * Defining all literals that are used multiple times as constants as to reduce potential errors
+     * if the code ever needs to be modified
+     */
+    private static final String DRAWABLE = "drawable";
+    private static final String BUILDING = "building"; //building type
+    private static final String BUILDING_NAME = "Building"; //building name
+    private static final String H100 = "H-100";
+    private static final String CC150 = "CC-150";
+
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -451,7 +461,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         float imgHeightInPixels;
         float imgRotation = -56;
         float overlaySize = 75;
-        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier(image, "drawable", getPackageName()));
+        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier(image, DRAWABLE, getPackageName()));
 
         hallGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                 .image(floorPlan)
@@ -539,7 +549,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 29;
                 float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", DRAWABLE, getPackageName()));
 
                 ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -568,7 +578,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 29;
                 float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", DRAWABLE, getPackageName()));
 
                 ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -597,7 +607,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 29;
                 float overlaySize = 50;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", DRAWABLE, getPackageName()));
 
                 veGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -626,7 +636,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 209;
                 float overlaySize = 71;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", DRAWABLE, getPackageName()));
 
                 vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -655,7 +665,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = 209;
                 float overlaySize = 71;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", DRAWABLE, getPackageName()));
 
                 vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -684,7 +694,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = -56;
                 float overlaySize = 42;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_01", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_01", DRAWABLE, getPackageName()));
 
                 mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -713,7 +723,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 float imgHeightInPixels;
                 float imgRotation = -56;
                 float overlaySize = 42;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", "drawable", getPackageName()));
+                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", DRAWABLE, getPackageName()));
 
                 mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
                         .image(floorPlan)
@@ -904,30 +914,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
             if (restaurantMarkers.get(i).getTitle().equals(startingPoint))
             {
-                startingPointType = "building";
+                startingPointType = BUILDING;
             }
             else if (restaurantMarkers.get(i).getTitle().equals(destination))
             {
-                destinationType = "building";
+                destinationType = BUILDING;
             }
         }
 
-        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building"))  // check if the starting point is a building
+        if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals(BUILDING_NAME))  // check if the starting point is a building
         {
             startingBuilding = startingPoint.split(" ")[0];
-            startingPointType = "building";
+            startingPointType = BUILDING;
         }
 
-        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building"))  // check if the destination is a building
+        if (destination.length() > 8 && destination.substring(destination.length() - 8).equals(BUILDING_NAME))  // check if the destination is a building
         {
             destinationBuilding = destination.split(" ")[0];
-            destinationType = "building";
+            destinationType = BUILDING;
         }
 
         if(startingPoint != null) {
-            if (startingPointType.equals("building") || startingPoint.equals("building")) //if the starting point is a building
+            if (startingPointType.equals(BUILDING) || startingPoint.equals(BUILDING)) //if the starting point is a building
             {
-                if (destinationType.equals("building")) //if the destination is a building  (building -> building)
+                if (destinationType.equals(BUILDING)) //if the destination is a building  (building -> building)
                 {
                     if (needMoreDirections)
                     {
@@ -957,22 +967,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         needMoreDirections = false;
                         if (destinationBuilding.equals("H"))
                         {
-                            searchResults = searchForClass("H-100", toMe);
+                            searchResults = searchForClass(H100, toMe);
                         }
                         else if (destinationBuilding.equals("CC"))
                         {
-                            searchResults = searchForClass("CC-150", toMe);
+                            searchResults = searchForClass(CC150, toMe);
                         }
                     }
                     else
                     {
                         if (destinationBuilding.equals("H"))
                         {
-                            searchResults = searchForClass("H-100", toMe);  // search from the front door of the destination building to the destination classroom
+                            searchResults = searchForClass(H100, toMe);  // search from the front door of the destination building to the destination classroom
                         }
                         else if (destinationBuilding.equals("CC"))
                         {
-                            searchResults = searchForClass("CC-150", toMe);   // search from the front door of the destination building to the destination classroom
+                            searchResults = searchForClass(CC150, toMe);   // search from the front door of the destination building to the destination classroom
                         }
                     }
                     searchResultsIndex = -1;
@@ -981,7 +991,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             else //if the starting point is a classroom
             {
-                if (destinationType.equals("building")) //if the destination is a building  (classroom -> building)
+                if (destinationType.equals(BUILDING)) //if the destination is a building  (classroom -> building)
                 {
                     // need to go from class room to exit (we can hard code the exit for H and for CC)
                     startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
@@ -996,11 +1006,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     if (startingBuilding.equals("H"))
                     {
-                        searchResults = searchForClass(startingPoint, "H-100");
+                        searchResults = searchForClass(startingPoint, H100);
                     }
                     else if (startingBuilding.equals("CC"))
                     {
-                        searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                        searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
                     }
                     searchResultsIndex = -1;
                     searchPath.setVisible(true);
@@ -1041,11 +1051,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         if (startingBuilding.equals("H"))
                         {
-                            searchResults = searchForClass(startingPoint, "H-100"); //directions to exit for H building
+                            searchResults = searchForClass(startingPoint, H100); //directions to exit for H building
                         }
                         else if (startingBuilding.equals("CC"))
                         {
-                            searchResults = searchForClass(startingPoint, "CC-150");  //directions to exit for CC building
+                            searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
                         }
 
                         searchResultsIndex = -1;
@@ -1542,12 +1552,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             {
                 estimateOutput += "My location to ";
             }
-            else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals("Building")) //if the starting point is a building
+            else if (startingPoint.length() > 8 && startingPoint.substring(startingPoint.length() - 8).equals(BUILDING_NAME)) //if the starting point is a building
             {
                 estimateOutput += startingPoint+" to  ";
             }
 
-            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals("Building")) //if the destination is a building
+            if (destination.length() > 8 && destination.substring(destination.length() - 8).equals(BUILDING_NAME)) //if the destination is a building
             {
                 estimateOutput += destination +" ~";
             }
@@ -1794,7 +1804,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Polygon justAddedPolygon = mMap.addPolygon(po);
             polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = this.getResources();
-            int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), "drawable", this.getPackageName());
+            int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), DRAWABLE, this.getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
                     .position(((BuildingInfo)currentBuilding.getEle()).getCenter())
                     .title(((BuildingInfo)currentBuilding.getEle()).getName())
@@ -1865,7 +1875,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             restaurantMarker.setTag(restaurantInfo);
 
             // set the icon for the restaurant marker
-            int resID = this.getResources().getIdentifier("restaurant_icon", "drawable", this.getPackageName());
+            int resID = this.getResources().getIdentifier("restaurant_icon", DRAWABLE, this.getPackageName());
             Bitmap smallMarker = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), resID), 90, 90, false);
             BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
             restaurantMarker.setIcon(smallMarkerIcon);
@@ -1933,8 +1943,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // we will assume that the starting point is a building as there is no way to determine which floor someone is on
                         // we also need to look at the destination to find where we are going. (this will be a building we know)
                         origin = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        startingPoint = "building";
-                        startingBuilding = "building";
+                        startingPoint = BUILDING;
+                        startingBuilding = BUILDING;
 
                         getDirections();
                     }
