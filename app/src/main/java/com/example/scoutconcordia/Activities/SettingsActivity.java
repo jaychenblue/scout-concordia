@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         //set title of page
-        getSupportActionBar().setTitle("Settings");
+        getSupportActionBar().setTitle("ScoutConcordia");
 
         if(findViewById(R.id.fragment_container)!= null){
             if(savedInstanceState !=null)
@@ -62,6 +62,9 @@ public class SettingsActivity extends AppCompatActivity {
                         Intent shuttleIntent = new Intent(SettingsActivity.this, ShuttleScheduleActivity.class);
                         startActivity(shuttleIntent);
                         SettingsActivity.this.overridePendingTransition(0, 0);
+                        break;
+
+                    default:
                         break;
                 }
                 return false;
@@ -106,6 +109,9 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(shuttleIntent);
                 SettingsActivity.this.overridePendingTransition(0, 0);
                 break;
+
+            default:
+                return super.onOptionsItemSelected(menuItem);
 
         }
         return false;

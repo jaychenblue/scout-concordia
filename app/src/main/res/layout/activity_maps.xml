@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:map="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:name="com.google.android.gms.maps.SupportMapFragment"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".Activities.MapsActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MapsActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -16,11 +16,7 @@ tools:context=".Activities.MapsActivity">
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-<!--    <fragment
-        android:id="@+id/autocomplete_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />-->
+
     <LinearLayout
         android:id="@+id/search"
         android:orientation="horizontal"
@@ -38,7 +34,7 @@ tools:context=".Activities.MapsActivity">
         <AutoCompleteTextView
             android:id="@+id/search_bar"
             android:backgroundTint="@android:color/transparent"
-            android:hint="Find a classroom or building"
+            android:hint="@string/hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -99,6 +95,7 @@ tools:context=".Activities.MapsActivity">
         android:onClick="onFindYourWayButtonClick"
         />
 -->
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
@@ -110,7 +107,9 @@ tools:context=".Activities.MapsActivity">
         tools:ignore="BottomAppBar"
         android:visibility="invisible" />
 
+
     <LinearLayout
+        android:id="@+id/explore_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -121,7 +120,7 @@ tools:context=".Activities.MapsActivity">
             android:id="@+id/directionsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Get Directions"
+            android:text="@string/string_getdirections"
             android:visibility="invisible"
             android:textColor="@color/white"
             android:background="@drawable/shadow_toggle"
@@ -133,12 +132,46 @@ tools:context=".Activities.MapsActivity">
             android:id="@+id/exploreInsideButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Explore Inside"
+            android:text="@string/ExploreInside"
             android:visibility="invisible"
             android:textColor="@color/white"
             android:background="@drawable/shadow_toggle"
             android:layout_marginRight="22pt"
             android:padding="5dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@id/nav_bar_activity_maps"
+        tools:ignore="BottomAppBar"
+        android:weightSum="3"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/estimatedTravelTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="@color/burgundy"
+            android:background="@color/white"
+            android:textFontWeight="500"
+            android:layout_weight="1"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@id/nav_bar_activity_maps"
+        tools:ignore="BottomAppBar"
+        android:weightSum="3"
+        android:layout_gravity="bottom">
+
 
     </LinearLayout>
 
@@ -212,6 +245,66 @@ tools:context=".Activities.MapsActivity">
         android:visibility="invisible" />
 
     <Button
+        android:id="@+id/floorVE2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="4dp"
+        android:text="VE 2"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/floorVL1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="4dp"
+        android:text="VL 1"
+        android:visibility="invisible" />
+
+
+    <Button
+        android:id="@+id/floorVL2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="390dp"
+        android:layout_marginEnd="4dp"
+        android:text="VL 2"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/floorMB1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="352dp"
+        android:layout_marginEnd="4dp"
+        android:text="MB 1"
+        android:visibility="invisible" />
+
+
+    <Button
+        android:id="@+id/floorMBS2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="390dp"
+        android:layout_marginEnd="4dp"
+        android:text="MB S2"
+        android:visibility="invisible" />
+
+    <Button
         android:id="@+id/nextStep"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -220,8 +313,25 @@ tools:context=".Activities.MapsActivity">
         android:layout_centerVertical="true"
         android:layout_marginTop="550dp"
         android:layout_marginLeft="55dp"
-        android:text="Next Step"
+        android:text="@string/string_nextstep"
         android:visibility="invisible" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/estimatedShuttleTime"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginStart="0dp"-->
+<!--        android:layout_marginEnd="0dp"-->
+<!--        android:layout_marginBottom="121dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:background="@color/white"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textColor="@color/burgundy"-->
+<!--        android:textFontWeight="500"-->
+<!--        android:visibility="invisible" />-->
 
 
 </RelativeLayout>
