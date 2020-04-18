@@ -279,26 +279,9 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private double[] getLoyolaMondayToThursdayTimes()
     {
-        String[] numRange = retrieveMonToThursLoyola();
-
-        int[] hours = new int[numRange.length];
-        double[] minutes = new double[numRange.length];
-
-        for (int i = 0; i < numRange.length; i++) {
-            String[] allTimes = numRange[i].split(":");
-            hours[i] = Integer.parseInt(allTimes[0]);
-            minutes[i] = Integer.parseInt(allTimes[1]);
-        }
-
-        double[] actualTimes = new double[hours.length];
-        double calculatedMinutes = 0;
-        for (int j = 0; j < actualTimes.length; j++) {
-
-            calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
-            actualTimes[j] = (hours[j] + (calculatedMinutes));
-        }
-
-        return actualTimes;
+        double[] timesArray;
+        timesArray = getTime("loyolaMonThurs");
+        return timesArray;
     }
 
     /**
@@ -309,26 +292,9 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private double[] getSGWMondayToThursdayTimes()
     {
-        String[] numRange = retrieveMonToThursSGW();
-
-        int[] hours = new int[numRange.length];
-        double[] minutes = new double[numRange.length];
-
-        for (int i = 0; i < numRange.length; i++) {
-            String[] allTimes = numRange[i].split(":");
-            hours[i] = Integer.parseInt(allTimes[0]);
-            minutes[i] = Integer.parseInt(allTimes[1]);
-        }
-
-        double[] actualTimes = new double[hours.length];
-        double calculatedMinutes = 0;
-        for (int j = 0; j < actualTimes.length; j++) {
-
-            calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
-            actualTimes[j] = (hours[j] + (calculatedMinutes));
-
-        }
-        return actualTimes;
+        double[] timesArray;
+        timesArray = getTime("sgwMonThurs");
+        return timesArray;
 
     }
 
@@ -341,26 +307,9 @@ public class ShuttleInfo {
     private double[] getLoyolaFridayTimes()
     {
 
-        String[] numRange = retrieveFridayLoyola();
-
-        int[] hours = new int[numRange.length];
-        double[] minutes = new double[numRange.length];
-
-        for (int i = 0; i < numRange.length; i++) {
-            String[] allTimes = numRange[i].split(":");
-            hours[i] = Integer.parseInt(allTimes[0]);
-            minutes[i] = Integer.parseInt(allTimes[1]);
-        }
-
-        double[] actualTimes = new double[hours.length];
-        double calculatedMinutes = 0;
-        for (int j = 0; j < actualTimes.length; j++) {
-
-            calculatedMinutes = Math.round((minutes[j] / 60) * 100.0) / 100.0;
-            actualTimes[j] = (hours[j] + (calculatedMinutes));
-
-        }
-        return actualTimes;
+        double[] timesArray;
+        timesArray = getTime("loyolaFriday");
+        return timesArray;
 
     }
 
@@ -372,7 +321,33 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private double[] getSGWFridayTimes()
     {
-        String[] numRange = retrieveFridaySGW();
+        double[] timesArray;
+        timesArray = getTime("sgwFriday");
+        return timesArray;
+    }
+
+    /**
+     * This method handles the switch cases and calculations for converting Strings to actual times in double format.
+     * @return This returns a double array, which holds the shuttle time of the requested day and location
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private double[] getTime(String whichTime)
+    {
+        String[] numRange = new String[0];
+        switch (whichTime){
+            case "loyolaMonThurs":
+                numRange = retrieveMonToThursLoyola();
+                break;
+            case "loyolaFriday":
+                numRange = retrieveFridayLoyola();
+                break;
+            case "sgwFriday":
+                numRange = retrieveFridaySGW();
+                break;
+            default:
+                numRange = retrieveMonToThursSGW();
+                break;
+        }
 
         int[] hours = new int[numRange.length];
         double[] minutes = new double[numRange.length];
