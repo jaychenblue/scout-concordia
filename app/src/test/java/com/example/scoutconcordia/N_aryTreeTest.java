@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class N_aryTreeTest {
 
     LatLng coordinate1, coordinate2, coordinate3;
+    LatLng escalatorHall1, hallwayHall1a, hallwayHall1b, classH100;
+    LatLng escalatorHall2, hallwayHall2a, hallwayHall2b, classH224;
     N_aryTree tree;
     N_aryTree.TreeNode node1, node2, node3;
     LinkedList<N_aryTree.TreeNode> l;
@@ -30,7 +32,7 @@ public class N_aryTreeTest {
         tree = new N_aryTree();
         node1 = tree.new TreeNode(null, coordinate1);
         node2 = tree.new TreeNode(node1, coordinate2);
-        node3 = tree.new TreeNode(node1, coordinate2);
+        node3 = tree.new TreeNode(node1, coordinate3);
     }
 
     @AfterEach
@@ -72,8 +74,8 @@ public class N_aryTreeTest {
         assertFalse(node1.equals(node2));
         assertFalse(node1.equals(node3));
 
-        // node 2 and node 3 have the same elements (coordinate 3)
-        assertTrue(node2.equals(node3));
+        // node 2 and node 3 have different elements
+        assertFalse(node2.equals(node3));
     }
 
     // ... end of tests for nested TreeNode class ...
@@ -132,6 +134,8 @@ public class N_aryTreeTest {
         assertEquals(coordinate1, tree.getHead().getElement());
 
         assertNotNull(tree.getPath(coordinate1, coordinate2));
-    }
 
+        assertEquals(coordinate1, tree.getPath(coordinate1, coordinate2)[0]);
+        assertEquals(coordinate2, tree.getPath(coordinate1, coordinate2)[1]);
+    }
 }

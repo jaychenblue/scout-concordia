@@ -466,7 +466,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floor1.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View view) {
-
                 resetButtonColors();
                 floor1.setBackgroundColor(getResources().getColor(R.color.burgandy));
                 floor1.setTextColor(getResources().getColor((R.color.faintGray)));
