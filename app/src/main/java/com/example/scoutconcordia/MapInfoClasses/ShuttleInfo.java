@@ -72,7 +72,8 @@ public class ShuttleInfo {
      * Here we check the time and day and find the next relevant shuttle but time from SGW to Loyola.
      * @param shuttleTimes is the scheduled departures of the shuttle bus
      */
-    public void getNextShuttleTime(double [] shuttleTimes){
+    public void getNextShuttleTime(double [] shuttleTimes)
+    {
         for (int i = 0; i < shuttleTimes.length; i++) {
             if (timeOfDay < shuttleTimes[i]) {
                 nextShuttleTime = shuttleTimes[i];
@@ -88,8 +89,8 @@ public class ShuttleInfo {
      * @return A string with a relevant message to the user.
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public String getEstimatedRouteTimeFromSGW() {
-
+    public String getEstimatedRouteTimeFromSGW()
+    {
         switch (currentDay) {
 
             case 1:
@@ -123,7 +124,6 @@ public class ShuttleInfo {
                 today = MONDAY;
                 break;
         }
-
 
         // now we iterate through the schedule to check the next best time.
         switch (today) {
@@ -183,23 +183,8 @@ public class ShuttleInfo {
      * @return A string with a relevant message to the user.
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public String getEstimatedRouteTimeFromLoyola() {
-
-
-        Calendar cal = Calendar.getInstance();
-        double hour = cal.get(Calendar.HOUR_OF_DAY);
-        double minutes = cal.get(Calendar.MINUTE);
-
-        String timeString = (int) hour + ":" + (int) minutes;
-
-        // This variable keeps track of the current time.
-        double timeOfDay = Math.round((hour + (minutes / 60)) * 100.0) / 100.0;
-
-        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
-        // This variable keeps track of the current day.
-        String today = null;
-
+    public String getEstimatedRouteTimeFromLoyola()
+    {
         switch (currentDay) {
 
             case 1:
@@ -235,19 +220,7 @@ public class ShuttleInfo {
                 break;
         }
 
-//            System.out.println(today);
-//            System.out.println("time is: " + timeOfDay);
-
-
         // now we iterate through the schedule to check the next best time.
-
-
-        String messageToUser = null;
-        double nextShuttleTime = 0;
-        double[] shuttleTimes;
-        int indexPosition = 0;
-
-
         switch (today) {
 
             case SUNDAY:
@@ -255,83 +228,16 @@ public class ShuttleInfo {
                 break;
 
             case MONDAY:
-
-                shuttleTimes = getLoyolaMondayToThursdayTimes();
-
-                for (int i = 0; i < shuttleTimes.length; i++) {
-                    if (timeOfDay < shuttleTimes[i]) {
-                        nextShuttleTime = shuttleTimes[i];
-                        indexPosition = i;
-                        break;
-                    }
-                }
-
+                TUESDAY:
+                WEDNESDAY:
+                THURSDAY:
+                getNextShuttleTime(shuttleTimes = getLoyolaMondayToThursdayTimes());
                 messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
-
-
-                break;
-
-            case TUESDAY:
-
-
-                shuttleTimes = getLoyolaMondayToThursdayTimes();
-
-                for (int i = 0; i < shuttleTimes.length; i++) {
-                    if (timeOfDay < shuttleTimes[i]) {
-                        nextShuttleTime = shuttleTimes[i];
-                        indexPosition = i;
-                        break;
-                    }
-                }
-
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
-
-                break;
-
-            case WEDNESDAY:
-                shuttleTimes = getLoyolaMondayToThursdayTimes();
-
-                for (int i = 0; i < shuttleTimes.length; i++) {
-                    if (timeOfDay < shuttleTimes[i]) {
-                        nextShuttleTime = shuttleTimes[i];
-                        indexPosition = i;
-                        break;
-                    }
-                }
-
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
-
-                break;
-
-            case THURSDAY:
-                shuttleTimes = getLoyolaMondayToThursdayTimes();
-
-                for (int i = 0; i < shuttleTimes.length; i++) {
-                    if (timeOfDay < shuttleTimes[i]) {
-                        nextShuttleTime = shuttleTimes[i];
-                        indexPosition = i;
-                        break;
-                    }
-                }
-
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
-
                 break;
 
             case FRIDAY:
-
-                shuttleTimes = getLoyolaFridayTimes();
-
-                for (int i = 0; i < shuttleTimes.length; i++) {
-                    if (timeOfDay < shuttleTimes[i]) {
-                        nextShuttleTime = shuttleTimes[i];
-                        indexPosition = i;
-                        break;
-                    }
-                }
-
+                getNextShuttleTime(shuttleTimes = getLoyolaFridayTimes());
                 messageToUser = "The next shuttle is at: " + retrieveFridayLoyola()[indexPosition] + ". ";
-
                 break;
 
 
@@ -341,22 +247,9 @@ public class ShuttleInfo {
 
 
             default:
-                shuttleTimes = getLoyolaMondayToThursdayTimes();
-
-                for (int i = 0; i < shuttleTimes.length; i++) {
-                    if (timeOfDay < shuttleTimes[i]) {
-                        nextShuttleTime = shuttleTimes[i];
-                        indexPosition = i;
-                        break;
-                    }
-                }
-
+                getNextShuttleTime(shuttleTimes = getLoyolaMondayToThursdayTimes());
                 messageToUser = "The next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
-
-
                 break;
-
-
         }
 
         // The shuttle time is hardcoded at 30 minutes, because of fluctuations, it is an estimation
