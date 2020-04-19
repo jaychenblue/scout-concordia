@@ -180,7 +180,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setmContext(this);
 
         //Toolbar on top of the page
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -189,7 +189,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //toggle for different campuses
         addListenerOnToggle();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_bar_activity_maps);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.nav_bar_activity_maps);
         bottomNavigationView.setSelectedItemId(R.id.nav_map);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -251,7 +251,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         createFloorGraphs();
 
-        travelTime = (TextView) findViewById((R.id.estimatedTravelTime));  //this is for the drawDirectionsPath method of the Directions class
+        travelTime = findViewById((R.id.estimatedTravelTime));  //this is for the drawDirectionsPath method of the Directions class
         geoApiContext = new GeoApiContext.Builder()         //this is for the drawDirectionsPath method of the Directions class
                 .apiKey(getString(R.string.google_maps_key))
                 .build();
@@ -289,7 +289,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // If button pushed change Campus
     public void addListenerOnToggle()
     {
-        toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
+        toggleButton = findViewById(R.id.toggleButton);
         toggleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 toggleCampus();
@@ -299,7 +299,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, locations);
         searchBar.setAdapter(adapter);
 
@@ -414,7 +414,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void useMyLocationButtonClicked(View v){
-        RadioButton btn = (RadioButton)v.findViewById(R.id.useMyLocationButton);
+        RadioButton btn = v.findViewById(R.id.useMyLocationButton);
         AutoCompleteTextView startingLocation = ((ViewGroup)v.getParent().getParent()).findViewById(R.id.starting_location);
 
         setModeToWalkIfShuttleSelected();
@@ -467,7 +467,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Once we get the search bar working, we can add a method for search here so that when the button is clicked it searches for location and gives the directions.
     public void addDirectionButtonListener()
     {
-        directionButton = (Button) findViewById(R.id.directionsButton);
+        directionButton = findViewById(R.id.directionsButton);
         // can add a functionality here that gives us the directions when we press on the button
 
         directionButton.setOnClickListener(new View.OnClickListener() {
@@ -726,7 +726,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     {
         FileAccessor useMeToRead = new FileAccessor();
         useMeToRead.setInputStream(getStreamFromFileName(encryptedFileName));
-        Graph graphName = null;
+        Graph graphName;
         // First we need to decrypt the file to have access to the locations
         useMeToRead.decryptFile(isEncrypted);
 

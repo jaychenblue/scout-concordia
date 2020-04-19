@@ -28,8 +28,16 @@ import java.util.List;
 import static android.content.ContentValues.TAG;
 import static android.view.View.VISIBLE;
 
+/** This class is a helper class for the MapsActivity and is used when obtaining the directions
+ * from 1 point to another on the map.*/
 public class Directions extends MapsActivity {
 
+    /** This method searches for a path between 2 classes.
+     * @param fromMe The starting location as a string. e.g CC-105
+     * @param toMe The destination location as a string. e.g H-100
+     * @return Returns a list of object arrays, each containing a path for the desired step in the
+     * overall directions to the location.
+     */
     public static List<Object[]> searchForClass(String fromMe, String toMe) {
         // if we dont find the to me location on the same floor we need to send it to the escalator.
         LatLng point1 = null;
@@ -88,7 +96,8 @@ public class Directions extends MapsActivity {
                 results.add(path1);
                 results.add(path2);
                 return results;
-            } else
+            }
+            else
             {
                 nextStep.setVisibility(VISIBLE); // enable the next step button
                 Object[] path1 = graph1.breathFirstSearch(point1, graph1.searchByClassName("ESCALATOR"));
@@ -100,13 +109,14 @@ public class Directions extends MapsActivity {
         }
     }
 
-    // this method is going to be used to display the search results from the searchForClass method
+    /** This method is used to display the search results from the searchForClass method
+     * @param results Takes in the Object array from the searchForClass method to draw the path.
+     */
     public static void displaySearchResults(Object[] results)
     {
         LatLng[] dest = new LatLng[results.length];
         System.arraycopy(results, 0, dest, 0, results.length);
 
-        //List<LatLng> listOfPoints = new ArrayList<>();
         searchPath.setPoints(Arrays.asList(dest));
 
         // get the first point and the last point
@@ -130,7 +140,8 @@ public class Directions extends MapsActivity {
                     point1Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
                     showFloor = point1Floor;
                     break;
-                } else if (point2 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
+                }
+                else if (point2 == node.getElement() && node.getType() == 0) //if the location matches and it is a classroom node
                 {
                     point2Floor = node.getRoom().substring(0, node.getRoom().indexOf("-") + 2); // e.g "H-8" or "MB-1"
                     showFloor = point2Floor;
@@ -179,7 +190,10 @@ public class Directions extends MapsActivity {
         }
     }
 
-
+    /** This is the main method for getting the directions from a starting location to a destination.
+     * This method is split up into many different possibilities and is called recursively when possible.
+     * The possibilities are class -> class, building -> class, building -> building, and class->building.
+     */
     public static void getDirections()
     {
         String startingPointType = "class"; // can be type class or building
@@ -214,138 +228,162 @@ public class Directions extends MapsActivity {
             {
                 if (destinationType.equals(BUILDING)) //if the destination is a building  (building -> building)
                 {
-                    if (needMoreDirections)
-                    {
-                        needMoreDirections = false;
-                        searchResultsIndex = 99;
-                    }
-                    drawDirectionsPath(origin, locationMap.get(destination));
+                    directionsBuildingToBuilding();
                 }
                 else //if the destination is a classroom  (building -> classroom)
                 {
-                    destinationBuilding = destination.split("-")[0];
-                    String destinationBuildingName = destination.split("-")[0] + " Building";
-                    String toMe = destination;
-
-                    for (Marker marker : markerBuildings)
-                    {
-                        if ((marker.getTitle()).equals(destinationBuildingName))
-                        {
-                            searchMarker.setPosition(marker.getPosition());
-                            searchMarker.setVisible(false);
-                        }
-                    }
-                    drawDirectionsPath(origin, locationMap.get(destinationBuildingName));  //draws the path from the start building to the destination building (This takes care of the building to building part)
-
-                    if (classToClass)  // if the general search is a class-> class search or just a building->class search
-                    {
-                        needMoreDirections = false;
-                        if (destinationBuilding.equals("H"))
-                        {
-                            searchResults = searchForClass(H100, toMe);
-                        }
-                        else if (destinationBuilding.equals("CC"))
-                        {
-                            searchResults = searchForClass(CC150, toMe);
-                        }
-                    }
-                    else
-                    {
-                        if (destinationBuilding.equals("H"))
-                        {
-                            searchResults = searchForClass(H100, toMe);  // search from the front door of the destination building to the destination classroom
-                        }
-                        else if (destinationBuilding.equals("CC"))
-                        {
-                            searchResults = searchForClass(CC150, toMe);   // search from the front door of the destination building to the destination classroom
-                        }
-                    }
-                    searchResultsIndex = -1;
-                    searchPath.setVisible(true);
+                    directionsBuildingToClass();
                 }
             }
             else //if the starting point is a classroom
             {
                 if (destinationType.equals(BUILDING)) //if the destination is a building  (classroom -> building)
                 {
-                    // need to go from class room to exit (we can hard code the exit for H and for CC)
-                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-                    for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                        if ((marker.getTitle()).equals(startingBuilding + " Building"))
-                        {
-                            searchMarker.setPosition(marker.getPosition());
-                            searchMarker.setVisible(false);
-                        }
-                    }
-                    exploreInsideButton.performClick();
-
-                    if (startingBuilding.equals("H"))
-                    {
-                        searchResults = searchForClass(startingPoint, H100);
-                    }
-                    else if (startingBuilding.equals("CC"))
-                    {
-                        searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
-                    }
-                    searchResultsIndex = -1;
-                    searchPath.setVisible(true);
-                    needMoreDirections = true;
-                    // need to go from exit to the building. Will be called in the needMoreDirections loop
+                    directionsClassToBuilding();
                 }
                 else // if the destination is a classroom (class -> class)
                 {
-                    startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-                    destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
-
-                    if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
-                    {
-                        for (Marker marker : markerBuildings) { //set the marker onto the desired building
-                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
-                            {
-                                searchMarker.setPosition(marker.getPosition());
-                                searchMarker.setVisible(false);
-                            }
-                        }
-                        exploreInsideButton.performClick();
-                        searchResults = searchForClass(startingPoint, destination);
-                        searchResultsIndex = -1;
-                        searchPath.setVisible(true);
-                    }
-                    else //if both classes are in different buildings
-                    {
-                        // go from the class to the building exit
-                        for (Marker marker : markerBuildings)   //set the marker onto the desired building
-                        {
-                            if ((marker.getTitle()).equals(startingBuilding + " Building"))
-                            {
-                                searchMarker.setPosition(marker.getPosition());
-                                searchMarker.setVisible(false);
-                            }
-                        }
-                        exploreInsideButton.performClick();
-
-                        if (startingBuilding.equals("H"))
-                        {
-                            searchResults = searchForClass(startingPoint, H100); //directions to exit for H building
-                        }
-                        else if (startingBuilding.equals("CC"))
-                        {
-                            searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
-                        }
-
-                        searchResultsIndex = -1;
-                        searchPath.setVisible(true);
-
-                        needMoreDirections = true;
-                        classToClass = true;
-
-                        // go from building to building
-
-                        // go from the building entrance to the class
-                    }
+                    directionsClassToClass();
                 }
             }
         }
+    }
+
+    /** Helper method for getting directions from class to class */
+    public static void directionsClassToClass()
+    {
+        startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+        destinationBuilding = destination.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+
+        if (startingBuilding.equals(destinationBuilding))  // if both classes are in the same building
+        {
+            for (Marker marker : markerBuildings) { //set the marker onto the desired building
+                if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                {
+                    searchMarker.setPosition(marker.getPosition());
+                    searchMarker.setVisible(false);
+                }
+            }
+            exploreInsideButton.performClick();
+            searchResults = searchForClass(startingPoint, destination);
+            searchResultsIndex = -1;
+            searchPath.setVisible(true);
+        }
+        else //if both classes are in different buildings
+        {
+            // go from the class to the building exit
+            for (Marker marker : markerBuildings)   //set the marker onto the desired building
+            {
+                if ((marker.getTitle()).equals(startingBuilding + " Building"))
+                {
+                    searchMarker.setPosition(marker.getPosition());
+                    searchMarker.setVisible(false);
+                }
+            }
+            exploreInsideButton.performClick();
+
+            if (startingBuilding.equals("H"))
+            {
+                searchResults = searchForClass(startingPoint, H100); //directions to exit for H building
+            }
+            else if (startingBuilding.equals("CC"))
+            {
+                searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
+            }
+
+            searchResultsIndex = -1;
+            searchPath.setVisible(true);
+
+            needMoreDirections = true;
+            classToClass = true;
+
+            // go from building to building
+
+            // go from the building entrance to the class
+        }
+    }
+
+    /** Helper method for getting directions from class to building */
+    public static void directionsClassToBuilding()
+    {
+        // need to go from class room to exit (we can hard code the exit for H and for CC)
+        startingBuilding = startingPoint.split("-")[0]; //this will obtain the beginning characters e.g "H" or "CC"
+        for (Marker marker : markerBuildings) { //set the marker onto the desired building
+            if ((marker.getTitle()).equals(startingBuilding + " Building"))
+            {
+                searchMarker.setPosition(marker.getPosition());
+                searchMarker.setVisible(false);
+            }
+        }
+        exploreInsideButton.performClick();
+
+        if (startingBuilding.equals("H"))
+        {
+            searchResults = searchForClass(startingPoint, H100);
+        }
+        else if (startingBuilding.equals("CC"))
+        {
+            searchResults = searchForClass(startingPoint, CC150);  //directions to exit for CC building
+        }
+        searchResultsIndex = -1;
+        searchPath.setVisible(true);
+        needMoreDirections = true;
+        // need to go from exit to the building. Will be called in the needMoreDirections loop
+    }
+
+    /** Helper method for getting directions from building to building. */
+    public static void directionsBuildingToBuilding()
+    {
+        if (needMoreDirections)
+        {
+            needMoreDirections = false;
+            searchResultsIndex = 99;
+        }
+        drawDirectionsPath(origin, locationMap.get(destination));
+    }
+
+    /** Helper method for getting directions from building to class. */
+    public static void directionsBuildingToClass()
+    {
+        destinationBuilding = destination.split("-")[0];
+        String destinationBuildingName = destination.split("-")[0] + " Building";
+        String toMe = destination;
+
+        for (Marker marker : markerBuildings)
+        {
+            if ((marker.getTitle()).equals(destinationBuildingName))
+            {
+                searchMarker.setPosition(marker.getPosition());
+                searchMarker.setVisible(false);
+            }
+        }
+        drawDirectionsPath(origin, locationMap.get(destinationBuildingName));  //draws the path from the start building to the destination building (This takes care of the building to building part)
+
+        if (classToClass)  // if the general search is a class-> class search or just a building->class search
+        {
+            needMoreDirections = false;
+            if (destinationBuilding.equals("H"))
+            {
+                searchResults = searchForClass(H100, toMe);
+            }
+            else if (destinationBuilding.equals("CC"))
+            {
+                searchResults = searchForClass(CC150, toMe);
+            }
+        }
+        else
+        {
+            if (destinationBuilding.equals("H"))
+            {
+                searchResults = searchForClass(H100, toMe);  // search from the front door of the destination building to the destination classroom
+            }
+            else if (destinationBuilding.equals("CC"))
+            {
+                searchResults = searchForClass(CC150, toMe);   // search from the front door of the destination building to the destination classroom
+            }
+        }
+        searchResultsIndex = -1;
+        searchPath.setVisible(true);
     }
 
     /**

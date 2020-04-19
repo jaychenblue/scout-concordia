@@ -2,7 +2,6 @@ package com.example.scoutconcordia;
 
 import android.graphics.BitmapFactory;
 import android.view.View;
-
 import com.example.scoutconcordia.Activities.MapsActivity;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -10,10 +9,11 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.maps.android.PolyUtil;
-
 import static com.example.scoutconcordia.Directions.displaySearchResults;
 import static com.example.scoutconcordia.Directions.getDirections;
 
+/** This class is used as a helper class to the MapsActivity and adds all the button listeners for
+ *  the various buttons placed throughout the application */
 public class ExternalButtonListener extends MapsActivity {
 
     public static void setUpGroundOverlay(String image)
@@ -31,6 +31,7 @@ public class ExternalButtonListener extends MapsActivity {
                 .bearing(imgRotation));
     }
 
+    /** Method for adding on click listeners for the floor1 button. */
     public static void addfloor1ButtonListener()
     {
         floor1.setOnClickListener(new View.OnClickListener()
@@ -45,6 +46,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the floor2 button. */
     public static void addfloor2ButtonListener()
     {
         floor2.setOnClickListener(new View.OnClickListener()
@@ -59,6 +61,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the floor8 button. */
     public static void addfloor8ButtonListener()
     {
         floor8.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +75,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the floor9 button. */
     public static void addfloor9ButtonListener()
     {
         floor9.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +89,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the CC floor 1 button. */
     public static void addfloorCC1ButtonListener()
     {
         floorCC1.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +116,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the CC floor 2 button. */
     public static void addfloorCC2ButtonListener()
     {
         floorCC2.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +143,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the VE floor 2 button. */
     public static void addfloorVE2ButtonListener()
     {
         floorVE2.setOnClickListener(new View.OnClickListener() {
@@ -163,6 +170,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the VL floor 1 button. */
     public static void addfloorVL1ButtonListener()
     {
         floorVL1.setOnClickListener(new View.OnClickListener() {
@@ -189,6 +197,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the VL floor 2 button. */
     public static void addfloorVL2ButtonListener()
     {
         floorVL2.setOnClickListener(new View.OnClickListener() {
@@ -215,6 +224,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the MB floor 1 button. */
     public static void addfloorMB1ButtonListener()
     {
         floorMB1.setOnClickListener(new View.OnClickListener() {
@@ -241,6 +251,7 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /** Method for adding on click listeners for the MB floor 2 button. */
     public static void addfloorMBS2ButtonListener()
     {
         floorMBS2.setOnClickListener(new View.OnClickListener() {
@@ -267,7 +278,8 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
-    // this is the listener for the explore inside button.
+    /** Method for adding on click listeners for the explore inside button. When the button is pressed,
+     * the map will zoom in on the desired building and hide the necessary polygon from view. */
     public static void addExploreInsideButtonListener()
     {
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
@@ -305,10 +317,13 @@ public class ExternalButtonListener extends MapsActivity {
                 }
                 // we want to zoom in onto the center of the building.
                 animateCamera(loc, 19.0f);
-            };
+            }
         });
     }
 
+    /** Method for adding on click listeners for the next step button.
+     *  The next step button is used when getting directions and when clicked on will show the next
+     *  steps that the user has to take in their path to their destination. */
     public static void addNextStepListener()
     {
         nextStep.setOnClickListener(new View.OnClickListener() {
@@ -350,6 +365,4 @@ public class ExternalButtonListener extends MapsActivity {
             }
         });
     }
-
-
 }

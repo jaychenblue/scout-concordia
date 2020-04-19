@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-
 import com.example.scoutconcordia.Activities.MapsActivity;
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
@@ -16,6 +15,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
+/** This class is a helper class for the MapsActivity and adds in all of the necessary features for
+ * adding and displaying polygons on the map. */
 public class Locations extends MapsActivity {
 
     /**This method is used to apply styling to the polygons that will be displayed on the map.
@@ -44,10 +45,12 @@ public class Locations extends MapsActivity {
         polygon.setClickable(true);
     }
 
+    /** This method is used to add polygons to the map based on the information read in from the file.
+     * @param location is a string array containing information on the locations of the buildings
+     */
     public static void addLocationsToMap(String[] location)
     {
         LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
-        //BuildingInfo.encryptFile();
         LinkedList.Node currentBuilding = buildings.getHead();
         for (int i = 0; i < buildings.size(); i++)
         {
@@ -68,7 +71,6 @@ public class Locations extends MapsActivity {
             Polygon justAddedPolygon = mMap.addPolygon(po);
             polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
             Resources res = getmContext().getResources();
-            //Resources res = this.getResources();
             int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), DRAWABLE, getmContext().getPackageName());
             Marker polyMarker = mMap.addMarker(new MarkerOptions()
                     .position(((BuildingInfo)currentBuilding.getEle()).getCenter())
@@ -76,8 +78,6 @@ public class Locations extends MapsActivity {
                     .visible(true)
                     .flat(true)
                     .alpha(1)
-                    //.snippet("This is a test piece of text to see how it will look like in the window")
-                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                     .zIndex(44));
             markerBuildings.add(polyMarker); // add the marker to the list of markers
 
@@ -99,24 +99,24 @@ public class Locations extends MapsActivity {
         }
     }
 
+    /** This method is used to add locations to the map based on information that is read in from the file.
+     * @param location is a string array containing information on the locations of the buildings
+     */
     public static void addRestaurantsToMap(String[] location)
     {
-        int currentPos = 0;
-        //String markerName = "";
-        String markerNameWithLocation = "";
-        LatLng markerLocation = null;
-        String markerAddress = "";
+        int currentPos;
+        String markerNameWithLocation;
+        LatLng markerLocation;
+        String markerAddress;
         for (int i = 2; i < location.length - 1; i++)  // skip the first 2 lines of the file and the last line of the file
         {
-            int posOfhalfway = 0;
-            int posOfEnd = 0;
-            double x_coordinate = 0, y_coordinate = 0;
+            int posOfhalfway;
+            int posOfEnd;
+            double x_coordinate, y_coordinate;
 
             posOfhalfway = location[i].indexOf(",");
             posOfEnd = location[i].indexOf("}");
 
-            //currentPos = location[i].indexOf("(");
-            //markerName = location[i].substring(1, currentPos);
             currentPos = location[i].indexOf("{");
             markerNameWithLocation = location[i].substring(1, currentPos);
 
