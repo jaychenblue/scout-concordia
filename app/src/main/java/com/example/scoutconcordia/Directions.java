@@ -447,7 +447,8 @@ public class Directions extends MapsActivity {
         }
 
         //to rounding up integers when it is 0
-        int estimatedTime = new BigDecimal(time/60).setScale(0, RoundingMode.HALF_UP).intValue();
+        BigDecimal timeRoundUp = BigDecimal.valueOf(time/60);
+        int estimatedTime = new BigDecimal(String.valueOf(timeRoundUp)).setScale(0, RoundingMode.HALF_UP).intValue();
         //if shuttle not selected as travel mode
         if(travelMode != 4) {
             String estimateOutput = "";
