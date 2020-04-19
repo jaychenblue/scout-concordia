@@ -997,12 +997,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // This sets the context and is called during the onCreate method.
+
+    /**
+     * This gets the context from the calling class which is required for passing forward access to resource files
+     * @param mContext this is the context that is passed down
+     */
     public static void setmContext(Context mContext) {
         MapsActivity.mContext = mContext;
     }
 
-    // THis is for non-activity or non-fragment classes to use in order to pull the context of this class, which will
-    // then allow them to access resource files, this cannot be done otherwise.
+    /**
+     * This gets the context from the calling class which is required for passing forward access to resource files
+     * (THis is for non-activity or non-fragment classes to use in order to pull the context of this class)
+     */
     public static Context getmContext() {
         return mContext;
     }
