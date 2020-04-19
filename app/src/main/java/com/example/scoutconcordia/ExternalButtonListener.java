@@ -278,8 +278,50 @@ public class ExternalButtonListener extends MapsActivity {
         });
     }
 
+    /**
+     * This method hides the polygon based on which building is being accessed through the
+     * 'explore inside' button
+     * @param poly polygons of buildings
+     */
+    public static void getInside(Polygon poly){
+        poly.setVisible(false);  // hide the polygon
+        searchMarker.setVisible(false);  // hide the marker
+        removeAllFloorOverlays();
+
+        if (poly.getTag().equals("H Building"))
+            setHallButtonsVisibility(true);
+        else if (poly.getTag().equals("CC Building"))
+            setCCButtonsVisibility(true);
+        else if (poly.getTag().equals("VE Building"))
+            setVEButtonsVisibility(true);
+        else if (poly.getTag().equals("VL Building"))
+        {
+
+           distinguishVEandVL();
+
+        }
+        else if (poly.getTag().equals("MB Building"))
+            setMBButtonsVisibility(true);
+    }
+
+    /**
+     * Method to distinguish between VL and VE buildings
+     */
+    public static void distinguishVEandVL(){
+        LatLng ve_location = new LatLng(45.458850, -73.638660);
+        for (Polygon poly2 : polygonBuildings)
+        {
+            if (PolyUtil.containsLocation(ve_location, poly2.getPoints(), true))
+                poly2.setVisible(false);
+        }
+        setVLButtonsVisibility(true);
+    }
+
     /** Method for adding on click listeners for the explore inside button. When the button is pressed,
-     * the map will zoom in on the desired building and hide the necessary polygon from view. */
+     * the map will zoom in on the desired building and hide the necessary polygon from view.
+     * Note:
+     * when you click on VL -> explore inside it hides VE since they overlap.
+     * when you click on VE -> explore inside it only hides VE since the floor plan doesn't overlap with VL*/
     public static void addExploreInsideButtonListener()
     {
         exploreInsideButton.setOnClickListener(new View.OnClickListener() {
@@ -291,28 +333,7 @@ public class ExternalButtonListener extends MapsActivity {
                 for (Polygon poly : polygonBuildings) {
                     if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
                     {
-                        poly.setVisible(false);  // hide the polygon
-                        searchMarker.setVisible(false);  // hide the marker
-                        removeAllFloorOverlays();
-
-                        if (poly.getTag().equals("H Building"))
-                            setHallButtonsVisibility(true);
-                        else if (poly.getTag().equals("CC Building"))
-                            setCCButtonsVisibility(true);
-                        else if (poly.getTag().equals("VE Building"))
-                            setVEButtonsVisibility(true);
-                        else if (poly.getTag().equals("VL Building"))
-                        {
-                            LatLng ve_location = new LatLng(45.458850, -73.638660);
-                            for (Polygon poly2 : polygonBuildings)
-                            {
-                                if (PolyUtil.containsLocation(ve_location, poly2.getPoints(), true))
-                                    poly2.setVisible(false);
-                            }
-                            setVLButtonsVisibility(true);
-                        }
-                        else if (poly.getTag().equals("MB Building"))
-                            setMBButtonsVisibility(true);
+                        getInside(poly);
                     }
                 }
                 // we want to zoom in onto the center of the building.

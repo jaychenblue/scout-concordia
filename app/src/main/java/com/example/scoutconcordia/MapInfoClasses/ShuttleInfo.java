@@ -66,7 +66,7 @@ public class ShuttleInfo {
     private static final String FRIDAY = "Friday";
     private static final String SATURDAY = "Saturday";
     private static final String SUNDAY = "Sunday";
-
+    private static final String NEXT_SHUTTLE_MESSAGE = "The next shuttle is at:";
 
     /**
      * Here we check the time and day and find the next relevant shuttle but time from SGW to Loyola.
@@ -141,12 +141,12 @@ public class ShuttleInfo {
                 WEDNESDAY:
                 THURSDAY:
                 getNextShuttleTime(shuttleTimes = getSGWMondayToThursdayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursSGW()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursSGW()[indexPosition] + ". ";
                 break;
 
             case FRIDAY:
                 getNextShuttleTime(shuttleTimes = getSGWFridayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveFridaySGW()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveFridaySGW()[indexPosition] + ". ";
                 break;
 
             case SATURDAY:
@@ -155,7 +155,7 @@ public class ShuttleInfo {
 
             default:
                 getNextShuttleTime(shuttleTimes = getSGWMondayToThursdayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursLoyola()[indexPosition] + ". ";
                 break;
 
         }
@@ -238,12 +238,12 @@ public class ShuttleInfo {
                 WEDNESDAY:
                 THURSDAY:
                 getNextShuttleTime(shuttleTimes = getLoyolaMondayToThursdayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursLoyola()[indexPosition] + ". ";
                 break;
 
             case FRIDAY:
                 getNextShuttleTime(shuttleTimes = getLoyolaFridayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveFridayLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveFridayLoyola()[indexPosition] + ". ";
                 break;
 
 
@@ -254,7 +254,7 @@ public class ShuttleInfo {
 
             default:
                 getNextShuttleTime(shuttleTimes = getLoyolaMondayToThursdayTimes());
-                messageToUser = "The next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursLoyola()[indexPosition] + ". ";
                 break;
         }
 
