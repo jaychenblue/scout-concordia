@@ -507,6 +507,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mar.setVisible(visibility);
     }
 
+    /**
+     * This method sets the visibility parameters for the Hall Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setHallButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -520,6 +524,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floor9.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the VE Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setVEButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -530,6 +538,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorVE2.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the VL Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setVLButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -541,6 +553,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorVL2.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the MB Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setMBButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -552,6 +568,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorMBS2.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the CC Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setCCButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -563,6 +583,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorCC2.setVisibility(vis);
     }
 
+    /**
+     * This method essentially sweeps all the families of floor maps, grouped by buldings,
+     * and removes the overlays displayed on the google maps.
+     */
     public static void removeAllFloorOverlays(){
         if (hallGroundOverlay != null)
             hallGroundOverlay.remove();
