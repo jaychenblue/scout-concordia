@@ -12,28 +12,32 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class FileAccessorTest {
+public class FileAccessorTest
+{
 
     FileAccessor fileAccessor;
     byte[] data;
     InputStream input;
 
     @BeforeEach
-    public void beforeEach() throws Exception {
+    public void beforeEach() throws Exception
+    {
         fileAccessor = new FileAccessor();
         data = "1,2,3,4,5".getBytes();
         input = new ByteArrayInputStream(data);
     }
 
     @AfterEach
-    public void afterEach() throws Exception {
+    public void afterEach() throws Exception
+    {
         fileAccessor = null;
         data = null;
         input = null;
     }
 
     @Test
-    public void testObtainContents() {
+    public void testObtainContents()
+    {
         fileAccessor.setInputStream(input);
         fileAccessor.decryptFile(false);
         assertNotNull(fileAccessor.obtainContents());

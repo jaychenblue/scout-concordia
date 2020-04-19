@@ -1,16 +1,12 @@
 package com.example.scoutconcordia.MapInfoClasses;
 
 import android.util.Log;
-
 import com.google.android.gms.maps.model.LatLng;
-
-import java.io.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
 import com.example.scoutconcordia.DataStructures.LinkedList;
 
-
+/** Class used to add information to a building */
 public class BuildingInfo
 {
     private String name;
@@ -19,16 +15,22 @@ public class BuildingInfo
     private String openingTimes;
     private LinkedList<LatLng> coordinates;
     private LatLng center;
-    
+
+    /** Default constructor for a BuildingInfo object */
     public BuildingInfo()
     {
         name = null;
         address = null;
         iconName = "smiling.png";
-        coordinates = new LinkedList<LatLng>(new LatLng(0,0));
+        coordinates = new LinkedList<>(new LatLng(0,0));
         center = null;
     }
 
+    /** Parametrized constructor for a BuildingInfo object
+     * @param name Name of the building
+     * @param address Address of the building
+     * @param openingTimes Opening hours of the building
+     */
     public BuildingInfo(String name, String address, String openingTimes)
     {
         this.name = name;
@@ -61,16 +63,25 @@ public class BuildingInfo
         return center;
     }
 
-    public String getOpeningTimes() { return openingTimes; }
+    public String getOpeningTimes()
+    {
+        return openingTimes;
+    }
 
+    /** Reads from a string of buildings with their corresponding information. Creates building
+     * objects using this information for each building in the list.
+     * @param readMe Information about the buildings.
+     * @return Returns a LinkedList containing BuildingInfo objects for each of the buildings in
+     * the file.
+     */
     public static LinkedList<BuildingInfo> obtainBuildings(String[] readMe)
     {
-        int currentPos = 0;
+        int currentPos;
         Scanner reader = null;
-        String currentLine = null;
-        BuildingInfo currentBuilding = null;
+        String currentLine;
+        BuildingInfo currentBuilding;
         BuildingInfo template = new BuildingInfo();
-        LinkedList<BuildingInfo> returnMe = new LinkedList<BuildingInfo>(template);
+        LinkedList<BuildingInfo> returnMe = new LinkedList<>(template);
         
         try
         {
@@ -110,8 +121,8 @@ public class BuildingInfo
 
                 while (currentLine.charAt(currentLine.length()-1) != '}')
                 {
-                    int posOfhalfway = 0;
-                    double x_coordinate = 0, y_coordinate = 0;
+                    int posOfhalfway;
+                    double x_coordinate, y_coordinate;
                     currentPos = currentLine.indexOf("{");
                     posOfhalfway = currentLine.indexOf(",");
                     x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfhalfway));
@@ -122,8 +133,8 @@ public class BuildingInfo
                 }
                 for (int j = 0; j < 2; j++)
                 {
-                    int posOfhalfway = 0;
-                    double x_coordinate = 0, y_coordinate = 0;
+                    int posOfhalfway;
+                    double x_coordinate, y_coordinate;
                     currentPos = currentLine.indexOf("{");
                     posOfhalfway = currentLine.indexOf(",");
                     x_coordinate = Double.parseDouble(currentLine.substring(currentPos+1,posOfhalfway));
@@ -151,50 +162,10 @@ public class BuildingInfo
         }
         return returnMe;
     }
-    
-    public static void writeCenters(double[][][] locations)
-    {
-        PrintWriter pw = null;
-        try
-        {
-            pw = new PrintWriter("");
-            for (int i = 0; i < locations.length; i++)
-            {
-                double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
-                for (int j = 0; j < locations[i].length; j++)
-                {
-                    if (j == 0)
-                    {
-                        x1 = locations[i][j][0];
-                        x2 = locations[i][j][0];
-                        y1 = locations[i][j][1];
-                        y2 = locations[i][j][1];
-                    }
-                    if (locations[i][j][0] < x1)
-                        x1 = locations[i][j][0];
-                    if (locations[i][j][0] > x2)
-                        x2 = locations[i][j][0];
-                    if (locations[i][j][1] < y1)
-                        y1 = locations[i][j][1];
-                    if (locations[i][j][1] > y2)
-                        y2 = locations[i][j][1];
-            
-                }
-                float center_x = (float) x1 + (float) ((x2 - x1) / 2);
-                float center_y = (float) y1 + (float) ((y2 - y1) / 2);
-                pw.println("{ " + center_x + ", " + center_y  + "}");
-            }
-        } catch (FileNotFoundException fnf)
-        {
-            System.out.println("Stop being Stupid!");
-        }
-        finally
-        {
-            if (pw != null)
-                pw.close();
-        }
-    }
 
+    /** Override of the toString method
+     * @return Returns a formatted print statement for the Building information
+     */
     @Override public String toString()
     {
         String printMe = "";

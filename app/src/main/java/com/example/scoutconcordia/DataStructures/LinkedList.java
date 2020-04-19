@@ -1,21 +1,23 @@
 package com.example.scoutconcordia.DataStructures;
 
-import java.io.File;
-
+/** Class for implementing a LinkedList data structure. */
 public class LinkedList <E>
 {
     private Node head;
     private Node tail;
     private int size;
     private E classType;
-    private static final File destination = new File("Temp.txt");
-    
+
+    /** Inner class representing a Node of the LinkedList */
     public class Node
     {
         private E element;
         private LinkedList.Node next;
         private LinkedList.Node prev;
-        
+
+        /** Default constructor for a Node
+         * Sets element, next, and prev to null.
+         */
         public Node()
         {
             element = null;
@@ -23,7 +25,12 @@ public class LinkedList <E>
             prev = null;
             size++;
         }
-        
+
+        /** Parameterized constructor for a Node
+         * @param element The value of the node
+         * @param after The following Node in the LinkedList
+         * @param previous The previous Node in the LinkedList
+         */
         public Node(E element, LinkedList.Node after, LinkedList.Node previous)
         {
             if (element != null && element.getClass() == classType.getClass())
@@ -42,7 +49,10 @@ public class LinkedList <E>
         public E getEle() {return element;}
         public String toString() {return element.toString();}
     }
-    
+
+    /** Default constructor for the LinkedList
+     * @param classType the class type fo the LinkedList
+     */
     public LinkedList(E classType)
     {
         head = null;
@@ -50,7 +60,11 @@ public class LinkedList <E>
         size = 0;
         this.classType = (E)classType;
     }
-    
+
+    /** Instantiate a Linked List with a pre-existing array of elements.
+     * @param classType the class type of the LinkedList
+     * @param elements is an array of elements that you wish to use for the LinkedList
+     */
     public LinkedList(E classType, E[] elements)
     {
         this(classType);
@@ -59,6 +73,10 @@ public class LinkedList <E>
                 addToTail(elements[i]);
     }
 
+    /** Adds an element to the the head of the LinkedList
+     * @param element is the element that you wish to add
+     * @return Returns true if successful
+     */
     private boolean addToHead(E element)
     {
         Node oldhead = head;
@@ -70,7 +88,11 @@ public class LinkedList <E>
         oldhead = null;
         return true;
     }
-    
+
+    /** Adds an element to the tail of the LinkedList
+     * @param element is the element that you wish to add
+     * @return Returns true if successful
+     */
     private boolean addToTail(E element)
     {
         Node oldtail = tail;
@@ -82,7 +104,12 @@ public class LinkedList <E>
         oldtail = null;
         return true;
     }
-    
+
+    /** Adds an element at the specified index of the LinkedList
+     * @param index is the index in the LinkedList to add the element
+     * @param element is the element that you wish to add
+     * @return Returns true if successful.
+     */
     private boolean addToIndex(int index, E element)
     {
         if (index > size)
@@ -111,7 +138,11 @@ public class LinkedList <E>
         newOne = null;
         return true;
     }
-    
+
+    /** Searches a specified index in the LinkedList for an element
+     * @param index is the index in the LinkedList at which to find an element
+     * @return Returns the value of the element at the specified index in the LinkedList
+     */
     private Node getNodeFromIndex(int index)
     {
         Node cycler = null;
@@ -123,7 +154,11 @@ public class LinkedList <E>
         }
         return cycler;
     }
-    
+
+    /** Removes the node at the specified index in the LinkedList
+     * @param index is the index in the LinkedList at which you want to remove a node
+     * @return Returns the element that has been removed from the LinkedList
+     */
     private E removeNode(int index)
     {
         E returnMe = null;
@@ -164,7 +199,12 @@ public class LinkedList <E>
     }
     
     private E remove(int index){return removeNode(index);}
-    
+
+    /** Removes an object from the LinkedList
+     * @param s is the object that you wish to remove from the LinkedList
+     * @return Returns true if the object was in the LinkedList and has been removed successfully.
+     * Otherwise, returns false.
+     */
     private boolean remove(Object s)
     {
         Node cycler = head;
@@ -179,13 +219,17 @@ public class LinkedList <E>
         }
         return false;
     }
-    
+
+    /** Clears the LinkedList of all elements */
     public void clear()
     {
         for (int i = size - 1; i > -1; i--)
             remove(i);
     }
-    
+
+    /** Override the toString method
+     * @return Returns a custom formatted output for the LinkedList to display.
+     */
     @Override public String toString()
     {
         int sizeDigits = 0, multiplier = 1, entryLength = 0, numLength = 0;
@@ -244,6 +288,10 @@ public class LinkedList <E>
         return printme.toString();
     }
 
+    /** Method for checking if the LinkedList contains a certain object
+     * @param given id the object to search for in the LinkedList
+     * @return Returns true if the object is found in the LinkedList. Otherwise, returns false.
+     */
     public boolean contains(Object given)
     {
         Node cycler = head;
@@ -258,7 +306,10 @@ public class LinkedList <E>
         return false;
     }
 
-    // Returns -1 if not found and otherwise the index of the object
+    /** Searches for the index of an object in the LinkedList
+     * @param given An object to search for
+     * @return Returns -1 if not found, and otherwise returns the index of the object.
+     */
     public int indexOf(Object given)
     {
         Node cycler = head;
@@ -273,6 +324,9 @@ public class LinkedList <E>
         return -1;
     }
 
+    /** Converts the LinkedList into a Java array.
+     * @return Returns an Object array containing all the Nodes of the LinkedList
+     */
     public Object[] toArray()
     {
         Object[] returnMe = new Object[size];
@@ -284,7 +338,7 @@ public class LinkedList <E>
         }
         return returnMe;
     }
-    
+
     public boolean removeOBJ(Object o)
     {
         if (o == null)
@@ -293,7 +347,7 @@ public class LinkedList <E>
             return false;
         return remove(o);
     }
-    
+
     public int size() {return size;}
     public boolean add(E element) {return addToTail(element);}
     public void add(int index, E element){addToIndex(index, element);}

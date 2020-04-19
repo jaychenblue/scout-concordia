@@ -78,24 +78,6 @@
         android:checked="true"
         android:layout_centerInParent="true" />
 
-    <!--We are keeping this in case we need it for the Google Search bar later  -->
-    <!--<Button
-        android:id="@+id/findYouWayButton"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:paddingHorizontal="10dp"
-        android:text="@string/find_your_way_button"
-        android:textOff="@string/toggle_off"
-        android:textOn="@string/toggle_on"
-        android:layout_below="@id/toggleButton"
-        android:background="@drawable/shadow_toggle"
-        android:textColor="@color/white"
-        android:textFontWeight="500"
-        android:layout_centerInParent="true"
-        android:onClick="onFindYourWayButtonClick"
-        />
--->
-
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
@@ -151,28 +133,6 @@
         android:layout_gravity="bottom">
 
         <TextView
-            android:id="@+id/from"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:textColor="@color/burgundy"
-            android:background="@color/white"
-            android:textFontWeight="500"
-            android:layout_weight="1"
-            android:textAlignment="center"/>
-
-        <TextView
-            android:id="@+id/to"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:textColor="@color/burgundy"
-            android:background="@color/white"
-            android:textFontWeight="500"
-            android:layout_weight="1"
-            android:textAlignment="center"/>
-
-        <TextView
             android:id="@+id/estimatedTravelTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -182,6 +142,19 @@
             android:textFontWeight="500"
             android:layout_weight="1"
             android:textAlignment="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@id/nav_bar_activity_maps"
+        tools:ignore="BottomAppBar"
+        android:weightSum="3"
+        android:layout_gravity="bottom">
+
+
     </LinearLayout>
 
     <Button
@@ -324,6 +297,23 @@
         android:layout_marginLeft="55dp"
         android:text="@string/string_nextstep"
         android:visibility="invisible" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/estimatedShuttleTime"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginStart="0dp"-->
+<!--        android:layout_marginEnd="0dp"-->
+<!--        android:layout_marginBottom="121dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:background="@color/white"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textColor="@color/burgundy"-->
+<!--        android:textFontWeight="500"-->
+<!--        android:visibility="invisible" />-->
 
 
 </RelativeLayout>

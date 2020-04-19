@@ -46,7 +46,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class CalendarActivity extends AppCompatActivity {
+public class CalendarActivity extends AppCompatActivity
+{
     private GoogleSignInClient googleSignInClient;
     private GoogleSignInAccount account;
     private GoogleSignInOptions gso;
@@ -62,7 +63,8 @@ public class CalendarActivity extends AppCompatActivity {
     public static ArrayList<String> locations = new ArrayList<>();    // Concordia buildings list
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
@@ -82,10 +84,12 @@ public class CalendarActivity extends AppCompatActivity {
            This is handled in the catch block, where exception is thrown, by calling signOut and asking the user to sign in again. */
         /* Checking for granted scopes on the api client continues to return true even when permission has been revoked by the user. This is also handled
            inside the catch block by calling revokeAccess on the googleSignInClient, signing out and asking user to sign in again. */
-        if(lastSignedInAccount == null || lastSignedInAccount.getAccount() == null) {
+        if(lastSignedInAccount == null || lastSignedInAccount.getAccount() == null)
+        {
             signIn(); // sign in, create a RetrieveCalendar object in handleSignInResult
         }
-        else{
+        else
+        {
             account = lastSignedInAccount;
             new RetrieveCalendars().execute();
         }
@@ -99,14 +103,15 @@ public class CalendarActivity extends AppCompatActivity {
         //set title of page
         getSupportActionBar().setTitle("ScoutConcordia");
 
-
-
         BottomNavigationView bottomNavigationView = (BottomNavigationView)findViewById(R.id.nav_bar_activity_calendar);
         bottomNavigationView.setSelectedItemId(R.id.nav_schedule);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
+        {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+            {
+                switch(menuItem.getItemId())
+                {
                     case R.id.nav_map:
                         Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
                         startActivity(mapIntent);
@@ -127,63 +132,78 @@ public class CalendarActivity extends AppCompatActivity {
         });
     }
 
-    // dialog to display a selection list with all calendar entry names
-    // single choice dialog, and first value is selected by default
-    // dialog is not cancellable
-    // user either has to select an option, or go back to MapsActivity by pressing cancel or back button
+    /**
+     * This is the dialog to display a selection list with all calendar entry names,
+     * single choice dialog, and first value is selected by default, dialog is not cancellable,
+     * user either has to select an option, or go back to MapsActivity by pressing cancel or back button.
+     * @return Dialog.
+     */
     public Dialog onCreateDialogSingleChoice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MaterialThemeDialog);
         builder.setTitle("Select schedule calendar")
                 .setCancelable(false);
 
         // if calendars found
-        if(!calendarNames.isEmpty()){
+        if(!calendarNames.isEmpty())
+        {
             // char sequence holds the names of all calendars of the user
             final CharSequence[] cs = calendarNames.toArray(new CharSequence[calendarNames.size()]);
             selectedCalendarId = calendarIds.get(0);
-            builder.setSingleChoiceItems(cs, 0, new DialogInterface.OnClickListener() {    //creates the selection list
+            builder.setSingleChoiceItems(cs, 0, new DialogInterface.OnClickListener()
+            {    //creates the selection list
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
                             selectedCalendarId = calendarIds.get(which);
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {    // cancel button
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                    {    // cancel button
                         @Override
-                        public void onClick(DialogInterface dialog, int id) {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
                             Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
                             startActivity(mapIntent);
                             CalendarActivity.this.overridePendingTransition(0, 0);
                         }
                     })
-                    .setPositiveButton("Select", new DialogInterface.OnClickListener() {    // select button
+                    .setPositiveButton("Select", new DialogInterface.OnClickListener()
+                    {    // select button
                         @Override
-                        public void onClick(DialogInterface dialog, int id) {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
                             new RetrieveEvents().execute();
                         }
                     });
         }
-        else{
+        else
+        {
             builder.setMessage("No calendars found for the signed in Google account!");
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+            {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialog, int which)
+                        {
                             Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
                             startActivity(mapIntent);
                             CalendarActivity.this.overridePendingTransition(0, 0);
-                         }
+                        }
             });
         }
         return builder.create();
     }
 
-    // - loops through every event in the events list
-    // - verifies the day of the event, start time, and duration
-    // - fills the table columns (textView) in the table layout overlapping the event timing
-    // - Table structure is in TableLayout in activity_calendar.xml
-    //      - first column is representing time, second column is current day, the column after is the day after and so on
-    //          -> each column contains a textview
-    //      -first row is date, second row is day
-    //      - rows after are time sections (each row = 15 mins)
+    /**
+     * This is the method that  loops through every event in the events list, and verifies
+     * the day of the event, start time, and duration.
+     * fills the table columns (textView) in the table layout overlapping the event timing
+     * Table structure is in TableLayout in activity_calendar.xml
+     * first column is representing time, second column is current day, the column after is the day after and so on
+     *   -> each column contains a textview
+     * first row is date, second row is day
+     * rows after are time sections (each row = 15 mins)
+     * @return void.
+     */
     private void displayTable() {
         tableIds = tableLayoutIds(); // ids of columns (text views) in the table table layout
         String[][] dateInfoObj = dateInfoObj(); // see method description
@@ -191,24 +211,29 @@ public class CalendarActivity extends AppCompatActivity {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd"); // date formatter to compare Date object dates
         SimpleDateFormat sdfTime = new SimpleDateFormat("h:mm"); // time formatter
 
-        for (Event event : eventsList) {
+        for (Event event : eventsList)
+        {
             String eventName = null;
             String eventLocation = null;
 
-            try{
+            try
+            {
                 eventName = event.getSummary();
                 eventLocation = event.getLocation();
             }
-            catch(Throwable t){
+            catch(Throwable t)
+            {
                 Log.d(TAG, t.getMessage());
             }
 
-            try {
+            try
+            {
                 Date startDate = new Date(event.getStart().getDateTime().getValue());   // start date of the event
                 Date endDate = new Date(event.getEnd().getDateTime().getValue());   // end date of the event
 
                 // event starts or ends outside school hours, continue without displaying
-                if(getTimeHour(startDate) < 8 || getTimeHour(startDate) == 23 || getTimeHour(endDate) > 23){
+                if(getTimeHour(startDate) < 8 || getTimeHour(startDate) == 23 || getTimeHour(endDate) > 23)
+                {
                     continue;
                 }
                 // time difference between start and end of event in milliseconds
@@ -227,35 +252,54 @@ public class CalendarActivity extends AppCompatActivity {
                 String end = sdfTime.format(endDate);     // end time "h:mm"
                 String classHours = start + " - " + end;
 
-                if (date.equals(dateInfoObj[0][1])) {   // event is today
+                if (date.equals(dateInfoObj[0][1]))
+                {   // event is today
                     fillEvent(0, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
-                } else if (date.equals(dateInfoObj[1][1])) { //event is tomorrow
+                }
+                else if (date.equals(dateInfoObj[1][1]))
+                { //event is tomorrow
                     fillEvent(1, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
-                } else if (date.equals(dateInfoObj[2][1])) { // event is the day after
+                }
+                else if (date.equals(dateInfoObj[2][1]))
+                { // event is the day after
                     fillEvent(2, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
-                } else if (date.equals(dateInfoObj[3][1])) {
+                }
+                else if (date.equals(dateInfoObj[3][1]))
+                {
                     fillEvent(3, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
-                } else if (date.equals(dateInfoObj[4][1])) {
+                }
+                else if (date.equals(dateInfoObj[4][1]))
+                {
                     fillEvent(4, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
-                } else if (date.equals(dateInfoObj[5][1])) {
+                }
+                else if (date.equals(dateInfoObj[5][1]))
+                {
                     fillEvent(5, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption2));
-                } else if (date.equals(dateInfoObj[6][1])) {
+                }
+                else if (date.equals(dateInfoObj[6][1]))
+                {
                     fillEvent(6, startRow, totalRows, eventName, eventLocation, classHours, getResources().getColor(R.color.scheduleEventColorOption1));
                 }
             }
-            catch(Throwable t){
+            catch(Throwable t)
+            {
                 Log.d(TAG, t.getMessage());
             };
         }
     }
 
-    // sets the values for the date's row (first row) and day's row (second row) for all 7 columns
-    // first column are set to today's date and day respectively, next column is next day
-    // uses the dateInfoObj created with dateInfoObj() method to get date and days value for each of the 7 days starting current day
+    /**
+     * This is the method that sets the values for the date's row (first row) and day's row (second row) for all 7 columns
+     * first column are set to today's date and day respectively, next column is next day
+     * uses the dateInfoObj created with dateInfoObj() method to get date and days value for each of the 7 days starting current day
+     * @param dateInfoObj This is the first paramter to fillDayDateRows method.
+     * @return void.
+     */
     private void fillDayDateRows(String[][] dateInfoObj){
         Resources r = getResources();
         String name = getPackageName();
-        for(int i = 0; i < 7; ++i){
+        for(int i = 0; i < 7; ++i)
+        {
             int dayColumnId = r.getIdentifier("day" + i, "id", name);
             int dateColumnId = r.getIdentifier("date" + i, "id", name);
             TextView dayColumn = findViewById(dayColumnId);
@@ -265,21 +309,28 @@ public class CalendarActivity extends AppCompatActivity {
         }
     }
 
-    // returns a multidimensional array containing string values for the day and date from current day up to the 7th day
-    //String[][] dateInfoObj= new String[7][3]; // [x][0] = date (dd), [x][1] = date (yyyy-MM-dd), [x][2] = name of day
-    // where x = 0 is today, x = 1 is tomorrow and so on.  0 <= x < 7
+    /**
+     * This is the method that returns a multidimensional array containing string values for the day and date from current day up to the 7th day
+     * String[][] dateInfoObj= new String[7][3]; [x][0] = date (dd), [x][1] = date (yyyy-MM-dd), [x][2] = name of day
+     * where x = 0 is today, x = 1 is tomorrow and so on.  0 <= x < 7
+     * @return String[][].
+     */
     private String[][] dateInfoObj(){
         String[][] dateInfoObj= new String[7][3];
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String today = sdf.format(new Date());
 
-        try {
+        try
+        {
             calendar.setTime(sdf.parse(today));
-        } catch (Throwable t) {
+        }
+        catch (Throwable t)
+        {
             Log.d(TAG, t.getMessage());
         }
 
-        for(int i = 0; i < 7; ++i) {
+        for(int i = 0; i < 7; ++i)
+        {
             dateInfoObj[i][0] = Integer.toString(calendar.get(java.util.Calendar.DATE));
             dateInfoObj[i][1] = sdf.format(calendar.getTime());
             dateInfoObj[i][2] = getDayOfWeek(calendar.get(java.util.Calendar.DAY_OF_WEEK));
@@ -288,48 +339,84 @@ public class CalendarActivity extends AppCompatActivity {
         return dateInfoObj;
     }
 
-    // set text, text color, background for the text views overlapping the event timing
-    // attach onClickListener to texteviews
+    /**
+     * This is the method that set text, text color, background for the text views overlapping the event timing
+     * attach onClickListener to texteviews
+     * @param eventDayColumn This is the first paramter to fillEvent method.
+     * @param startRow This is the second paramter to fillEvent method.
+     * @param totalRows This is the third paramter to fillEvent method.
+     * @param summary This is the fourth paramter to fillEvent method.
+     * @param location This is the fifth paramter to fillEvent method.
+     * @param classHours This is the sixth paramter to fillEvent method.
+     * @param colorId This is the seventh paramter to fillEvent method.
+     * @return void.
+     */
     private void fillEvent(int eventDayColumn, int startRow, int totalRows, String summary, String location, String classHours, int colorId){
         try {
           for (int j = startRow; j < totalRows + startRow; ++j) {
               TextView textView = (TextView) findViewById(tableIds[eventDayColumn][j]);
               textView.setTextColor(getResources().getColor(R.color.white));
               textView.setBackgroundColor(colorId);
-              if (j == startRow) {
+              if (j == startRow)
+              {
                   textView.setText(removeStringOverflow(summary, 15));
-              } else if (j == startRow + 1) {
+              }
+              else if (j == startRow + 1)
+              {
                   textView.setText(removeStringOverflow(location, 15));
-              } else if (j == startRow + 2) {
+              }
+              else if (j == startRow + 2)
+              {
                   textView.setText(classHours);
               }
               attachOnClickListener(textView, location, summary, classHours);
           }
       }
-      catch (Throwable t){
+      catch (Throwable t)
+      {
           Log.d(TAG, t.toString());
       }
     }
 
+    /**
+     * This is the method that give an error message when the string is overflow
+     * @param str This is the first paramter to removeStringOverflow method.
+     * @param substringLength This is the second paramter to removeStringOverflow method.
+     * @return String.
+     * @exception catch Throwable error.
+     */
     private String removeStringOverflow (String str, int substringLength){
         try {
             if (str.length() <= substringLength) {
                 return str;
-            } else {
+            }
+            else
+            {
                 return str.substring(0, substringLength) + "...";
             }
-        }catch(Throwable t){
+        }
+        catch(Throwable t)
+        {
             Log.d(TAG, t.getMessage());
             return null;
         }
     }
 
-    // displays directionsDailog created by calling directionsDialog(...)
+    /**
+     * This is the method that displays directionsDailog created by calling directionsDialog(...)
+     * @param textView This is the first paramter to attachOnClickListener method.
+     * @param location This is the second paramter to attachOnClickListener method.
+     * @param summary This is the third paramter to attachOnClickListener method.
+     * @param classHours This is the fourth paramter to attachOnClickListener method.
+     * @return void.
+     */
     private void attachOnClickListener(TextView textView, final String location, final String summary, final String classHours){
         textView.setClickable(true);
-        textView.setOnClickListener(new View.OnClickListener() {
+        textView.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 List<String> items = new ArrayList<String>(Arrays.asList(location, summary, classHours));
                 items.removeAll(Collections.singleton(null));
 
@@ -338,25 +425,35 @@ public class CalendarActivity extends AppCompatActivity {
         });
     }
 
-    // create a dialong displaying location, title, and hours of the event
-    // Go button to get directions to the location
-    // Cancel button to cancel dialog
-    // dialog is also cancellable by pressing anywhere on the screen
+    /**
+     * This is the method that create a dialong displaying location, title, and hours of the event
+     * Go button to get directions to the location
+     * Cancel button to cancel dialog
+     * dialog is also cancellable by pressing anywhere on the screen
+     * @param items This is the first paramter to directionsDialog method.
+     * @param location This is the second paramter to directionsDialog method.
+     * @return Dialog.
+     */
     private Dialog directionsDialog(String[] items, final String location){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Go to Location")
                 .setItems(items, null)
                 .setCancelable(true)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         dialog.dismiss();
                     }
                 })
-                .setPositiveButton("GO", new DialogInterface.OnClickListener() {
+                .setPositiveButton("GO", new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(location != null && locations.contains(location)){
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if(location != null && locations.contains(location))
+                        {
                             Intent mapsIntent = new Intent(CalendarActivity.this, MapsActivity.class);
                             mapsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             mapsIntent.putExtra("requestCode", RC_CALENDAR_ACTIVITY);
@@ -364,7 +461,8 @@ public class CalendarActivity extends AppCompatActivity {
                             startActivity(mapsIntent);
                             CalendarActivity.this.overridePendingTransition(0, 0);
                         }
-                        else{
+                        else
+                        {
                             Toast.makeText(getApplicationContext(), "Invalid location!", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -372,8 +470,13 @@ public class CalendarActivity extends AppCompatActivity {
         return builder.create();
     }
 
-    // returns the row number that the event begins at (e.g. if event starts at 9, 5 will be returned, (9-8)*4 +(0/15)+1
-    // begins at 8:00 = row 1, at 8:15 = row 2, and so on
+    /**
+     * This is the method that returns the row number that the event begins at (e.g. if event starts at 9, 5 will be returned, (9-8)*4 +(0/15)+1
+     * begins at 8:00 = row 1, at 8:15 = row 2, and so on
+     * @param start This is the first paramter to eventStartRow method.
+     * @param end This is the second paramter to eventStartRow method.
+     * @return int.
+     */
     private int eventStartRow(Date start, Date end){
         java.util.Calendar c = java.util.Calendar.getInstance();
         c.setTime(start);
@@ -385,16 +488,19 @@ public class CalendarActivity extends AppCompatActivity {
         return startRow;
     }
 
-
-    // returns a multidimensional array that holds ids of all text views for each column in the table Layout in activity_calendar.xml
-    // [x][y], x = 0 is the first row
-    // y = 1 (0 is not assigned) is the first column (from 8:00 to 8:15)
+    /**
+     * This is the method that returns a multidimensional array that holds ids of all text views for each column in the table Layout in activity_calendar.xml
+     * [x][y], x = 0 is the first row
+     * y = 1 (0 is not assigned) is the first column (from 8:00 to 8:15)
+     * @return int[][].
+     */
     private int[][] tableLayoutIds(){
         int[][] tableIds = new int[7][61];
         Resources r = getResources();
         String name = getPackageName();
 
-        for (int i = 1; i < 61; i++) {
+        for (int i = 1; i < 61; i++)
+        {
             tableIds[0][i] = r.getIdentifier("one" + i, "id", name);
             tableIds[1][i] = r.getIdentifier("two" + i, "id", name);
             tableIds[2][i] = r.getIdentifier("three" + i, "id", name);
@@ -406,7 +512,11 @@ public class CalendarActivity extends AppCompatActivity {
         return tableIds;
     }
 
-    // return the day of the name for a given date
+    /**
+     * This is the method that return the day of the name for a given date
+     * @param value This is the first paramter to getDayOfWeek method.
+     * @return String.
+     */
     private String getDayOfWeek(int value){
         switch (value) {
             case java.util.Calendar.SUNDAY:
@@ -426,7 +536,11 @@ public class CalendarActivity extends AppCompatActivity {
         }
     }
 
-    // sets time of a Date type object to 00:00:00:00 (H:S:M:MS)
+    /**
+     * This is the method that sets time of a Date type object to 00:00:00:00 (H:S:M:MS)
+     * @param date This is the first paramter to setTime method.
+     * @return Date.
+     */
     private Date setTime(Date date){
         calendar.setTime(date);
         calendar.set(java.util.Calendar.MILLISECOND, 0);
@@ -436,62 +550,88 @@ public class CalendarActivity extends AppCompatActivity {
         return calendar.getTime();
     }
 
-    // returns the hour value of time in Date object
+    /**
+     * This is the method that returns the hour value of time in Date object
+     * @param date This is the first paramter to getTimeHour method.
+     * @return int.
+     */
     private int getTimeHour(Date date){
         calendar.setTime(date);
         return calendar.get(java.util.Calendar.HOUR_OF_DAY);
     }
 
-    protected void signIn() {
+    protected void signIn()
+    {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    protected void signOut(){
+    protected void signOut()
+    {
         googleSignInClient.signOut();
     }
 
-    // result of the startActivityForResult
+    /**
+     * This is the method that result of the startActivityForResult
+     * @param requestCode This is the first paramter to onActivityResult method.
+     * @param resultCode This is the second paramter to onActivityResult method.
+     * @param data This is the first third to onActivityResult method.
+     * @return void.
+     */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK)
+        {
             // if the request code equals that of the signInIntent
-            if (requestCode == RC_SIGN_IN) {
+            if (requestCode == RC_SIGN_IN)
+            {
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 handleSignInresult(task);
             }
         }
     }
 
-    // handles the behaviour once the sign in has completed
+    /**
+     * This is the method that handles the behaviour once the sign in has completed
+     * @param task This is the first paramter to handleSignInresult method.
+     * @return void.
+     */
     protected void handleSignInresult(Task<GoogleSignInAccount> task) {
         try {
             account = task.getResult(ApiException.class);
             new RetrieveCalendars().execute();
-        } catch (Throwable e) {
+        }
+        catch (Throwable e)
+        {
             Log.d(TAG, e.getMessage());
         }
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
         super.onBackPressed();
         overridePendingTransition(0, 0);    // removes the exit and enter animations when changing activities
     }
 
-    // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
-    // - build a global google api calendar service
-    //      (get an access token using the user's email and set this token to the credentials)
-    // - retrieves a list of google calendars
+    /**
+     * This is the class that asynchronous task (if done on main thread, networkOnMainThread exception is thrown
+     * build a global google api calendar service
+     * (get an access token using the user's email and set this token to the credentials)
+     * retrieves a list of google calendars
+     */
     private class RetrieveCalendars extends AsyncTask<Void, Void, Void> {
         private boolean isSuccesful = true; // true when query is successful, set to false when an exception is thrown
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(Void... params)
+        {
             String scopes = "oauth2:https://www.googleapis.com/auth/calendar.readonly";
             String token = null;
-            try {
+            try
+            {
                 token = GoogleAuthUtil.getToken(getApplicationContext(), account.getEmail(), scopes);
                 JacksonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
                 NetHttpTransport HTTP_TRANSPORT = new com.google.api.client.http.javanet.NetHttpTransport();
@@ -506,12 +646,14 @@ public class CalendarActivity extends AppCompatActivity {
                         .setApplicationName("ScoutConcordia").build();
 
                 String pageToken = null;
-                do {
+                do
+                {
                     // retrieve calendars where user is the owner
                     CalendarList calendarList = service.calendarList().list().setMinAccessRole("owner").setPageToken(pageToken).execute();
                     List<CalendarListEntry> calendars = calendarList.getItems();
 
-                    for(CalendarListEntry calendarListEntry : calendars) {
+                    for(CalendarListEntry calendarListEntry : calendars)
+                    {
                         String name = calendarListEntry.getSummary();
                         String id = calendarListEntry.getId();
                         calendarNames.add(name);
@@ -520,7 +662,9 @@ public class CalendarActivity extends AppCompatActivity {
                     pageToken = calendarList.getNextPageToken();    // if there is no next page, token will be null
                 }
                 while (pageToken != null);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t)
+            {
                 Log.e(TAG, t.getMessage());
                 isSuccesful = false;
             }
@@ -528,16 +672,19 @@ public class CalendarActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void v){
+        protected void onPostExecute(Void v)
+        {
             super.onPostExecute(v);
             // if query is successful, show selection dialog
-            if(isSuccesful) {
+            if (isSuccesful)
+            {
                 onCreateDialogSingleChoice().show();
             }
             // if not, exception was due to user revoking permission or removing account fromm device
             // revoke access, sign out, and sign in again.
             // this will make sure that user is logged in on the device and that they grant permission again.
-            else{
+            else
+            {
                 googleSignInClient.revokeAccess();
                 signOut();
                 signIn();
@@ -545,15 +692,19 @@ public class CalendarActivity extends AppCompatActivity {
         }
     }
 
-    // asynchronous task (if done on main thread, networkOnMainThread exception is thrown
-    // - uses the global google calendar api service created in RetrieveCalendars
-    // - retrieves events of a google calendar  (within the interval today - today + 7)
-    // - fill the global List<Event> eventsList to be then used to display the events
+    /**
+     * This is the class that asynchronous task (if done on main thread, networkOnMainThread exception is thrown
+     * uses the global google calendar api service created in RetrieveCalendars
+     * retrieves events of a google calendar  (within the interval today - today + 7)
+     * fill the global List<Event> eventsList to be then used to display the events
+     */
     private class RetrieveEvents extends AsyncTask<Void, Void, Void> {
         Date test = null;
         @Override
-        protected Void doInBackground(Void... params) {
-            try {
+        protected Void doInBackground(Void... params)
+        {
+            try
+            {
                 // current date with time set to 00:00:00:00 (H:M:S:MS)
                 // lower limit for events search query
                 Date dateMin =  setTime(new Date());
@@ -565,7 +716,8 @@ public class CalendarActivity extends AppCompatActivity {
                 Date dateMax = calendar.getTime();
                 test = dateMax;
                 String pageToken = null;
-                do {
+                do
+                {
                     // returns events within the date interval
                     Events events = service.events().list(selectedCalendarId)
                             .setTimeMin(new DateTime(dateMin))
@@ -580,33 +732,46 @@ public class CalendarActivity extends AppCompatActivity {
                     pageToken = events.getNextPageToken();
                 }
                 while (pageToken != null);
-            } catch (Throwable t) {
+            }
+            catch (Throwable t)
+            {
                 Log.e(TAG, t.getMessage());
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void v){
+        protected void onPostExecute(Void v)
+        {
             super.onPostExecute(v);
             displayTable();
         }
     }
 
-
-    //inflates the menu
+    /**
+     * This is the method that inflates the menu
+     * @param menu This is the first paramter to onCreateOptionsMenu method.
+     * @return boolean.
+     */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
 
-    //Handling menu clicks
+    /**
+     * This is the method that Handling menu clicks
+     * @param menuItem This is the first paramter to onOptionsItemSelected method.
+     * @return boolean.
+     */
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem)
+    {
         // Handle item selection
-        switch (menuItem.getItemId()) {
+        switch (menuItem.getItemId())
+        {
             case R.id.main_home:
                 Intent mapIntent = new Intent(CalendarActivity.this, MapsActivity.class);
                 startActivity(mapIntent);
@@ -634,5 +799,4 @@ public class CalendarActivity extends AppCompatActivity {
         }
         return false;
     }
-
 }
