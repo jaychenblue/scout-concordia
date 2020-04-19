@@ -470,8 +470,24 @@ public class Directions extends MapsActivity {
         }
         else {
             ShuttleInfo getShuttleEstimate = new ShuttleInfo();
-            travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
-            travelTime.setVisibility(View.VISIBLE);
+            String buildingGiven = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                buildingGiven = startingPoint.toString();
+            }
+            if (buildingGiven.contains("GB") || buildingGiven.contains("H") || buildingGiven.contains("MB")
+                    || buildingGiven.contains("LB") || buildingGiven.contains("EV") || buildingGiven.contains("GM")
+                    || buildingGiven.contains("ER") || buildingGiven.contains("LS") || buildingGiven.contains("FB")
+                    || buildingGiven.contains("FG") || buildingGiven.contains("GN") || buildingGiven.contains("CL")
+                    || buildingGiven.contains("GA")) {
+                travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromLoyola());
+                travelTime.setVisibility(View.VISIBLE);
+            }
+            else {
+                travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
+                travelTime.setVisibility(View.VISIBLE);
+            }
+
+
         }
     }
 }
