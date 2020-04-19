@@ -132,15 +132,14 @@ public class ShuttleInfo {
         switch (today)
         {
 
-           // case SUNDAY:
-             //   messageToUser = "There are no bus shuttles on Sundays!";
-               // break;
+           case SUNDAY:
+              messageToUser = "There are no bus shuttles on Sundays!";
+               break;
 
             case MONDAY:
                 TUESDAY:
                 WEDNESDAY:
                 THURSDAY:
-                SUNDAY:
                 getNextShuttleTime(shuttleTimes = getSGWMondayToThursdayTimes());
                 messageToUser = "The next shuttle is at: " + retrieveMonToThursSGW()[indexPosition] + ". ";
                 break;
