@@ -68,7 +68,8 @@ apply plugin: "com.vanniktech.android.junit.jacoco"
 junitJacoco{
     jacocoVersion = '0.8.2' //type string
     ignoreProjects = [] //type string array
-    excludes = Arrays.asList("**/DES.class",
+    excludes = Arrays.asList(
+            "**/DES.class",
             "**/CustomInfoWindow.class",
             "**/SplashScreenActivity.class",
             "**/BuildConfig.class",
@@ -78,9 +79,9 @@ junitJacoco{
             "**/ShuttleScreenActivity.class",
             "**/SplashScreenActivity.class",
             "**/Activities/**",
-            "**/ExternalButtonListener.class",
             "**/Directions.class",
-            "**/Locations.class")
+            "**/Locations.class",
+            "**/ExternalButtonListener**/**")
     includeNoLocationClasses = true //type boolean
     includeInstrumentationCoverageInMergedReport = true
 }
