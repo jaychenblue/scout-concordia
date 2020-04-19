@@ -97,7 +97,7 @@ public class ShuttleInfo {
         {
 
             case 1:
-                today = SUNDAY;
+                today = MONDAY;
                 break;
 
             case 2:
@@ -193,7 +193,7 @@ public class ShuttleInfo {
         {
 
             case 1:
-                today = SUNDAY;
+                today = MONDAY;
                 break;
 
             case 2:
