@@ -40,6 +40,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.Directions;
+import com.example.scoutconcordia.ExternalButtonListener;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
 import com.example.scoutconcordia.Locations;
 import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
@@ -50,15 +51,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -110,11 +107,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected static Button floor9;
     protected static Button floorCC1;
     protected static Button floorCC2;
-    private static Button floorVE2;
-    private static Button floorVL1;
-    private static Button floorVL2;
-    private static Button floorMB1;
-    private static Button floorMBS2;
+    protected static Button floorVE2;
+    protected static Button floorVL1;
+    protected static Button floorVL2;
+    protected static Button floorMB1;
+    protected static Button floorMBS2;
 
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
@@ -131,17 +128,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public static final List<String> locations = new ArrayList<>();    // Concordia buildings list
 
     // We use this for image overlay of Hall building
-    private final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
+    protected static final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
     private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
-    private final LatLng veBuildingOverlaySouthWest = new LatLng(45.458849, -73.639018);
-    private final LatLng vlBuildingOverlaySouthWest = new LatLng(45.459106, -73.637831);
-    private final LatLng mbBuildingOverlaySouthWest = new LatLng(45.494962, -73.578783);
-    private GroundOverlay hallGroundOverlay;
-    private final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
-    private GroundOverlay ccGroundOverlay;
-    private GroundOverlay veGroundOverlay;
-    private GroundOverlay vlGroundOverlay;
-    private GroundOverlay mbGroundOverlay;
+    protected static final LatLng veBuildingOverlaySouthWest = new LatLng(45.458849, -73.639018);
+    protected static final LatLng vlBuildingOverlaySouthWest = new LatLng(45.459106, -73.637831);
+    protected static final LatLng mbBuildingOverlaySouthWest = new LatLng(45.494962, -73.578783);
+    protected static GroundOverlay hallGroundOverlay;
+    protected static final LatLng ccOverlaySouthWest = new LatLng(45.458380, -73.640795);
+    protected static GroundOverlay ccGroundOverlay;
+    protected static GroundOverlay veGroundOverlay;
+    protected static GroundOverlay vlGroundOverlay;
+    protected static GroundOverlay mbGroundOverlay;
 
     protected static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     protected static String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
@@ -226,17 +223,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addExploreInsideButtonListener();
         addPopUpBarListener();
 
-        addfloor8ButtonListener();
-        addfloor9ButtonListener();
-        addfloor1ButtonListener();
-        addfloor2ButtonListener();
-        addfloorCC1ButtonListener();
-        addfloorCC2ButtonListener();
-        addfloorVE2ButtonListener();
-        addfloorVL1ButtonListener();
-        addfloorVL2ButtonListener();
-        addfloorMB1ButtonListener();
-        addfloorMBS2ButtonListener();
+        // adding button listeners for all of the floors.
+        floor1 = findViewById(R.id.floor1);
+        floor2 = findViewById(R.id.floor2);
+        floor8 = findViewById(R.id.floor8);
+        floor9 = findViewById(R.id.floor9);
+        floorCC1 = findViewById(R.id.floorCC1);
+        floorCC2 = findViewById(R.id.floorCC2);
+        floorVE2 = findViewById(R.id.floorVE2);
+        floorVL1 = findViewById(R.id.floorVL1);
+        floorVL2 = findViewById(R.id.floorVL2);
+        floorMB1 = findViewById(R.id.floorMB1);
+        floorMBS2 = findViewById(R.id.floorMBS2);
+        ExternalButtonListener.addfloor8ButtonListener();
+        ExternalButtonListener.addfloor9ButtonListener();
+        ExternalButtonListener.addfloor1ButtonListener();
+        ExternalButtonListener.addfloor2ButtonListener();
+        ExternalButtonListener.addfloorCC1ButtonListener();
+        ExternalButtonListener.addfloorCC2ButtonListener();
+        ExternalButtonListener.addfloorVE2ButtonListener();
+        ExternalButtonListener.addfloorVL1ButtonListener();
+        ExternalButtonListener.addfloorVL2ButtonListener();
+        ExternalButtonListener.addfloorMB1ButtonListener();
+        ExternalButtonListener.addfloorMBS2ButtonListener();
         addNextStepListener();
 
         createFloorGraphs();
@@ -274,287 +283,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         }
-    }
-
-    public void setUpGroundOverlay(String image)
-    {
-        BitmapFactory.Options dimensions = new BitmapFactory.Options();
-        dimensions.inJustDecodeBounds = true;
-        int imgHeightPixels = dimensions.outHeight;
-        float imgHeightInPixels;
-        float imgRotation = -56;
-        float overlaySize = 75;
-        BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier(image, DRAWABLE, getPackageName()));
-
-        hallGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                .image(floorPlan)
-                .position(hallOverlaySouthWest, overlaySize)
-                .anchor(0, 1)
-                .bearing(imgRotation));
-    }
-
-
-    public void addfloor1ButtonListener()
-    {
-        floor1 = (Button) findViewById(R.id.floor1);
-        floor1.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view) {
-                resetButtonColors();
-                floor1.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floor1.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-                setUpGroundOverlay("hall1p");
-            }
-        });
-    }
-
-    public void addfloor2ButtonListener()
-    {
-        floor2 = (Button) findViewById(R.id.floor2);
-        floor2.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view) {
-                resetButtonColors();
-                floor2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floor2.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-                setUpGroundOverlay("hall2floor");
-            }
-        });
-    }
-
-    public void addfloor8ButtonListener()
-    {
-        floor8 = (Button) findViewById(R.id.floor8);
-        floor8.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-
-                resetButtonColors();
-                floor8.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floor8.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-                setUpGroundOverlay("hall8p");
-            }
-        });
-    }
-
-    public void addfloor9ButtonListener()
-    {
-        floor9 = (Button) findViewById(R.id.floor9);
-        floor9.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-
-                resetButtonColors();
-                floor9.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floor9.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-                setUpGroundOverlay("hall9p");
-            }
-        });
-    }
-
-    public void addfloorCC1ButtonListener()
-    {
-        floorCC1 = (Button) findViewById(R.id.floorCC1);
-        floorCC1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetButtonColors();
-                floorCC1.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorCC1.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-                float imgHeightInPixels;
-                float imgRotation = 29;
-                float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building1", DRAWABLE, getPackageName()));
-
-                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(ccOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation));
-            }
-        });
-    }
-
-    public void addfloorCC2ButtonListener()
-    {
-        floorCC2 = (Button) findViewById(R.id.floorCC2);
-        floorCC2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetButtonColors();
-                floorCC2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorCC2.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-                float imgHeightInPixels;
-                float imgRotation = 29;
-                float overlaySize = 82;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("cc_building2", DRAWABLE, getPackageName()));
-
-                ccGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(ccOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation));
-            }
-        });
-    }
-
-    public void addfloorVE2ButtonListener()
-    {
-        floorVE2 = (Button) findViewById(R.id.floorVE2);
-        floorVE2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetButtonColors();
-                floorVE2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorVE2.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-                float imgHeightInPixels;
-                float imgRotation = 29;
-                float overlaySize = 50;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("ve_floor2", DRAWABLE, getPackageName()));
-
-                veGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(veBuildingOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation));
-            }
-        });
-    }
-
-    public void addfloorVL1ButtonListener()
-    {
-        floorVL1 = (Button) findViewById(R.id.floorVL1);
-        floorVL1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetButtonColors();
-                floorVL1.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorVL1.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-                float imgHeightInPixels;
-                float imgRotation = 209;
-                float overlaySize = 71;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_001", DRAWABLE, getPackageName()));
-
-                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(vlBuildingOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation));
-            }
-        });
-    }
-
-    public void addfloorVL2ButtonListener()
-    {
-        floorVL2 = (Button) findViewById(R.id.floorVL2);
-        floorVL2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetButtonColors();
-                floorVL2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorVL2.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-                float imgHeightInPixels;
-                float imgRotation = 209;
-                float overlaySize = 71;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("vl_002", DRAWABLE, getPackageName()));
-
-                vlGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(vlBuildingOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation));
-            }
-        });
-    }
-
-    public void addfloorMB1ButtonListener()
-    {
-        floorMB1 = (Button) findViewById(R.id.floorMB1);
-        floorMB1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetButtonColors();
-                floorMB1.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorMB1.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 42;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_01", DRAWABLE, getPackageName()));
-
-                mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(mbBuildingOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation));
-            }
-        });
-    }
-
-    public void addfloorMBS2ButtonListener()
-    {
-        floorMBS2 = (Button) findViewById(R.id.floorMBS2);
-        floorMBS2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                resetButtonColors();
-                floorMBS2.setBackgroundColor(getResources().getColor(R.color.burgandy));
-                floorMBS2.setTextColor(getResources().getColor((R.color.faintGray)));
-                removeAllFloorOverlays();
-
-                BitmapFactory.Options dimensions = new BitmapFactory.Options();
-                dimensions.inJustDecodeBounds = true;
-                int imgHeightPixels = dimensions.outHeight;
-                float imgHeightInPixels;
-                float imgRotation = -56;
-                float overlaySize = 42;
-                BitmapDescriptor floorPlan = BitmapDescriptorFactory.fromResource(getResources().getIdentifier("mb_s02", DRAWABLE, getPackageName()));
-
-                mbGroundOverlay = mMap.addGroundOverlay(new GroundOverlayOptions()
-                        .image(floorPlan)
-                        .position(mbBuildingOverlaySouthWest, overlaySize)
-                        .anchor(0, 1)
-                        .bearing(imgRotation));
-            }
-        });
     }
 
     public void addNextStepListener()
@@ -932,7 +660,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorCC2.setVisibility(vis);
     }
 
-    public void removeAllFloorOverlays(){
+    public static void removeAllFloorOverlays(){
         if (hallGroundOverlay != null)
             hallGroundOverlay.remove();
         if (ccGroundOverlay != null)
@@ -945,29 +673,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mbGroundOverlay.remove();
     }
 
-    public void resetButtonColors() {
+    public static void resetButtonColors() {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
-        floor1.setTextColor(getResources().getColor(R.color.black));
+        floor1.setTextColor(getmContext().getResources().getColor(R.color.black));
         floor2.setBackgroundResource(android.R.drawable.btn_default);
-        floor2.setTextColor(getResources().getColor(R.color.black));
+        floor2.setTextColor(getmContext().getResources().getColor(R.color.black));
         floor8.setBackgroundResource(android.R.drawable.btn_default);
-        floor8.setTextColor(getResources().getColor(R.color.black));
+        floor8.setTextColor(getmContext().getResources().getColor(R.color.black));
         floor9.setBackgroundResource(android.R.drawable.btn_default);
-        floor9.setTextColor(getResources().getColor(R.color.black));
+        floor9.setTextColor(getmContext().getResources().getColor(R.color.black));
         floorCC1.setBackgroundResource(android.R.drawable.btn_default);
-        floorCC1.setTextColor(getResources().getColor(R.color.black));
+        floorCC1.setTextColor(getmContext().getResources().getColor(R.color.black));
         floorCC2.setBackgroundResource(android.R.drawable.btn_default);
-        floorCC2.setTextColor(getResources().getColor(R.color.black));
+        floorCC2.setTextColor(getmContext().getResources().getColor(R.color.black));
         floorVE2.setBackgroundResource(android.R.drawable.btn_default);
-        floorVE2.setTextColor(getResources().getColor(R.color.black));
+        floorVE2.setTextColor(getmContext().getResources().getColor(R.color.black));
         floorVL1.setBackgroundResource(android.R.drawable.btn_default);
-        floorVL1.setTextColor(getResources().getColor(R.color.black));
+        floorVL1.setTextColor(getmContext().getResources().getColor(R.color.black));
         floorVL2.setBackgroundResource(android.R.drawable.btn_default);
-        floorVL2.setTextColor(getResources().getColor(R.color.black));
+        floorVL2.setTextColor(getmContext().getResources().getColor(R.color.black));
         floorMB1.setBackgroundResource(android.R.drawable.btn_default);
-        floorMB1.setTextColor(getResources().getColor(R.color.black));
+        floorMB1.setTextColor(getmContext().getResources().getColor(R.color.black));
         floorMBS2.setBackgroundResource(android.R.drawable.btn_default);
-        floorMBS2.setTextColor(getResources().getColor(R.color.black));
+        floorMBS2.setTextColor(getmContext().getResources().getColor(R.color.black));
     }
 
     /**
