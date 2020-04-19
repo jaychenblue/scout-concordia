@@ -132,9 +132,9 @@ public class ShuttleInfo {
         switch (today)
         {
 
-            case SUNDAY:
-                messageToUser = "There are no bus shuttles on Sundays!";
-                break;
+           case SUNDAY:
+              messageToUser = "There are no bus shuttles on Sundays!";
+               break;
 
             case MONDAY:
                 TUESDAY:
@@ -466,44 +466,49 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveTime(String txtFile) throws IOException
     {
-        InputStream is = null;
 
         switch (txtFile)
         {
             case "loyolaMonThurs":
-                is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
-                break;
+              try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola)){
+                  break;
+              }
 
             case "loyolaFriday":
-                is = context.getResources().openRawResource(raw.schedule_friday_loyola);
-                break;
+                try(InputStream is = context.getResources().openRawResource(raw.schedule_friday_loyola)){
+                    break;
+                }
 
             case "sgwFriday":
-                is = context.getResources().openRawResource(raw.schedule_friday_sgw);
-                break;
+                try(InputStream is = context.getResources().openRawResource(raw.schedule_friday_sgw)){
+                    break;
+                }
 
             default:
-                is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
-                break;
+                try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)){
+                    break;
+                }
+
         }
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-        is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
-        InputStreamReader readInput = new InputStreamReader(is);
-        StringBuilder sb = new StringBuilder();
-        BufferedReader bfr = new BufferedReader(readInput);
+        try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)) {
+            InputStreamReader readInput = new InputStreamReader(is);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader bfr = new BufferedReader(readInput);
 
-        String thisLine;
 
-        // This while loop goes through the entire file line by line and analyzes it
-        while ((thisLine = bfr.readLine()) != null)
-        {
-            shuttleArrayList.add(thisLine);
+            String thisLine;
+
+            // This while loop goes through the entire file line by line and analyzes it
+            while ((thisLine = bfr.readLine()) != null) {
+                shuttleArrayList.add(thisLine);
+            }
+
+            readInput.close();
+            bfr.close();
         }
-
-        readInput.close();
-        bfr.close();
 
         String[] givenTimes = new String[shuttleArrayList.size()];
 
