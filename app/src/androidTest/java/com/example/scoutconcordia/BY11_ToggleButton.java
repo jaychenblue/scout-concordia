@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+
+import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -41,6 +43,7 @@ public class BY11_ToggleButton {
 
     @Test
     public void bY11_ToggleButton() throws InterruptedException {
+
         Thread.sleep(2500);
         ViewInteraction toggleButton = onView(
                 allOf(withId(R.id.toggleButton), withText("SGW"),

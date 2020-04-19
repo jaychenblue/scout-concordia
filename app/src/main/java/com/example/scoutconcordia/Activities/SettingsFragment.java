@@ -31,6 +31,11 @@ public class SettingsFragment extends PreferenceFragment
     private Context mContext;
     private Activity mActivity;
 
+    /**
+     *
+     * @param savedInstanceState settings are saved to SharedPreferences so that information is
+     *                           not lost when the activity is recreated
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {

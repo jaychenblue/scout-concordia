@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
-
 import com.example.scoutconcordia.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
-
-public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter
-{
+/** Classed used to create custom info windows for markers displayed on the map. */
+public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     private Activity context;
 
     public CustomInfoWindow(Activity context)
@@ -26,6 +23,10 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter
         return null;
     }
 
+    /** Overrides the getInfoContents method.
+     * @param marker A marker from the map
+     * @return Returns an info window view with the custom marker properties
+     */
     @Override
     public View getInfoContents(Marker marker)
     {

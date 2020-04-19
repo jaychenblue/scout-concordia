@@ -2,17 +2,19 @@ package com.example.scoutconcordia.DataStructures;
 
 import com.google.android.gms.maps.model.LatLng;
 
-// under the assumption no 2 points will be the same
+/** Class representing an N_ary tree under the assumption that no 2 points will be the same */
 public class N_aryTree
 {
-    TreeNode head;
-    
+    private TreeNode head;
+
+    /** Inner class TreeNode that represents Nodes of the N_ary tree.
+     */
     public class TreeNode
     {
         private TreeNode parent;
         private LinkedList<TreeNode> children;
         private LatLng element;
-        
+
         public TreeNode getParent()
         {
             return parent;
@@ -42,14 +44,22 @@ public class N_aryTree
         {
             this.element = element;
         }
-    
+
+        /** Constructor for a TreeNode
+         * @param parent The parent of the new tree node
+         * @param element the LatLng value of the new tree node
+         */
         public TreeNode(TreeNode parent, LatLng element)
         {
             this.parent = parent;
             this.element = element;
-            children = new LinkedList<TreeNode>(this);
+            children = new LinkedList<>(this);
         }
-    
+
+        /** Adds a child node to a TreeNode
+         * @param pointToAdd the LatLng value of the new child node
+         * @return Returns true if the child node was added successfully.
+         */
         public boolean addToChildren(LatLng pointToAdd)
         {
             if (children == null)
@@ -58,7 +68,11 @@ public class N_aryTree
             children.add(addMe);
             return true;
         }
-        
+
+        /** Overrides the equals method.
+         * @param n2 An object to compare to
+         * @return Returns true if both TreeNode elements are the same.
+         */
         @Override public boolean equals(Object n2)
         {
             if (n2 == null)
@@ -68,12 +82,13 @@ public class N_aryTree
             return (element.equals(((TreeNode)n2).element));
         }
     }
-    
+
+    /** Default constructor for a N_ary Tree */
     public N_aryTree()
     {
         head = new TreeNode(null, null);
     }
-    
+
     public TreeNode getHead()
     {
         return head;
@@ -82,7 +97,12 @@ public class N_aryTree
     public void setHead(TreeNode head) {
         this.head = head;
     }
-    
+
+    /** Finds a node within the N_ary Tree
+     * @param goFromHere Starting node
+     * @param findThisPoint Destination node
+     * @return Returns a node along the path. This is a recursive method.
+     */
     public TreeNode findSpecifiedNode(TreeNode goFromHere, LatLng findThisPoint)
     {
         if (goFromHere == null || findThisPoint == null)
@@ -104,7 +124,12 @@ public class N_aryTree
         }
         return null;
     }
-    
+
+    /** Finds the path from one node to another using the findSpecifiedNode method
+     * @param from The starting location
+     * @param to The destination
+     * @return Returns an array of nodes signaling the path from starting location to destination
+     */
     public Object[] getPath(LatLng from, LatLng to)
     {
         if (from  == null || to == null)
@@ -115,7 +140,7 @@ public class N_aryTree
         TreeNode end = findSpecifiedNode(start, to);
         if (end == null)
             return null;
-        LinkedList<LatLng> path = new LinkedList<LatLng>(new LatLng(1,1));
+        LinkedList<LatLng> path = new LinkedList<>(new LatLng(1,1));
         TreeNode current = end;
         while (!(current.equals(start)))
         {

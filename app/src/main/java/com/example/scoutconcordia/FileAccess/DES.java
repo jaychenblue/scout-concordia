@@ -1,23 +1,18 @@
 package com.example.scoutconcordia.FileAccess;
 
 import android.util.Log;
-
 import com.example.scoutconcordia.DataStructures.LinkedList;
-
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Scanner;
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-
+/** Class used for data encryption and decryption using the Data Encryption Standard. */
 public class DES
 {
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
@@ -26,8 +21,8 @@ public class DES
     private static SecretKeyFactory factory;
     private static SecretKey myDesKey;
 
-    DES()
-    {
+    /** DES constructor that initializes the encrypter. */
+    DES() {
         this.desKey = "0123456789abcdef";
         this.keyBytes = hexToByte(this.desKey);
         {
@@ -43,11 +38,14 @@ public class DES
         }
     }
 
-    /** Method for decrypting a file. Requires an input stream and an output stream **/
+    /** Method for decrypting a file. Requires and input stream and returns an Object array.
+     * @param readFromMe An input stream that will be read from to get data
+     * @return An object array containing the decrypted information from the input stream
+     */
     public Object[] decryptFile(InputStream readFromMe)
     {
         Scanner reader = null;
-        LinkedList<String> returnMe = new LinkedList<String>("");
+        LinkedList<String> returnMe = new LinkedList<>("");
         try
         {
             Cipher desCipher = Cipher.getInstance("DES");
@@ -66,7 +64,7 @@ public class DES
         catch(Exception e)
         {
             e.printStackTrace();
-            Log.println(Log.WARN, "decrypting", "An Exception occured");
+            Log.println(Log.WARN, "decrypting", "An exception occurred.");
         }
         finally
         {
@@ -76,7 +74,10 @@ public class DES
         return returnMe.toArray();
     }
 
-    /** Helper method for converting an array of bytes to hex characters **/
+    /** Helper method for converting an array of bytes to hex characters.
+     * @param bytes A byte array
+     * @return A string of hex characters corresponding to the byte characters.
+     */
     private static String bytesToHex(byte[] bytes)
     {
         char[] hexChars = new char[bytes.length * 2];
@@ -89,7 +90,10 @@ public class DES
         return new String(hexChars);
     }
 
-    /** Helper method for converting hex characters to an array of bytes **/
+    /** Helper method for converting hex characters to an array of bytes.
+     * @param s A string of hex characters.
+     * @return An array of bytes corresponding to the hex character string.
+     */
     private static byte[] hexToByte(String s)
     {
         int len = s.length();
