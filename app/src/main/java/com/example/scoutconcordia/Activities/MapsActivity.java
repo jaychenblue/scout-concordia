@@ -815,25 +815,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                directionButton.setVisibility(View.INVISIBLE);
-                exploreInsideButton.setVisibility(View.INVISIBLE);
+                try {
+                    directionButton.setVisibility(View.INVISIBLE);
+                    exploreInsideButton.setVisibility(View.INVISIBLE);
 
-                setHallButtonsVisibility(false);
-                setCCButtonsVisibility(false);
-                setVEButtonsVisibility(false);
-                setVLButtonsVisibility(false);
-                setMBButtonsVisibility(false);
-                removeAllFloorOverlays();
+                    setHallButtonsVisibility(false);
+                    setCCButtonsVisibility(false);
+                    setVEButtonsVisibility(false);
+                    setVLButtonsVisibility(false);
+                    setMBButtonsVisibility(false);
+                    removeAllFloorOverlays();
 
-                popUpBar.setVisibility(View.INVISIBLE);
-                isInfoWindowShown = false;
-                setPolygonBuildingsVisibility(true);
-                setBuildingMarkersVisibility(true);
-                resetGetDirectionParams();
-                resetPath();  //erase the path from outdoor directions
-                setRestaurantMarkersVisibility(false);
+                    popUpBar.setVisibility(View.INVISIBLE);
+                    isInfoWindowShown = false;
+                    setPolygonBuildingsVisibility(true);
+                    setBuildingMarkersVisibility(true);
+                    resetGetDirectionParams();
+                    resetPath();  //erase the path from outdoor directions
+                    setRestaurantMarkersVisibility(false);
 
-                travelTime.setVisibility(View.INVISIBLE);
+                    travelTime.setVisibility(View.INVISIBLE);
+                }
+                catch (Throwable t){
+                    t.printStackTrace();
+                }
             }
         });
     }
