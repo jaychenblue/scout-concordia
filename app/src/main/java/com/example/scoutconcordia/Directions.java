@@ -469,7 +469,11 @@ public class Directions extends MapsActivity {
         }
         else {
             ShuttleInfo getShuttleEstimate = new ShuttleInfo();
-            if (BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || ) {
+            if (BUILDING_NAME.toString().contains("GB") || BUILDING_NAME.toString().contains("H") || BUILDING_NAME.toString().contains("MB")
+                    || BUILDING_NAME.toString().contains("LB") || BUILDING_NAME.toString().contains("EV") || BUILDING_NAME.toString().contains("GM")
+                    || BUILDING_NAME.toString().contains("ER") || BUILDING_NAME.toString().contains("LS") || BUILDING_NAME.toString().contains("FB")
+                    || BUILDING_NAME.toString().contains("FG") || BUILDING_NAME.toString().contains("GN") || BUILDING_NAME.toString().contains("CL")
+                    || BUILDING_NAME.toString().contains("GA")) {
                 travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
                 travelTime.setVisibility(View.VISIBLE);
             }
