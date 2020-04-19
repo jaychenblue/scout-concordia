@@ -506,6 +506,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mar.setVisible(visibility);
     }
 
+    /**
+     * This method sets the visibility parameters for the Hall Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setHallButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -519,6 +523,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floor9.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the VE Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setVEButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -529,6 +537,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorVE2.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the VL Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setVLButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -540,6 +552,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorVL2.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the MB Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setMBButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -551,6 +567,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorMBS2.setVisibility(vis);
     }
 
+    /**
+     * This method sets the visibility parameters for the CC Building Buttons which show the floors and call the floor maps when clicked.
+     * @param visibility boolean which holds whether a button should be viewable
+     */
     public static void setCCButtonsVisibility(Boolean visibility)
     {
         int vis;
@@ -562,7 +582,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorCC2.setVisibility(vis);
     }
 
-    public static void removeAllFloorOverlays(){
+    /**
+     * This method essentially sweeps all the families of floor maps, grouped by buldings,
+     * and removes the overlays displayed on the google maps.
+     */
+    public static void removeAllFloorOverlays()
+    {
         if (hallGroundOverlay != null)
             hallGroundOverlay.remove();
         if (ccGroundOverlay != null)
@@ -575,7 +600,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mbGroundOverlay.remove();
     }
 
-    public static void resetButtonColors() {
+    /**
+     * This method resets button colours to the default, considering they might have been changed
+     * following a click event triggered by the user.
+     */
+    public static void resetButtonColors()
+    {
         floor1.setBackgroundResource(android.R.drawable.btn_default);
         floor1.setTextColor(getmContext().getResources().getColor(R.color.black));
         floor2.setBackgroundResource(android.R.drawable.btn_default);
@@ -686,7 +716,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    protected static TravelMode getTravelMode(){
+    protected static TravelMode getTravelMode()
+    {
         TravelMode mode = null;
         switch (travelMode){
             case 1:
@@ -704,7 +735,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // remove previous path and markers
-    protected static void resetPath(){
+    protected static void resetPath()
+    {
         if(pathPolyline != null) {
             try {
                 startLocationMarker.remove();
@@ -714,7 +746,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void resetGetDirectionParams(){
+    private void resetGetDirectionParams()
+    {
         startingPoint = null;
         destination = null;
         travelMode = 1;
@@ -735,7 +768,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return graphName;
     }
 
-    public void setClickListeners() {
+    public void setClickListeners()
+    {
         mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
             @Override
             public void onPolygonClick(Polygon polygon) {
@@ -811,7 +845,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         // when we click on the map, we want to reset back to all the defaults
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener()
+        {
             @Override
             public void onMapClick(LatLng latLng) {
                 try {
@@ -966,12 +1001,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // This sets the context and is called during the onCreate method.
+
+    /**
+     * This gets the context from the calling class which is required for passing forward access to resource files
+     * @param mContext this is the context that is passed down
+     */
     public static void setmContext(Context mContext) {
         MapsActivity.mContext = mContext;
     }
 
-    // THis is for non-activity or non-fragment classes to use in order to pull the context of this class, which will
-    // then allow them to access resource files, this cannot be done otherwise.
+    /**
+     * This gets the context from the calling class which is required for passing forward access to resource files
+     * (THis is for non-activity or non-fragment classes to use in order to pull the context of this class)
+     */
     public static Context getmContext() {
         return mContext;
     }
