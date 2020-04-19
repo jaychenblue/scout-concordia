@@ -469,8 +469,16 @@ public class Directions extends MapsActivity {
         }
         else {
             ShuttleInfo getShuttleEstimate = new ShuttleInfo();
-            travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
-            travelTime.setVisibility(View.VISIBLE);
+            if (BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || BUILDING_NAME.contains("VE") || ) {
+                travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromSGW());
+                travelTime.setVisibility(View.VISIBLE);
+            }
+            else {
+                travelTime.setText(getShuttleEstimate.getEstimatedRouteTimeFromLoyola());
+                travelTime.setVisibility(View.VISIBLE);
+            }
+
+
         }
     }
 }
