@@ -53,7 +53,7 @@ public class SettingsFragment extends PreferenceFragment
          */
         final SwitchPreference accessibility = (SwitchPreference) findPreference(this.getResources()
                 .getString(R.string.AccessibilitySettings));
-
+        accessibility.setChecked(false); //accessibility is set to false at the start.
 
         /**
             void setOnPreferenceChangeListener (Preference.OnPreferenceChangeListener onPreferenceChangeListener)
