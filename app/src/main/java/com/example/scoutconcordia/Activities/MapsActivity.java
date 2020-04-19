@@ -154,7 +154,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomNavigationView travelOptionsMenu = null;
     private boolean shuttleAvailable = false;
 
-
+    protected static boolean disabilityPreference = false; //false for no disability, true for disability
     protected static boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     protected static boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
 
