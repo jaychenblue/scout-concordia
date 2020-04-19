@@ -66,7 +66,7 @@ public class ShuttleInfo {
     private static final String FRIDAY = "Friday";
     private static final String SATURDAY = "Saturday";
     private static final String SUNDAY = "Sunday";
-
+    private static final String NEXT_SHUTTLE_MESSAGE = "The next shuttle is at:";
 
     /**
      * Here we check the time and day and find the next relevant shuttle but time from SGW to Loyola.
@@ -132,21 +132,21 @@ public class ShuttleInfo {
         switch (today)
         {
 
-            case SUNDAY:
-                messageToUser = "There are no bus shuttles on Sundays!";
-                break;
+           case SUNDAY:
+              messageToUser = "There are no bus shuttles on Sundays!";
+               break;
 
             case MONDAY:
                 TUESDAY:
                 WEDNESDAY:
                 THURSDAY:
                 getNextShuttleTime(shuttleTimes = getSGWMondayToThursdayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursSGW()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursSGW()[indexPosition] + ". ";
                 break;
 
             case FRIDAY:
                 getNextShuttleTime(shuttleTimes = getSGWFridayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveFridaySGW()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveFridaySGW()[indexPosition] + ". ";
                 break;
 
             case SATURDAY:
@@ -155,7 +155,7 @@ public class ShuttleInfo {
 
             default:
                 getNextShuttleTime(shuttleTimes = getSGWMondayToThursdayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursLoyola()[indexPosition] + ". ";
                 break;
 
         }
@@ -238,12 +238,12 @@ public class ShuttleInfo {
                 WEDNESDAY:
                 THURSDAY:
                 getNextShuttleTime(shuttleTimes = getLoyolaMondayToThursdayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursLoyola()[indexPosition] + ". ";
                 break;
 
             case FRIDAY:
                 getNextShuttleTime(shuttleTimes = getLoyolaFridayTimes());
-                messageToUser = "The next shuttle is at: " + retrieveFridayLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveFridayLoyola()[indexPosition] + ". ";
                 break;
 
 
@@ -254,7 +254,7 @@ public class ShuttleInfo {
 
             default:
                 getNextShuttleTime(shuttleTimes = getLoyolaMondayToThursdayTimes());
-                messageToUser = "The next bus shuttle comes at: " + retrieveMonToThursLoyola()[indexPosition] + ". ";
+                messageToUser = NEXT_SHUTTLE_MESSAGE + retrieveMonToThursLoyola()[indexPosition] + ". ";
                 break;
         }
 
@@ -466,44 +466,49 @@ public class ShuttleInfo {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String[] retrieveTime(String txtFile) throws IOException
     {
-        InputStream is = null;
 
         switch (txtFile)
         {
             case "loyolaMonThurs":
-                is = context.getResources().openRawResource(raw.schedule_montothurs_loyola);
-                break;
+              try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_loyola)){
+                  break;
+              }
 
             case "loyolaFriday":
-                is = context.getResources().openRawResource(raw.schedule_friday_loyola);
-                break;
+                try(InputStream is = context.getResources().openRawResource(raw.schedule_friday_loyola)){
+                    break;
+                }
 
             case "sgwFriday":
-                is = context.getResources().openRawResource(raw.schedule_friday_sgw);
-                break;
+                try(InputStream is = context.getResources().openRawResource(raw.schedule_friday_sgw)){
+                    break;
+                }
 
             default:
-                is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
-                break;
+                try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)){
+                    break;
+                }
+
         }
 
         ArrayList<String> shuttleArrayList = new ArrayList<>();
 
-        is = context.getResources().openRawResource(raw.schedule_montothurs_sgw);
-        InputStreamReader readInput = new InputStreamReader(is);
-        StringBuilder sb = new StringBuilder();
-        BufferedReader bfr = new BufferedReader(readInput);
+        try(InputStream is = context.getResources().openRawResource(raw.schedule_montothurs_sgw)) {
+            InputStreamReader readInput = new InputStreamReader(is);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader bfr = new BufferedReader(readInput);
 
-        String thisLine;
 
-        // This while loop goes through the entire file line by line and analyzes it
-        while ((thisLine = bfr.readLine()) != null)
-        {
-            shuttleArrayList.add(thisLine);
+            String thisLine;
+
+            // This while loop goes through the entire file line by line and analyzes it
+            while ((thisLine = bfr.readLine()) != null) {
+                shuttleArrayList.add(thisLine);
+            }
+
+            readInput.close();
+            bfr.close();
         }
-
-        readInput.close();
-        bfr.close();
 
         String[] givenTimes = new String[shuttleArrayList.size()];
 
