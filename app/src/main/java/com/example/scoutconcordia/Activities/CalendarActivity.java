@@ -45,7 +45,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
+/**
+ * Uses table structure in activity_calendar.xml to display events in a Google Calendar
+ * - Table structure:
+ *      - columns correspond to a particular day
+ *      - rows correspond to a particular time of the day (each row = 15 mins)
+ */
 public class CalendarActivity extends AppCompatActivity
 {
     private GoogleSignInClient googleSignInClient;
@@ -133,10 +138,10 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the dialog to display a selection list with all calendar entry names,
-     * single choice dialog, and first value is selected by default, dialog is not cancellable,
-     * user either has to select an option, or go back to MapsActivity by pressing cancel or back button.
-     * @return Dialog.
+     * creates a dialog displaying a selection list with all of Google calendar entries linked with the logged in email
+     * dialog properties: single choice, not cancellable, first item selected by default
+     * buttons: Cancel -> redirects to MapsActivity, Select -> retrieves all events in selected calendar and displays in a table
+     * @return Dialog
      */
     public Dialog onCreateDialogSingleChoice() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MaterialThemeDialog);
@@ -194,15 +199,10 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that  loops through every event in the events list, and verifies
-     * the day of the event, start time, and duration.
-     * fills the table columns (textView) in the table layout overlapping the event timing
-     * Table structure is in TableLayout in activity_calendar.xml
-     * first column is representing time, second column is current day, the column after is the day after and so on
-     *   -> each column contains a textview
-     * first row is date, second row is day
-     * rows after are time sections (each row = 15 mins)
-     * @return void.
+     * displays a schedule table listing all events found in Google calendar selected in the selection dialog
+     *  - For every event:
+     *           - finds columns (text views) in table structure corresponding to the event times
+     *           - sets the text to display event information and changes background colour to a solid colour
      */
     private void displayTable() {
         tableIds = tableLayoutIds(); // ids of columns (text views) in the table table layout
@@ -289,11 +289,8 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that sets the values for the date's row (first row) and day's row (second row) for all 7 columns
-     * first column are set to today's date and day respectively, next column is next day
-     * uses the dateInfoObj created with dateInfoObj() method to get date and days value for each of the 7 days starting current day
-     * @param dateInfoObj This is the first paramter to fillDayDateRows method.
-     * @return void.
+     * sets day name and date for the schedule table
+     * @param dateInfoObj a 7x2 String array containing day name and date for the 7 upcoming days including current
      */
     private void fillDayDateRows(String[][] dateInfoObj){
         Resources r = getResources();
@@ -310,10 +307,7 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that returns a multidimensional array containing string values for the day and date from current day up to the 7th day
-     * String[][] dateInfoObj= new String[7][3]; [x][0] = date (dd), [x][1] = date (yyyy-MM-dd), [x][2] = name of day
-     * where x = 0 is today, x = 1 is tomorrow and so on.  0 <= x < 7
-     * @return String[][].
+     * @return a multidimensional string array with day name and date values for the upcoming 7 days including current
      */
     private String[][] dateInfoObj(){
         String[][] dateInfoObj= new String[7][3];
@@ -340,16 +334,14 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that set text, text color, background for the text views overlapping the event timing
-     * attach onClickListener to texteviews
-     * @param eventDayColumn This is the first paramter to fillEvent method.
-     * @param startRow This is the second paramter to fillEvent method.
-     * @param totalRows This is the third paramter to fillEvent method.
-     * @param summary This is the fourth paramter to fillEvent method.
-     * @param location This is the fifth paramter to fillEvent method.
-     * @param classHours This is the sixth paramter to fillEvent method.
-     * @param colorId This is the seventh paramter to fillEvent method.
-     * @return void.
+     * sets text and color for text views in the schedule table corresponding to event, and attaches onClickListener
+     * @param eventDayColumn id for column corresponding the date of the event
+     * @param startRow id corresponding starting row of the event
+     * @param totalRows number of rows covering event duration (an hour equals 4 rows, each row equals 15 mins)
+     * @param summary event title
+     * @param location event location
+     * @param classHours event hours
+     * @param colorId
      */
     private void fillEvent(int eventDayColumn, int startRow, int totalRows, String summary, String location, String classHours, int colorId){
         try {
@@ -379,11 +371,10 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that give an error message when the string is overflow
-     * @param str This is the first paramter to removeStringOverflow method.
-     * @param substringLength This is the second paramter to removeStringOverflow method.
-     * @return String.
-     * @exception catch Throwable error.
+     * creates a substring of first n characters from a string and adds "..." to the end
+     * @param str string to create a substring from
+     * @param substringLength length of substring
+     * @return substring
      */
     private String removeStringOverflow (String str, int substringLength){
         try {
@@ -403,12 +394,11 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that displays directionsDailog created by calling directionsDialog(...)
-     * @param textView This is the first paramter to attachOnClickListener method.
-     * @param location This is the second paramter to attachOnClickListener method.
-     * @param summary This is the third paramter to attachOnClickListener method.
-     * @param classHours This is the fourth paramter to attachOnClickListener method.
-     * @return void.
+     * attaches onClickListener to a text view
+     * @param textView
+     * @param location
+     * @param summary
+     * @param classHours
      */
     private void attachOnClickListener(TextView textView, final String location, final String summary, final String classHours){
         textView.setClickable(true);
@@ -426,13 +416,10 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that create a dialong displaying location, title, and hours of the event
-     * Go button to get directions to the location
-     * Cancel button to cancel dialog
-     * dialog is also cancellable by pressing anywhere on the screen
-     * @param items This is the first paramter to directionsDialog method.
-     * @param location This is the second paramter to directionsDialog method.
-     * @return Dialog.
+     * creates a dialog displaying location, title, and hours of an event
+     * @param items strign array containing title, hours, and location
+     * @param location
+     * @return dialog
      */
     private Dialog directionsDialog(String[] items, final String location){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -471,11 +458,9 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that returns the row number that the event begins at (e.g. if event starts at 9, 5 will be returned, (9-8)*4 +(0/15)+1
-     * begins at 8:00 = row 1, at 8:15 = row 2, and so on
-     * @param start This is the first paramter to eventStartRow method.
-     * @param end This is the second paramter to eventStartRow method.
-     * @return int.
+     * @param start start time of event
+     * @param end end time of event
+     * @return row id corresponding the event start time
      */
     private int eventStartRow(Date start, Date end){
         java.util.Calendar c = java.util.Calendar.getInstance();
@@ -488,11 +473,9 @@ public class CalendarActivity extends AppCompatActivity
         return startRow;
     }
 
+
     /**
-     * This is the method that returns a multidimensional array that holds ids of all text views for each column in the table Layout in activity_calendar.xml
-     * [x][y], x = 0 is the first row
-     * y = 1 (0 is not assigned) is the first column (from 8:00 to 8:15)
-     * @return int[][].
+     * @return multidimensional int array with resources id's of all text views in the table strcture
      */
     private int[][] tableLayoutIds(){
         int[][] tableIds = new int[7][61];
@@ -513,9 +496,8 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that return the day of the name for a given date
-     * @param value This is the first paramter to getDayOfWeek method.
-     * @return String.
+     * @param value integer corresponding day name for a date in Calendar object
+     * @return string with first three letters of a day
      */
     private String getDayOfWeek(int value){
         switch (value) {
@@ -537,9 +519,8 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that sets time of a Date type object to 00:00:00:00 (H:S:M:MS)
-     * @param date This is the first paramter to setTime method.
-     * @return Date.
+     * @param date Date object
+     * @return Date object with time set to 00:00:00:00 (H:S:M:MS)
      */
     private Date setTime(Date date){
         calendar.setTime(date);
@@ -551,9 +532,8 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that returns the hour value of time in Date object
-     * @param date This is the first paramter to getTimeHour method.
-     * @return int.
+     * @param date Date object
+     * @return hour value of time in Date object
      */
     private int getTimeHour(Date date){
         calendar.setTime(date);
@@ -571,13 +551,6 @@ public class CalendarActivity extends AppCompatActivity
         googleSignInClient.signOut();
     }
 
-    /**
-     * This is the method that result of the startActivityForResult
-     * @param requestCode This is the first paramter to onActivityResult method.
-     * @param resultCode This is the second paramter to onActivityResult method.
-     * @param data This is the first third to onActivityResult method.
-     * @return void.
-     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -596,7 +569,7 @@ public class CalendarActivity extends AppCompatActivity
 
     /**
      * This is the method that handles the behaviour once the sign in has completed
-     * @param task This is the first paramter to handleSignInresult method.
+     * @param task result of google sign in acount
      * @return void.
      */
     protected void handleSignInresult(Task<GoogleSignInAccount> task) {
@@ -617,11 +590,10 @@ public class CalendarActivity extends AppCompatActivity
         overridePendingTransition(0, 0);    // removes the exit and enter animations when changing activities
     }
 
+
     /**
-     * This is the class that asynchronous task (if done on main thread, networkOnMainThread exception is thrown
-     * build a global google api calendar service
-     * (get an access token using the user's email and set this token to the credentials)
-     * retrieves a list of google calendars
+     * asynchronous task that retrieves a list of Google calendars from a Google account and puts
+     * their name and id's in a global list variable in it's outer class
      */
     private class RetrieveCalendars extends AsyncTask<Void, Void, Void> {
         private boolean isSuccesful = true; // true when query is successful, set to false when an exception is thrown
@@ -693,10 +665,8 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the class that asynchronous task (if done on main thread, networkOnMainThread exception is thrown
-     * uses the global google calendar api service created in RetrieveCalendars
-     * retrieves events of a google calendar  (within the interval today - today + 7)
-     * fill the global List<Event> eventsList to be then used to display the events
+     * asynchronous task that retrieves a list of Google calendar events and adds
+     * them to global list variable in the outer class
      */
     private class RetrieveEvents extends AsyncTask<Void, Void, Void> {
         Date test = null;
@@ -750,7 +720,7 @@ public class CalendarActivity extends AppCompatActivity
 
     /**
      * This is the method that inflates the menu
-     * @param menu This is the first paramter to onCreateOptionsMenu method.
+     * @param menu
      * @return boolean.
      */
     @Override
@@ -762,8 +732,8 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     /**
-     * This is the method that Handling menu clicks
-     * @param menuItem This is the first paramter to onOptionsItemSelected method.
+     * This is the method that Handles menu clicks
+     * @param menuItem menu item clicked
      * @return boolean.
      */
     @Override
