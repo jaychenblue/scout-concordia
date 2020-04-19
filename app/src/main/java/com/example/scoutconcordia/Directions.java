@@ -1,24 +1,17 @@
 package com.example.scoutconcordia;
 
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-
 import com.example.scoutconcordia.Activities.MapsActivity;
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.model.DirectionsLeg;
@@ -27,13 +20,11 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.TravelMode;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import static android.content.ContentValues.TAG;
 import static android.view.View.VISIBLE;
 
@@ -156,33 +147,33 @@ public class Directions extends MapsActivity {
         switch (showFloor) {
             case "H-0":
             case "H-1":
-                showHallButtons();
-                hideCCButtons();
+                setHallButtonsVisibility(true);
+                setCCButtonsVisibility(false);
                 floor1.performClick();
                 break;
             case "H-2":
-                showHallButtons();
-                hideCCButtons();
+                setHallButtonsVisibility(true);
+                setCCButtonsVisibility(false);
                 floor2.performClick();
                 break;
             case "H-8":
-                showHallButtons();
-                hideCCButtons();
+                setHallButtonsVisibility(true);
+                setCCButtonsVisibility(false);
                 floor8.performClick();
                 break;
             case "H-9":
-                showHallButtons();
-                hideCCButtons();
+                setHallButtonsVisibility(true);
+                setCCButtonsVisibility(false);
                 floor9.performClick();
                 break;
             case "CC-1":
-                showCCButtons();
-                hideHallButtons();
+                setCCButtonsVisibility(true);
+                setHallButtonsVisibility(false);
                 floorCC1.performClick();
                 break;
             case "CC-2":
-                showCCButtons();
-                hideHallButtons();
+                setCCButtonsVisibility(true);
+                setHallButtonsVisibility(false);
                 floorCC2.performClick();
                 break;
         }

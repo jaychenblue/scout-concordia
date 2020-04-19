@@ -1,6 +1,7 @@
 package com.example.scoutconcordia.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -8,7 +9,6 @@ import androidx.core.content.ContextCompat;
 import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -18,6 +18,7 @@ import android.graphics.Color;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ import android.widget.ToggleButton;
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.Directions;
 import com.example.scoutconcordia.FileAccess.FileAccessor;
+import com.example.scoutconcordia.Locations;
 import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
 import com.example.scoutconcordia.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -78,6 +80,8 @@ import static android.content.ContentValues.TAG;
 import static android.view.View.VISIBLE;
 import static com.example.scoutconcordia.Directions.displaySearchResults;
 import static com.example.scoutconcordia.Directions.getDirections;
+import static com.example.scoutconcordia.Locations.addLocationsToMap;
+import static com.example.scoutconcordia.Locations.addRestaurantsToMap;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationChangeListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnMyLocationButtonClickListener{
@@ -106,11 +110,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected static Button floor9;
     protected static Button floorCC1;
     protected static Button floorCC2;
-    private Button floorVE2;
-    private Button floorVL1;
-    private Button floorVL2;
-    private Button floorMB1;
-    private Button floorMBS2;
+    private static Button floorVE2;
+    private static Button floorVL1;
+    private static Button floorVL2;
+    private static Button floorMB1;
+    private static Button floorMBS2;
 
     private BottomAppBar popUpBar;
     private ToggleButton toggleButton;
@@ -120,7 +124,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected static Marker searchMarker;
     private String activeInfoWindow = null;
-    private List<Polygon> polygonBuildings = new ArrayList<>();  // list of polygons, representing all of the campus buildings
+    protected static List<Polygon> polygonBuildings = new ArrayList<>();  // list of polygons, representing all of the campus buildings
     protected static List<Marker> markerBuildings = new ArrayList<>();  // List of markers for all of the campus buildings
     protected static List<Marker> restaurantMarkers = new ArrayList<>();  // List of markers for all of the restaurants (POI)
     protected static List<Graph> floorGraphs = new ArrayList<>();  // List of graphs, representing the graphs used for indoor directions.
@@ -166,11 +170,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Defining all literals that are used multiple times as constants as to reduce potential errors
      * if the code ever needs to be modified
      */
-    private static final String DRAWABLE = "drawable";
+    protected static final String DRAWABLE = "drawable";
     protected static final String BUILDING = "building"; //building type
     protected static final String BUILDING_NAME = "Building"; //building name
     protected static final String H100 = "H-100";
     protected static final String CC150 = "CC-150";
+    protected static final int VISIBLE_INT = 0;
+    protected static final int INVISIBLE_INT = 4;
 
     // Displays the Map
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -809,34 +815,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         removeAllFloorOverlays();
 
                         if (poly.getTag().equals("H Building"))
-                        {
-                            showHallButtons();
-                        }
+                            setHallButtonsVisibility(true);
                         else if (poly.getTag().equals("CC Building"))
-                        {
-                            showCCButtons();
-                        }
+                            setCCButtonsVisibility(true);
                         else if (poly.getTag().equals("VE Building"))
-                        {
-                            showVEButtons();
-                        }
+                            setVEButtonsVisibility(true);
                         else if (poly.getTag().equals("VL Building"))
                         {
                             LatLng ve_location = new LatLng(45.458850, -73.638660);
-
                             for (Polygon poly2 : polygonBuildings)
                             {
-                                if (PolyUtil.containsLocation(ve_location, poly2.getPoints(), true)){
+                                if (PolyUtil.containsLocation(ve_location, poly2.getPoints(), true))
                                     poly2.setVisible(false);
-                                }
                             }
-                            showVLButtons();
+                            setVLButtonsVisibility(true);
                         }
                         else if (poly.getTag().equals("MB Building"))
-                        {
-                            showMBButtons();
-
-                        }
+                            setMBButtonsVisibility(true);
                     }
                 }
                 // we want to zoom in onto the center of the building.
@@ -865,114 +860,89 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void addPopUpBarListener()
     {
         popUpBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
-        // can add functionality here if we click on the pop up bar
     }
 
-    // method for hiding all of the markers on the map
-    public void hideAllMarkers()
+    // method for setting the visibility of the building markers on the map.
+    public void setBuildingMarkersVisibility(Boolean visibility)
     {
-        for (Marker mar : markerBuildings) {
-            mar.setVisible(false);
-        }
-    }
-
-    // method for showing all of the markers on the map
-    public void showAllMarkers()
-    {
-        for (Marker mar : markerBuildings) {
-            mar.setVisible(true);
-        }
+        for (Marker mar : markerBuildings)
+            mar.setVisible(visibility);
     }
 
     // method for setting the visibility of the restaurant markers.
     public void setRestaurantMarkersVisibility(Boolean visibility)
     {
         for (Marker mar : restaurantMarkers)
-        {
             mar.setVisible(visibility);
-        }
     }
 
-    public static void showHallButtons()
+    public static void setHallButtonsVisibility(Boolean visibility)
     {
-        floor1.setVisibility(View.VISIBLE);
-        floor2.setVisibility(View.VISIBLE);
-        floor8.setVisibility(View.VISIBLE);
-        floor9.setVisibility(View.VISIBLE);
+        int vis;
+        if (visibility)
+            vis = VISIBLE_INT;
+        else
+            vis = INVISIBLE_INT;
+        floor1.setVisibility(vis);
+        floor2.setVisibility(vis);
+        floor8.setVisibility(vis);
+        floor9.setVisibility(vis);
     }
 
-    public static void hideHallButtons()
+    public static void setVEButtonsVisibility(Boolean visibility)
     {
-        floor1.setVisibility(View.INVISIBLE);
-        floor2.setVisibility(View.INVISIBLE);
-        floor8.setVisibility(View.INVISIBLE);
-        floor9.setVisibility(View.INVISIBLE);
+        int vis;
+        if (visibility)
+            vis = VISIBLE_INT;
+        else
+            vis = INVISIBLE_INT;
+        floorVE2.setVisibility(vis);
     }
 
-    public void showVEButtons()
+    public static void setVLButtonsVisibility(Boolean visibility)
     {
-        floorVE2.setVisibility(View.VISIBLE);
+        int vis;
+        if (visibility)
+            vis = VISIBLE_INT;
+        else
+            vis = INVISIBLE_INT;
+        floorVL1.setVisibility(vis);
+        floorVL2.setVisibility(vis);
     }
 
-    public void hideVEButtons()
+    public static void setMBButtonsVisibility(Boolean visibility)
     {
-        floorVE2.setVisibility(View.INVISIBLE);
+        int vis;
+        if (visibility)
+            vis = VISIBLE_INT;
+        else
+            vis = INVISIBLE_INT;
+        floorMB1.setVisibility(vis);
+        floorMBS2.setVisibility(vis);
     }
 
-    public void showVLButtons()
+    public static void setCCButtonsVisibility(Boolean visibility)
     {
-        floorVL1.setVisibility(View.VISIBLE);
-        floorVL2.setVisibility(View.VISIBLE);
+        int vis;
+        if (visibility)
+            vis = VISIBLE_INT;
+        else
+            vis = INVISIBLE_INT;
+        floorCC1.setVisibility(vis);
+        floorCC2.setVisibility(vis);
     }
-
-    public void hideVLButtons()
-    {
-        floorVL1.setVisibility(View.INVISIBLE);
-        floorVL2.setVisibility(View.INVISIBLE);
-    }
-
-    public void showMBButtons()
-    {
-        floorMB1.setVisibility(View.VISIBLE);
-        floorMBS2.setVisibility(View.VISIBLE);
-    }
-
-    public void hideMBButtons()
-    {
-        floorMB1.setVisibility(View.INVISIBLE);
-        floorMBS2.setVisibility(View.INVISIBLE);
-    }
-
-    public static void showCCButtons()
-    {
-        floorCC1.setVisibility(View.VISIBLE);
-        floorCC2.setVisibility(View.VISIBLE);
-    }
-
-    public static void hideCCButtons()
-    {
-        floorCC1.setVisibility(View.INVISIBLE);
-        floorCC2.setVisibility(View.INVISIBLE);
-    }
-
 
     public void removeAllFloorOverlays(){
-        if (hallGroundOverlay != null){
+        if (hallGroundOverlay != null)
             hallGroundOverlay.remove();
-        }
-        if (ccGroundOverlay != null){
+        if (ccGroundOverlay != null)
             ccGroundOverlay.remove();
-        }
-        if (vlGroundOverlay != null){
+        if (vlGroundOverlay != null)
             vlGroundOverlay.remove();
-        }
-        if (veGroundOverlay != null){
+        if (veGroundOverlay != null)
             veGroundOverlay.remove();
-        }
-        if (mbGroundOverlay != null){
+        if (mbGroundOverlay != null)
             mbGroundOverlay.remove();
-        }
-
     }
 
     public void resetButtonColors() {
@@ -988,19 +958,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorCC1.setTextColor(getResources().getColor(R.color.black));
         floorCC2.setBackgroundResource(android.R.drawable.btn_default);
         floorCC2.setTextColor(getResources().getColor(R.color.black));
-
         floorVE2.setBackgroundResource(android.R.drawable.btn_default);
         floorVE2.setTextColor(getResources().getColor(R.color.black));
         floorVL1.setBackgroundResource(android.R.drawable.btn_default);
         floorVL1.setTextColor(getResources().getColor(R.color.black));
         floorVL2.setBackgroundResource(android.R.drawable.btn_default);
         floorVL2.setTextColor(getResources().getColor(R.color.black));
-
         floorMB1.setBackgroundResource(android.R.drawable.btn_default);
         floorMB1.setTextColor(getResources().getColor(R.color.black));
         floorMBS2.setBackgroundResource(android.R.drawable.btn_default);
         floorMBS2.setTextColor(getResources().getColor(R.color.black));
-
     }
 
     /**
@@ -1181,11 +1148,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // this sets the parameters for the pop up bar that appears on click
                         popUpBar.setVisibility(VISIBLE);
 
-                        hideHallButtons();
-                        hideCCButtons();
-                        hideVEButtons();
-                        hideVLButtons();
-                        hideMBButtons();
+                        setHallButtonsVisibility(false);
+                        setCCButtonsVisibility(false);
+                        setVEButtonsVisibility(false);
+                        setVLButtonsVisibility(false);
+                        setMBButtonsVisibility(false);
 
                         removeAllFloorOverlays();
 
@@ -1198,11 +1165,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         exploreInsideButton.setVisibility(View.INVISIBLE);
                         popUpBar.setVisibility(View.INVISIBLE);
 
-                        hideHallButtons();
-                        hideCCButtons();
-                        hideVEButtons();
-                        hideVLButtons();
-                        hideMBButtons();
+                        setHallButtonsVisibility(false);
+                        setCCButtonsVisibility(false);
+                        setVEButtonsVisibility(false);
+                        setVLButtonsVisibility(false);
+                        setMBButtonsVisibility(false);
 
                         removeAllFloorOverlays();
 
@@ -1249,17 +1216,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 directionButton.setVisibility(View.INVISIBLE);
                 exploreInsideButton.setVisibility(View.INVISIBLE);
 
-                hideHallButtons();
-                hideCCButtons();
-                hideVEButtons();
-                hideVLButtons();
-                hideMBButtons();
+                setHallButtonsVisibility(false);
+                setCCButtonsVisibility(false);
+                setVEButtonsVisibility(false);
+                setVLButtonsVisibility(false);
+                setMBButtonsVisibility(false);
                 removeAllFloorOverlays();
 
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
                 showAllPolygons();
-                showAllMarkers();
+                setBuildingMarkersVisibility(true);
                 resetGetDirectionParams();
                 resetPath();  //erase the path from outdoor directions
                 setRestaurantMarkersVisibility(false);
@@ -1269,13 +1236,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    /**
-     *
-     * This method is used to apply styling to the polygons that will be displayed on the map.
+    /**This method is used to apply styling to the polygons that will be displayed on the map.
      * Different styles can be created by assigning different tags to the polygons
      * If you need polygons with the same styling just assign them the same tags
      */
-    private void stylePolygon(Polygon polygon)
+    protected static void stylePolygon(Polygon polygon)
     {
         int strokeColor, fillColor; //color format is #AARRGGBB where AA is for the opacity. 00 is fully transparent. FF is opaque
         String type = "";
@@ -1295,113 +1260,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         polygon.setStrokeColor(strokeColor);
         polygon.setFillColor(fillColor);
         polygon.setClickable(true);
-    }
-
-    private void addLocationsToMap(String[] location)
-    {
-        LinkedList<BuildingInfo> buildings = BuildingInfo.obtainBuildings(location);
-        //BuildingInfo.encryptFile();
-        LinkedList.Node currentBuilding = buildings.getHead();
-        for (int i = 0; i < buildings.size(); i++)
-        {
-            PolygonOptions po = new PolygonOptions();
-            LinkedList<LatLng> coordinates = ((BuildingInfo)currentBuilding.getEle()).getCoordinates();
-            LinkedList.Node currentCoordinate = coordinates.getHead();
-
-            // add building name to list
-            locations.add(((BuildingInfo) currentBuilding.getEle()).getName().trim());
-            // add building name adn coordinates to the map
-            locationMap.put(((BuildingInfo) currentBuilding.getEle()).getName().trim(), (LatLng)currentCoordinate.getEle());
-
-            for (int j = 0; j < coordinates.size(); j++)
-            {
-                po.add((LatLng)currentCoordinate.getEle());
-                currentCoordinate = currentCoordinate.getNext();
-            }
-            Polygon justAddedPolygon = mMap.addPolygon(po);
-            polygonBuildings.add(justAddedPolygon); // add the polygon to the list of polygons
-            Resources res = this.getResources();
-            int resID = res.getIdentifier(((BuildingInfo)currentBuilding.getEle()).getIconName(), DRAWABLE, this.getPackageName());
-            Marker polyMarker = mMap.addMarker(new MarkerOptions()
-                    .position(((BuildingInfo)currentBuilding.getEle()).getCenter())
-                    .title(((BuildingInfo)currentBuilding.getEle()).getName())
-                    .visible(true)
-                    .flat(true)
-                    .alpha(1)
-                    //.snippet("This is a test piece of text to see how it will look like in the window")
-                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .zIndex(44));
-            markerBuildings.add(polyMarker); // add the marker to the list of markers
-
-            if (resID != 0)
-            {
-                int height = 90;
-                int width = 90;
-                Bitmap b = BitmapFactory.decodeResource(getResources(), resID);
-                Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
-                polyMarker.setIcon(smallMarkerIcon);
-            }
-            BuildingInfo Hall_Building = new BuildingInfo(((BuildingInfo)currentBuilding.getEle()).getName(), ((BuildingInfo)currentBuilding.getEle()).getAddress(), ((BuildingInfo)currentBuilding.getEle()).getOpeningTimes());
-            polyMarker.setTag(Hall_Building);
-            justAddedPolygon.setTag("alpha");
-            stylePolygon(justAddedPolygon);
-            justAddedPolygon.setTag(((BuildingInfo) currentBuilding.getEle()).getName().trim());
-            currentBuilding = currentBuilding.getNext();
-        }
-    }
-
-    private void addRestaurantsToMap(String[] location)
-    {
-        int currentPos = 0;
-        //String markerName = "";
-        String markerNameWithLocation = "";
-        LatLng markerLocation = null;
-        String markerAddress = "";
-        for (int i = 2; i < location.length - 1; i++)  // skip the first 2 lines of the file and the last line of the file
-        {
-            int posOfhalfway = 0;
-            int posOfEnd = 0;
-            double x_coordinate = 0, y_coordinate = 0;
-
-            posOfhalfway = location[i].indexOf(",");
-            posOfEnd = location[i].indexOf("}");
-
-            //currentPos = location[i].indexOf("(");
-            //markerName = location[i].substring(1, currentPos);
-            currentPos = location[i].indexOf("{");
-            markerNameWithLocation = location[i].substring(1, currentPos);
-
-            x_coordinate = Double.parseDouble(location[i].substring(currentPos+1,posOfhalfway));
-            y_coordinate = Double.parseDouble(location[i].substring(posOfhalfway+2, posOfEnd));
-            markerLocation = new LatLng(x_coordinate, y_coordinate);
-
-            currentPos = location[i].indexOf("}");
-            markerAddress = location[i].substring(currentPos + 1);
-
-            Marker restaurantMarker = mMap.addMarker(new MarkerOptions()
-                    .position(markerLocation)
-                    .title(markerNameWithLocation)
-                    .visible(false)
-                    .flat(true)
-                    .alpha(1)
-                    .zIndex(44)
-            );
-
-            BuildingInfo restaurantInfo = new BuildingInfo(markerNameWithLocation, markerAddress, "");
-            restaurantMarker.setTag(restaurantInfo);
-
-            // set the icon for the restaurant marker
-            int resID = this.getResources().getIdentifier("restaurant_icon", DRAWABLE, this.getPackageName());
-            Bitmap smallMarker = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), resID), 90, 90, false);
-            BitmapDescriptor smallMarkerIcon = BitmapDescriptorFactory.fromBitmap(smallMarker);
-            restaurantMarker.setIcon(smallMarkerIcon);
-
-            restaurantMarkers.add(restaurantMarker);
-
-            locations.add(markerNameWithLocation);     // add restaurant name to list for the search bar
-            locationMap.put((markerNameWithLocation), markerLocation);   // add restaurant name and coordinate to the map
-        }
     }
 
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
