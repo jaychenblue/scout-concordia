@@ -454,7 +454,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onShuttleSelected(MenuItem m){
         m.setChecked(true);
         travelMode = 4;
-        Toast.makeText(this, String.valueOf(travelMode), Toast.LENGTH_LONG).show();
     }
 
     private void setModeToWalkIfShuttleSelected(){
