@@ -52,6 +52,9 @@ public class Graph
 
         private boolean isTraversed() { return traversed; }
         private void setTraversed(boolean traversed) { this.traversed = traversed; }
+        public LatLng getElement() {return element; }
+        public String getRoom() {return room;}
+        public int getType() {return type; }
     }
 
     /** Creates a Graph with a specified size.

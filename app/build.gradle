@@ -77,7 +77,10 @@ junitJacoco{
             "**/MapsActivity.class",
             "**/ShuttleScreenActivity.class",
             "**/SplashScreenActivity.class",
-            "**/Activities/**")
+            "**/Activities/**",
+            "**/ExternalButtonListener.class",
+            "**/Directions.class",
+            "**/Locations.class")
     includeNoLocationClasses = true //type boolean
     includeInstrumentationCoverageInMergedReport = true
 }
