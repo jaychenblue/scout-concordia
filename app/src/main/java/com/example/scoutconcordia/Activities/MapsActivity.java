@@ -129,7 +129,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // We use this for image overlay of Hall building
     protected static final LatLng hallOverlaySouthWest = new LatLng(45.496827, -73.578849);
-    private final LatLng hallOverlayNorthEast = new LatLng(45.497711, -73.579033);
     protected static final LatLng veBuildingOverlaySouthWest = new LatLng(45.458849, -73.639018);
     protected static final LatLng vlBuildingOverlaySouthWest = new LatLng(45.459106, -73.637831);
     protected static final LatLng mbBuildingOverlaySouthWest = new LatLng(45.494962, -73.578783);
@@ -142,7 +141,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected static final Map<String, LatLng> locationMap = new TreeMap<>(); // maps building names to their location
     protected static String startingPoint; // Concordia Place user selects as starting point. Used to get LatLng form locationMap
-    protected static String destination; // Cooncordia Place user selects as destination. Used to get LatLng form locationMap
+    protected static String destination; // Concordia Place user selects as destination. Used to get LatLng form locationMap
     protected static String startingBuilding;  // The letter of the building. ex: "H"
     protected static String destinationBuilding;  // The letter of the building. ex: "H"
     protected static LatLng origin; //origin of directions search
@@ -158,7 +157,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected static boolean disabilityPreference = false; //false for no disability, true for disability
     protected static boolean needMoreDirections = false; //this boolean will be used when getting directions from class to class in another building
     protected static boolean classToClass = false; //this boolean determines if we are searching from a class in 1 building to a class in another building
-    private boolean classesInDifBuildings = false; //this boolean determines if the 2 classes are in the same building or different buildings.
 
     protected static TextView travelTime;  //estimated travel time
     protected static GeoApiContext geoApiContext = null;
@@ -219,8 +217,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        exploreInsideButton = findViewById(R.id.exploreInsideButton);
+        ExternalButtonListener.addExploreInsideButtonListener();
+
         addDirectionButtonListener();
-        addExploreInsideButtonListener();
         addPopUpBarListener();
 
         // adding button listeners for all of the floors.
@@ -235,6 +235,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         floorVL2 = findViewById(R.id.floorVL2);
         floorMB1 = findViewById(R.id.floorMB1);
         floorMBS2 = findViewById(R.id.floorMBS2);
+        nextStep = findViewById(R.id.nextStep);
         ExternalButtonListener.addfloor8ButtonListener();
         ExternalButtonListener.addfloor9ButtonListener();
         ExternalButtonListener.addfloor1ButtonListener();
@@ -246,7 +247,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ExternalButtonListener.addfloorVL2ButtonListener();
         ExternalButtonListener.addfloorMB1ButtonListener();
         ExternalButtonListener.addfloorMBS2ButtonListener();
-        addNextStepListener();
+        ExternalButtonListener.addNextStepListener();
 
         createFloorGraphs();
 
@@ -285,50 +286,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void addNextStepListener()
-    {
-        nextStep = (Button) findViewById(R.id.nextStep);
-        nextStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (pathMarker != null)
-                {
-                    pathMarker.remove();
-                }
-                searchResultsIndex++; //increment the search result index
-
-                if (searchResultsIndex == searchResults.size())
-                {
-                    if (needMoreDirections)
-                    {
-                        /// NEED TO CHECK THIS OUT
-                        LatLng[] dest = new LatLng[searchResults.get(searchResultsIndex - 1).length];
-                        System.arraycopy(searchResults.get(searchResultsIndex - 1), 0, dest, 0, searchResults.get(searchResultsIndex - 1).length);
-                        origin = dest[dest.length - 1];
-                        startingPoint = startingBuilding + " Building";
-                        getDirections(); // call get directions again to continue getting directions
-                    } else
-                    {
-                        // we want to reset the app back to the initial state
-                        searchResultsIndex = 0;
-                        searchPath.setVisible(false);
-                        nextStep.setVisibility(View.INVISIBLE);
-                    }
-                } else if (searchResultsIndex == 0) {
-                    resetPath();  //erase the path from outdoor directions
-                    exploreInsideButton.performClick();
-                    displaySearchResults(searchResults.get(searchResultsIndex));
-                } else if (searchResultsIndex == 100) {
-                    resetPath();
-                    nextStep.setVisibility(View.INVISIBLE);  //we have reached the end of the search
-                } else
-                {
-                    displaySearchResults(searchResults.get(searchResultsIndex));
-                }
-            }
-        });
-    }
-
     // If button pushed change Campus
     public void addListenerOnToggle()
     {
@@ -339,7 +296,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
-
 
     private void initializeSearchBar(){
         final AutoCompleteTextView searchBar = findViewById(R.id.search_bar);
@@ -524,70 +480,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    // this is the listener for the explore inside button.
-    public void addExploreInsideButtonListener()
-    {
-        exploreInsideButton = (Button) findViewById(R.id.exploreInsideButton);
-
-        exploreInsideButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // we want to remove the building outline from the map so we can see the indoor floor plan
-                LatLng loc = searchMarker.getPosition();  // this is the location of the marker
-
-                // we look at the list of all polygons. If the marker is within the polygon then we want to hide the polygon from the map.
-                for (Polygon poly : polygonBuildings) {
-                    if (PolyUtil.containsLocation(loc, poly.getPoints(), true))
-                    {
-                        poly.setVisible(false);  // hide the polygon
-                        searchMarker.setVisible(false);  // hide the marker
-                        removeAllFloorOverlays();
-
-                        if (poly.getTag().equals("H Building"))
-                            setHallButtonsVisibility(true);
-                        else if (poly.getTag().equals("CC Building"))
-                            setCCButtonsVisibility(true);
-                        else if (poly.getTag().equals("VE Building"))
-                            setVEButtonsVisibility(true);
-                        else if (poly.getTag().equals("VL Building"))
-                        {
-                            LatLng ve_location = new LatLng(45.458850, -73.638660);
-                            for (Polygon poly2 : polygonBuildings)
-                            {
-                                if (PolyUtil.containsLocation(ve_location, poly2.getPoints(), true))
-                                    poly2.setVisible(false);
-                            }
-                            setVLButtonsVisibility(true);
-                        }
-                        else if (poly.getTag().equals("MB Building"))
-                            setMBButtonsVisibility(true);
-                    }
-                }
-                // we want to zoom in onto the center of the building.
-                animateCamera(loc, 19.0f);
-            };
-        });
-    }
-
-    // method for hiding all of the polygons on the map
-    public void hideAllPolygons()
-    {
-        for (Polygon poly : polygonBuildings) {
-            poly.setVisible(false);
-        }
-    }
-
-    // method for showing all of the polygons on the map
-    public void showAllPolygons()
-    {
-        for (Polygon poly : polygonBuildings) {
-            poly.setVisible(true);
-        }
-    }
-
     // this is the listener for the pop up bar at the bottom of the screen.
     public void addPopUpBarListener()
     {
-        popUpBar = (BottomAppBar) findViewById(R.id.bottomAppBar);
+        popUpBar = findViewById(R.id.bottomAppBar);
+    }
+
+    // method for setting the visibility of the polygons on the map.
+    public void setPolygonBuildingsVisibility(Boolean visibility)
+    {
+        for (Polygon poly : polygonBuildings)
+            poly.setVisible(visibility);
     }
 
     // method for setting the visibility of the building markers on the map.
@@ -849,41 +752,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 {
                     isInfoWindowShown = false;
                     searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
-
-                    // move the camera to the marker location
-                    animateCamera(marker.getPosition(), zoomLevel);
-
+                    animateCamera(marker.getPosition(), zoomLevel);       // move the camera to the marker location
                     if (!isInfoWindowShown)
                     {
                         marker.showInfoWindow();
-
                         activeInfoWindow = marker.getTitle();
-
                         // this sets the parameters for the button that appears on click. (The direction button)
                         directionButton.setVisibility(VISIBLE);
                         LinearLayout.LayoutParams directionButtonLayoutParams = (LinearLayout.LayoutParams) directionButton.getLayoutParams();
-                        //directionButtonLayoutParams.topMargin = 200;
-                        //directionButtonLayoutParams.leftMargin = -toggleButton.getWidth() + 200;
                         directionButton.setLayoutParams(directionButtonLayoutParams);
-
                         // this sets the parameters for the button that appears on click. (The explore inside button)
                         exploreInsideButton.setVisibility(VISIBLE);
                         LinearLayout.LayoutParams exploreButtonLayoutParams = (LinearLayout.LayoutParams) exploreInsideButton.getLayoutParams();
-                        //exploreButtonLayoutParams.topMargin = 200;
-                        //exploreButtonLayoutParams.leftMargin = 400;
                         exploreInsideButton.setLayoutParams(exploreButtonLayoutParams);
-
-                        // this sets the parameters for the pop up bar that appears on click
-                        popUpBar.setVisibility(VISIBLE);
-
-                        setHallButtonsVisibility(false);
-                        setCCButtonsVisibility(false);
-                        setVEButtonsVisibility(false);
-                        setVLButtonsVisibility(false);
-                        setMBButtonsVisibility(false);
-
-                        removeAllFloorOverlays();
-
+                        popUpBar.setVisibility(VISIBLE); // this sets the parameters for the pop up bar that appears on click
                         isInfoWindowShown = true;
                     }
                     else
@@ -892,26 +774,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         directionButton.setVisibility(View.INVISIBLE);
                         exploreInsideButton.setVisibility(View.INVISIBLE);
                         popUpBar.setVisibility(View.INVISIBLE);
-
-                        setHallButtonsVisibility(false);
-                        setCCButtonsVisibility(false);
-                        setVEButtonsVisibility(false);
-                        setVLButtonsVisibility(false);
-                        setMBButtonsVisibility(false);
-
-                        removeAllFloorOverlays();
-
                         isInfoWindowShown = false;
                         activeInfoWindow = null;
                     }
+                    setHallButtonsVisibility(false);
+                    setCCButtonsVisibility(false);
+                    setVEButtonsVisibility(false);
+                    setVLButtonsVisibility(false);
+                    setMBButtonsVisibility(false);
+                    removeAllFloorOverlays();
                 }
                 else if (restaurantMarkers.contains(marker))
                 {
                     isInfoWindowShown = false;
                     searchMarker = marker;  // set the global search marker to the marker that has most recently been clicked
 
-                    // move the camera to the marker location
-                    animateCamera(marker.getPosition(), zoomLevel);
+                    animateCamera(marker.getPosition(), zoomLevel);      // move the camera to the marker location
 
                     if (!isInfoWindowShown)
                     {
@@ -928,10 +806,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         popUpBar.setVisibility(VISIBLE);
                         isInfoWindowShown = true;
                     }
-                }
-                else
-                {
-                    System.out.println(marker.getPosition());
                 }
                 return true;
             }
@@ -953,7 +827,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 popUpBar.setVisibility(View.INVISIBLE);
                 isInfoWindowShown = false;
-                showAllPolygons();
+                setPolygonBuildingsVisibility(true);
                 setBuildingMarkersVisibility(true);
                 resetGetDirectionParams();
                 resetPath();  //erase the path from outdoor directions
@@ -962,32 +836,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 travelTime.setVisibility(View.INVISIBLE);
             }
         });
-    }
-
-    /**This method is used to apply styling to the polygons that will be displayed on the map.
-     * Different styles can be created by assigning different tags to the polygons
-     * If you need polygons with the same styling just assign them the same tags
-     */
-    protected static void stylePolygon(Polygon polygon)
-    {
-        int strokeColor, fillColor; //color format is #AARRGGBB where AA is for the opacity. 00 is fully transparent. FF is opaque
-        String type = "";
-        if (polygon.getTag() != null)
-            type = polygon.getTag().toString();
-
-        switch (type)
-        {
-            case "alpha":
-                strokeColor = Color.parseColor("#FF000000");
-                fillColor = Color.parseColor("#FF74091F");
-                break;
-            default:
-                strokeColor = Color.parseColor("#BB000000");
-                fillColor = Color.parseColor("#FF74091F");
-        }
-        polygon.setStrokeColor(strokeColor);
-        polygon.setFillColor(fillColor);
-        polygon.setClickable(true);
     }
 
     // listener method for when my location button is clicke, resets setMyLocationEnable to true
@@ -1166,7 +1014,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             default:
                 return super.onOptionsItemSelected(menuItem);
-
         }
         return false;
     }

@@ -3,6 +3,8 @@ package com.example.scoutconcordia;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+
 import com.example.scoutconcordia.Activities.MapsActivity;
 import com.example.scoutconcordia.DataStructures.LinkedList;
 import com.example.scoutconcordia.MapInfoClasses.BuildingInfo;
@@ -15,6 +17,32 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 public class Locations extends MapsActivity {
+
+    /**This method is used to apply styling to the polygons that will be displayed on the map.
+     * Different styles can be created by assigning different tags to the polygons
+     * If you need polygons with the same styling just assign them the same tags
+     */
+    protected static void stylePolygon(Polygon polygon)
+    {
+        int strokeColor, fillColor; //color format is #AARRGGBB where AA is for the opacity. 00 is fully transparent. FF is opaque
+        String type = "";
+        if (polygon.getTag() != null)
+            type = polygon.getTag().toString();
+
+        switch (type)
+        {
+            case "alpha":
+                strokeColor = Color.parseColor("#FF000000");
+                fillColor = Color.parseColor("#FF74091F");
+                break;
+            default:
+                strokeColor = Color.parseColor("#BB000000");
+                fillColor = Color.parseColor("#FF74091F");
+        }
+        polygon.setStrokeColor(strokeColor);
+        polygon.setFillColor(fillColor);
+        polygon.setClickable(true);
+    }
 
     public static void addLocationsToMap(String[] location)
     {
