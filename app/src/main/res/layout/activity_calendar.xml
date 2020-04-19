@@ -13,8 +13,7 @@
         android:layout_gravity="top"
         android:scrollbars="vertical"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints"
-        android:layout_below="@id/my_toolbar">
+        tools:ignore="MissingConstraints">
         <HorizontalScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
