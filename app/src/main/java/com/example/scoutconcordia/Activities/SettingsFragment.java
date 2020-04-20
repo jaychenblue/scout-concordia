@@ -31,6 +31,8 @@ public class SettingsFragment extends PreferenceFragment
     private Context mContext;
     private Activity mActivity;
 
+
+
     /**
      *
      * @param savedInstanceState settings are saved to SharedPreferences so that information is
@@ -47,6 +49,7 @@ public class SettingsFragment extends PreferenceFragment
         mContext = this.getActivity();
         mActivity = this.getActivity();
 
+
         /**
          * SwitchPreference stores the boolean in the SharedPreferences
          * This ensures that the state of the switch is saved when the app is restarted.
@@ -54,6 +57,9 @@ public class SettingsFragment extends PreferenceFragment
         final SwitchPreference accessibility = (SwitchPreference) findPreference(this.getResources()
                 .getString(R.string.AccessibilitySettings));
 
+        //This checks the state of the switch, even though it was not changed.
+        checkState(accessibility);
+        accessibility.setChecked(checkState(accessibility));
 
         /**
             void setOnPreferenceChangeListener (Preference.OnPreferenceChangeListener onPreferenceChangeListener)
@@ -90,8 +96,36 @@ public class SettingsFragment extends PreferenceFragment
                 return false;
             }
         });
+
+
+
+
     }
 
+    /**
+     *
+     * @param access takes in the switchPreference as a parameter in order to check the state in which it is in
+     * @return the state of the switch
+     */
+    public boolean checkState(SwitchPreference access){
+        if(access.isChecked())
+        {
+            access.setChecked(false);
+            disabilityPreferences = false; //accessibility settings not needed
+        }
+        else
+        {
+            // Unchecked the switch programmatically
+            access.setChecked(true);
+            disabilityPreferences = true; //user wants accessibility settings on
+        }
+         return disabilityPreferences;
+    }
+
+    /**
+     *
+     * @return the state of the switch
+     */
     static public Boolean getDisabilityPreference()
     {
         return disabilityPreferences;
