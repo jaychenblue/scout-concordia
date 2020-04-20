@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import androidx.annotation.RequiresApi;
 import com.example.scoutconcordia.Activities.MapsActivity;
+import com.example.scoutconcordia.Activities.SettingsFragment;
 import com.example.scoutconcordia.DataStructures.Graph;
 import com.example.scoutconcordia.MapInfoClasses.ShuttleInfo;
 import com.google.android.gms.maps.model.LatLng;
@@ -32,6 +33,7 @@ import static android.view.View.VISIBLE;
  * from 1 point to another on the map.*/
 public class Directions extends MapsActivity {
 
+    static boolean disabilityPreference;
     /** This method searches for a path between 2 classes.
      * @param fromMe The starting location as a string. e.g CC-105
      * @param toMe The destination location as a string. e.g H-100
@@ -88,6 +90,7 @@ public class Directions extends MapsActivity {
         else {
             // we have to get more creative with the search and break it down
             // we need to search from class -> escalator, then from escalator -> class on the right floor
+           disabilityPreference = SettingsFragment.getDisabilityPreference();
             if (disabilityPreference)
             {
                 nextStep.setVisibility(VISIBLE); // enable the next step button
