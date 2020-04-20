@@ -66,7 +66,7 @@ public class ShuttleScheduleActivity extends AppCompatActivity
 
     /**
      * This is the method that inflates the menu
-     * @param menu This is the first paramter to onCreateOptionsMenu method.
+     * @param menu specific menu defined in an xml file
      * @return boolean.
      */
     @Override
@@ -79,7 +79,7 @@ public class ShuttleScheduleActivity extends AppCompatActivity
 
     /**
      * This is the method that Handling menu clicks
-     * @param menuItem This is the first paramter to onOptionsItemSelected method.
+     * @param menuItem item in menu
      * @return boolean.
      */
     @Override

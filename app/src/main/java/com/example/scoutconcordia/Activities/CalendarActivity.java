@@ -720,7 +720,7 @@ public class CalendarActivity extends AppCompatActivity
 
     /**
      * This is the method that inflates the menu
-     * @param menu
+     * @param menu specific menu defined in an xml file
      * @return boolean.
      */
     @Override
@@ -733,7 +733,7 @@ public class CalendarActivity extends AppCompatActivity
 
     /**
      * This is the method that Handles menu clicks
-     * @param menuItem menu item clicked
+     * @param menuItem item in menu
      * @return boolean.
      */
     @Override
