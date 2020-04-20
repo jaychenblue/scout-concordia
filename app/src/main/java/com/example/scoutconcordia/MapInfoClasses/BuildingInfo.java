@@ -24,6 +24,7 @@ public class BuildingInfo
         iconName = "smiling.png";
         coordinates = new LinkedList<>(new LatLng(0,0));
         center = null;
+        openingTimes = null;
     }
 
     /** Parametrized constructor for a BuildingInfo object
@@ -68,6 +69,18 @@ public class BuildingInfo
         return openingTimes;
     }
 
+    public void setCoordinates(LinkedList<LatLng> coordinates) { this.coordinates = coordinates; }
+
+    public void setAddress(String address) { this.address = address; }
+
+    public void setName(String name) { this.name = name; }
+
+    public void setOpeningTimes(String openingTimes) { this.openingTimes = openingTimes; }
+
+    public void setCenter(LatLng center) { this.center = center;}
+
+    public void setIconName(String iconName) { this.iconName = iconName; }
+
     /** Reads from a string of buildings with their corresponding information. Creates building
      * objects using this information for each building in the list.
      * @param readMe Information about the buildings.
@@ -89,7 +102,7 @@ public class BuildingInfo
             {
                 currentBuilding = new BuildingInfo();
                 currentLine = readMe[i];
-                Log.println(Log.WARN, "printing", currentLine);
+                //Log.println(Log.WARN, "printing", currentLine);
                 currentPos = currentLine.indexOf("Name: ");
                 if (currentPos < 0)
                     throw new InputMismatchException("Expected a name but didn't find one");
@@ -153,7 +166,7 @@ public class BuildingInfo
         }
         catch (InputMismatchException ime)
         {
-            Log.println(Log.WARN, "printing", ime.getMessage());
+           // Log.println(Log.WARN, "printing", ime.getMessage());
         }
         finally
         {
@@ -172,8 +185,8 @@ public class BuildingInfo
         printMe += "Name: " + this.name + "\n";
         printMe += "Address: " + this.address + "\n";
         printMe += "IconName: " + this.iconName + "\n";
-        printMe += "OpeningTimes: " + this.iconName + "\n";
-        printMe += "Coordinates: " + coordinates.toString() + "\n";
+        printMe += "OpeningTimes: " + this.openingTimes + "\n";
+        printMe += "Coordinates: " + this.coordinates + "\n";
         printMe += "Center: " + this.center;
         return printMe;
     }

@@ -81,7 +81,8 @@ junitJacoco{
             "**/Activities/**",
             "**/Directions.class",
             "**/Locations.class",
-            "**/ExternalButtonListener**/**")
+            "**/ExternalButtonListener**/**",
+            "**/ShuttleInfo.class")
     includeNoLocationClasses = true //type boolean
     includeInstrumentationCoverageInMergedReport = true
 }
